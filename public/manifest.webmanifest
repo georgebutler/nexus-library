@@ -1,0 +1,16 @@
+{
+  "name": "Nexus Library",
+  "short_name": "Nexus",
+  "description": "An XR-ready spatial game library.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080b12",
+  "theme_color": "#080b12",
+  "xr_main_scene": {
+    "default_size": {
+      "width": 1440,
+      "height": 900
+    }
+  }
+}

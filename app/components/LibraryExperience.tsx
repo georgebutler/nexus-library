@@ -7,10 +7,10 @@ import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { CollectionSidebar } from "@/app/components/CollectionSidebar";
 import { GameCase } from "@/app/components/GameCase";
 import { LibraryArc } from "@/app/components/LibraryArc";
-import { NexusMark } from "@/app/components/NexusMark";
 import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { SearchConsole } from "@/app/components/SearchConsole";
+import { SiteHeader } from "@/app/components/SiteHeader";
 import { useLibrary } from "@/app/hooks/useLibrary";
 import type { Game } from "@/app/types/game";
 import {
@@ -105,15 +105,7 @@ export function LibraryExperience() {
       enable-xr
       style={{ "--xr-background-material": "transparent" }}
     >
-      <header className="nexus-header">
-        <a aria-label="Nexus Library home" className="nexus-brand" href="/">
-          <NexusMark className="nexus-brand__mark" />
-          <span>
-            <strong>Nexus</strong>
-          </span>
-        </a>
-
-      </header>
+      <SiteHeader />
 
       <div className="library-layout">
         <CollectionSidebar

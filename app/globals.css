@@ -437,7 +437,7 @@ html.isSpatial .glass-panel {
   position: relative;
   z-index: 40;
   width: 100%;
-  padding: 10px;
+  padding: 0;
   border-radius: 8px;
   --xr-back: 85px;
 }
@@ -1009,14 +1009,6 @@ html.isSpatial .spatial-search-results .game-case__art {
   background: #151925;
 }
 
-.details-cover::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 70%, rgba(13, 17, 25, 0.7));
-  content: "";
-  pointer-events: none;
-}
-
 .details-cover img {
   object-fit: cover;
 }
@@ -1181,10 +1173,6 @@ html.isSpatial .spatial-search-results .game-case__art {
     max-width: 140px;
   }
 
-  .search-console {
-    padding: 8px;
-  }
-
   .search-field {
     height: 44px;
   }
@@ -1208,10 +1196,6 @@ html.isSpatial .spatial-search-results .game-case__art {
 
   .details-cover {
     min-height: 56vh;
-  }
-
-  .details-cover::after {
-    background: linear-gradient(transparent 75%, rgba(13, 17, 25, 0.85));
   }
 
   .details-copy {
@@ -1598,7 +1582,7 @@ html:not(.isSpatial) .game-case:focus-within {
 }
 
 .search-console {
-  padding: 8px;
+  padding: 0;
   border-radius: var(--radius);
 }
 
@@ -1749,16 +1733,6 @@ html.isSpatial .popular-games {
   aspect-ratio: auto;
   border-radius: 0;
   background: var(--muted);
-}
-
-.details-cover::after {
-  display: block;
-  background: linear-gradient(
-    90deg,
-    transparent 96%,
-    color-mix(in srgb, var(--card) 15%, transparent) 99%,
-    var(--card) 100%
-  );
 }
 
 .details-copy {
@@ -1916,15 +1890,6 @@ html.isSpatial .popular-games {
   .details-cover {
     min-height: 0;
     aspect-ratio: 16 / 10;
-  }
-
-  .details-cover::after {
-    background: linear-gradient(
-      180deg,
-      transparent 95%,
-      color-mix(in srgb, var(--card) 15%, transparent) 99%,
-      var(--card) 100%
-    );
   }
 
   .details-copy {

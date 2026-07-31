@@ -16,6 +16,10 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Install as an App
+
+The production build includes a web app manifest, Nexus icons, Apple touch metadata, and a service worker. Deploy over HTTPS, then use the browser’s **Install app** or **Add to Home Screen** action before opening the installed app in WebSpatial.
+
 ## Spatial Preview
 
 Start Next.js in one terminal:

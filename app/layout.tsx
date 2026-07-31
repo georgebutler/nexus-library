@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+import { PwaRuntime } from "@/app/components/PwaRuntime";
 import { SpatialRuntime } from "@/app/components/SpatialRuntime";
 import { WebSpatialProvider } from "@/app/components/WebSpatialProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,25 @@ export const metadata: Metadata = {
     "An XR-ready spatial game library built with WebSpatial.",
   applicationName: "Nexus Library",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      {
+        url: "/icon-180-maskable.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Nexus Library",
+  },
 };
 
 export const viewport: Viewport = {
@@ -38,6 +58,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <TooltipProvider>
           <WebSpatialProvider>
+            <PwaRuntime />
             <SpatialRuntime />
             {children}
           </WebSpatialProvider>

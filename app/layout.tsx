@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { SpatialRuntime } from "@/app/components/SpatialRuntime";
 import { WebSpatialProvider } from "@/app/components/WebSpatialProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s · Nexus Library",
   },
   description:
-    "An XR-ready spatial game library powered by RAWG and WebSpatial.",
+    "An XR-ready spatial game library built with WebSpatial.",
   applicationName: "Nexus Library",
   manifest: "/manifest.webmanifest",
 };
@@ -35,10 +36,12 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <WebSpatialProvider>
-          <SpatialRuntime />
-          {children}
-        </WebSpatialProvider>
+        <TooltipProvider>
+          <WebSpatialProvider>
+            <SpatialRuntime />
+            {children}
+          </WebSpatialProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

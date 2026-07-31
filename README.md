@@ -1,6 +1,6 @@
 # Nexus Library
 
-Nexus Library is an XR-ready spatial game library built with Next.js, WebSpatial, Tailwind CSS, and the RAWG API. Saved games stay local to the browser in `localStorage`; no database is required.
+Nexus Library is an XR-ready spatial game library built with Next.js, WebSpatial, Tailwind CSS, and the RAWG API. Named game collections stay local to the browser in `localStorage`; no database is required. Existing games stored under the original flat library format migrate into a permanent default collection on first load.
 
 ## Setup
 

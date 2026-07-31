@@ -1,15 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { Plus, Star } from "lucide-react";
-import type { CSSProperties, KeyboardEvent } from "react";
+import { Minus, Plus, Star } from "lucide-react";
+import type {
+  CSSProperties,
+  MouseEvent,
+  ReactNode,
+} from "react";
+import { PlatformIcons } from "@/app/components/PlatformIcons";
 import type { Game } from "@/app/types/game";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type GameCaseProps = {
   game: Game;
   onOpen: (game: Game) => void;
-  onAdd?: (game: Game) => void;
-  isSaved?: boolean;
+  action?: ReactNode;
+  activeCollectionName?: string;
+  isInActiveCollection?: boolean;
+  onToggleActiveCollection?: (game: Game) => void;
   style?: CSSProperties;
   priority?: boolean;
 };
@@ -17,32 +27,38 @@ type GameCaseProps = {
 export function GameCase({
   game,
   onOpen,
-  onAdd,
-  isSaved = false,
+  action,
+  activeCollectionName,
+  isInActiveCollection,
+  onToggleActiveCollection,
   style,
   priority = false,
 }: GameCaseProps) {
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onOpen(game);
-    }
-  };
-
   const releaseYear = game.released
     ? new Date(`${game.released}T00:00:00`).getFullYear()
     : "TBA";
+  const hasActiveCollectionAction = Boolean(
+    activeCollectionName && onToggleActiveCollection,
+  );
+
+  const handleCollectionToggle = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onToggleActiveCollection?.(game);
+  };
 
   return (
-    <article
+    <Card
       className="game-case group"
       enable-xr
-      onClick={() => onOpen(game)}
-      onKeyDown={handleKeyDown}
-      role="button"
+      size="sm"
       style={style}
-      tabIndex={0}
     >
+      <button
+        aria-label={`Open ${game.name}`}
+        className="game-case__open"
+        onClick={() => onOpen(game)}
+        type="button"
+      />
       <div className="game-case__art">
         {game.background_image ? (
           <Image
@@ -58,32 +74,49 @@ export function GameCase({
           </div>
         )}
         <div className="game-case__scrim" />
-        <div className="game-case__rating">
-          <Star aria-hidden="true" fill="currentColor" size={12} />
+        {hasActiveCollectionAction ? (
+          <Button
+            aria-label={
+              isInActiveCollection
+                ? `Remove ${game.name} from ${activeCollectionName}`
+                : `Add ${game.name} to ${activeCollectionName}`
+            }
+            className={
+              isInActiveCollection
+                ? "game-case__collection-toggle is-remove"
+                : "game-case__collection-toggle is-add"
+            }
+            onClick={handleCollectionToggle}
+            size="icon"
+            type="button"
+            variant={isInActiveCollection ? "secondary" : "default"}
+          >
+            {isInActiveCollection ? (
+              <Minus aria-hidden="true" />
+            ) : (
+              <Plus aria-hidden="true" />
+            )}
+          </Button>
+        ) : null}
+        <Badge className="game-case__rating" variant="secondary">
+          <Star aria-hidden="true" data-icon="inline-start" fill="currentColor" />
           {game.rating.toFixed(1)}
-        </div>
+        </Badge>
       </div>
 
-      <div className="game-case__body">
+      <CardContent className="game-case__body">
         <p className="game-case__eyebrow">
           {game.genres[0]?.name ?? "Game"} · {releaseYear}
         </p>
         <h3>{game.name}</h3>
-        {onAdd ? (
-          <button
-            className="game-case__add"
-            disabled={isSaved}
-            onClick={(event) => {
-              event.stopPropagation();
-              onAdd(game);
-            }}
-            type="button"
-          >
-            <Plus aria-hidden="true" size={14} />
-            {isSaved ? "In library" : "Add"}
-          </button>
-        ) : null}
-      </div>
-    </article>
+        <div className="game-case__platform-slot">
+          <PlatformIcons
+            maxItems={4}
+            platforms={game.platformFamilies ?? []}
+          />
+        </div>
+        {action}
+      </CardContent>
+    </Card>
   );
 }

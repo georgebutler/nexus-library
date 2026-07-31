@@ -1,9 +1,11 @@
 import type {
   Game,
   GameGenre,
+  GamePlatformFamily,
   GameScreenshot,
   GamesApiResponse,
 } from "@/app/types/game";
+import { getUniquePlatformFamilies } from "@/app/lib/platforms";
 
 export const runtime = "nodejs";
 
@@ -72,6 +74,95 @@ function sanitizeScreenshots(value: unknown): GameScreenshot[] {
   });
 }
 
+function sanitizeNamedItems(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((item): string[] => {
+    if (!item || typeof item !== "object") {
+      return [];
+    }
+
+    const name = asString((item as RawGame).name);
+    return name ? [name] : [];
+  });
+}
+
+function sanitizePlatforms(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((item): string[] => {
+    if (!item || typeof item !== "object") {
+      return [];
+    }
+
+    const platform = (item as RawGame).platform;
+
+    if (!platform || typeof platform !== "object") {
+      return [];
+    }
+
+    const name = asString((platform as RawGame).name);
+    return name ? [name] : [];
+  });
+}
+
+function sanitizePlatformFamilies(value: unknown): GamePlatformFamily[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return getUniquePlatformFamilies(
+    value.flatMap((item): GamePlatformFamily[] => {
+      if (!item || typeof item !== "object") {
+        return [];
+      }
+
+      const platform = (item as RawGame).platform;
+
+      if (!platform || typeof platform !== "object") {
+        return [];
+      }
+
+      const rawPlatform = platform as RawGame;
+      const name = asString(rawPlatform.name);
+      const slug = asString(rawPlatform.slug);
+
+      if (!name || !slug) {
+        return [];
+      }
+
+      return [
+        {
+          id: asNumber(rawPlatform.id),
+          name,
+          slug,
+        },
+      ];
+    }),
+  );
+}
+
+function sanitizeWebsite(value: unknown): string | null {
+  const website = asString(value);
+
+  if (!website) {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(website);
+    return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:"
+      ? parsedUrl.toString()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function sanitizeGame(rawGame: unknown): Game | null {
   if (!rawGame || typeof rawGame !== "object") {
     return null;
@@ -90,11 +181,17 @@ function sanitizeGame(rawGame: unknown): Game | null {
     name,
     slug: asString(game.slug) ?? String(id),
     background_image: asString(game.background_image),
+    description: asString(game.description_raw),
+    website: sanitizeWebsite(game.website),
     released: asString(game.released),
     rating: asNumber(game.rating),
     metacritic:
       typeof game.metacritic === "number" ? game.metacritic : null,
     genres: sanitizeGenres(game.genres),
+    platforms: sanitizePlatforms(game.platforms),
+    platformFamilies: sanitizePlatformFamilies(game.parent_platforms),
+    developers: sanitizeNamedItems(game.developers),
+    publishers: sanitizeNamedItems(game.publishers),
     short_screenshots: sanitizeScreenshots(game.short_screenshots),
   };
 }
@@ -143,7 +240,7 @@ export async function GET(request: Request) {
     return Response.json(
       {
         error:
-          "RAWG_API_KEY is not configured. Add it to .env.local or your Vercel project environment variables.",
+          "The game catalog is not configured. Add the required API key to your environment variables.",
         code: "MISSING_API_KEY",
       },
       { status: 503 },
@@ -153,6 +250,21 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search")?.trim();
   const id = searchParams.get("id")?.trim();
+  const mode = searchParams.get("mode")?.trim();
+  const isPopular = mode === "popular";
+
+  if (
+    (mode && !isPopular) ||
+    (isPopular && (searchParams.has("id") || searchParams.has("search")))
+  ) {
+    return Response.json(
+      {
+        error: "Search, game detail, and popular requests must be separate.",
+        code: "INVALID_REQUEST",
+      },
+      { status: 400 },
+    );
+  }
 
   if (id && !/^\d+$/.test(id)) {
     return Response.json(
@@ -161,10 +273,11 @@ export async function GET(request: Request) {
     );
   }
 
-  if (!id && (!search || search.length < 2)) {
+  if (!id && !isPopular && (!search || search.length < 2)) {
     return Response.json(
       {
-        error: "Provide a search term with at least two characters or a game id.",
+        error:
+          "Provide a search term with at least two characters, a game id, or mode=popular.",
         code: "INVALID_REQUEST",
       },
       { status: 400 },
@@ -177,26 +290,33 @@ export async function GET(request: Request) {
 
   rawgUrl.searchParams.set("key", apiKey);
 
-  if (!id && search) {
-    rawgUrl.searchParams.set("search", search);
-    rawgUrl.searchParams.set("search_precise", "true");
+  if (!id) {
     rawgUrl.searchParams.set(
       "page_size",
-      String(parsePageSize(searchParams.get("page_size"))),
+      isPopular
+        ? "8"
+        : String(parsePageSize(searchParams.get("page_size"))),
     );
+
+    if (isPopular) {
+      rawgUrl.searchParams.set("ordering", "-added");
+    } else if (search) {
+      rawgUrl.searchParams.set("search", search);
+      rawgUrl.searchParams.set("search_precise", "true");
+    }
   }
 
   try {
     const response = await fetch(rawgUrl, {
       headers: { Accept: "application/json" },
-      next: { revalidate: id ? 3600 : 300 },
+      next: { revalidate: id || isPopular ? 3600 : 300 },
     });
 
     if (!response.ok) {
       const message =
         response.status === 401
-          ? "RAWG rejected the configured API key."
-          : "RAWG is temporarily unavailable. Please try again.";
+          ? "The game catalog rejected the configured API key."
+          : "The game catalog is temporarily unavailable. Please try again.";
 
       return Response.json(
         { error: message, code: "RAWG_ERROR" },
@@ -247,12 +367,17 @@ export async function GET(request: Request) {
     const responsePayload: GamesApiResponse = { count, results };
 
     return Response.json(responsePayload, {
-      headers: { "Cache-Control": "s-maxage=300, stale-while-revalidate=1800" },
+      headers: {
+        "Cache-Control": isPopular
+          ? "s-maxage=3600, stale-while-revalidate=86400"
+          : "s-maxage=300, stale-while-revalidate=1800",
+      },
     });
   } catch {
     return Response.json(
       {
-        error: "Unable to reach RAWG. Check your connection and try again.",
+        error:
+          "Unable to reach the game catalog. Check your connection and try again.",
         code: "RAWG_ERROR",
       },
       { status: 503 },

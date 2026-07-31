@@ -3,11 +3,20 @@
 import type { CSSProperties } from "react";
 import { GameCase } from "@/app/components/GameCase";
 import type { Game } from "@/app/types/game";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type LibraryArcProps = {
+  activeCollectionName: string;
   games: Game[];
   isLoaded: boolean;
   onOpen: (game: Game) => void;
+  onToggleActiveCollection: (game: Game) => void;
 };
 
 type ArcStyle = CSSProperties & {
@@ -35,33 +44,39 @@ function getArcStyle(index: number, total: number): ArcStyle {
   };
 }
 
-export function LibraryArc({ games, isLoaded, onOpen }: LibraryArcProps) {
+export function LibraryArc({
+  activeCollectionName,
+  games,
+  isLoaded,
+  onOpen,
+  onToggleActiveCollection,
+}: LibraryArcProps) {
   if (!isLoaded) {
     return (
       <div aria-label="Loading library" className="library-loading">
-        <span />
-        <span />
-        <span />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
       </div>
     );
   }
 
   if (games.length === 0) {
     return (
-      <div className="library-empty glass-panel">
-        <span>00</span>
-        <h2>Your arc is waiting</h2>
-        <p>
-          Search the catalog below and add a game to begin building your
-          spatial library.
-        </p>
-      </div>
+      <Empty className="library-empty glass-panel">
+        <EmptyHeader>
+          <EmptyTitle>No games in this collection</EmptyTitle>
+          <EmptyDescription>
+            Search for a game by title to add one.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 
   return (
     <div
-      aria-label={`${games.length} saved games`}
+      aria-label="Games in the active collection"
       className="library-arc"
       enable-xr
     >
@@ -72,8 +87,11 @@ export function LibraryArc({ games, isLoaded, onOpen }: LibraryArcProps) {
           style={getArcStyle(index, games.length)}
         >
           <GameCase
+            activeCollectionName={activeCollectionName}
             game={game}
+            isInActiveCollection
             onOpen={onOpen}
+            onToggleActiveCollection={onToggleActiveCollection}
             priority={index < 3}
           />
         </div>

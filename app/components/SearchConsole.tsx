@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Sparkles, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import {
   useDeferredValue,
   useEffect,
@@ -8,24 +8,28 @@ import {
   useState,
   useTransition,
 } from "react";
-import { GameCase } from "@/app/components/GameCase";
 import type {
   ApiErrorResponse,
   Game,
   GamesApiResponse,
 } from "@/app/types/game";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 
 type SearchConsoleProps = {
-  isSaved: (id: number) => boolean;
-  onAdd: (game: Game) => void;
-  onOpen: (game: Game) => void;
+  onSearchStateChange: (state: {
+    hasQuery: boolean;
+    results: Game[];
+    status: string;
+  }) => void;
 };
 
-export function SearchConsole({
-  isSaved,
-  onAdd,
-  onOpen,
-}: SearchConsoleProps) {
+export function SearchConsole({ onSearchStateChange }: SearchConsoleProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Game[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +90,19 @@ export function SearchConsole({
   }, [deferredQuery]);
 
   const hasQuery = deferredQuery.length >= 2;
+  const status = isSearching
+    ? "Searching catalog…"
+    : error
+      ? error
+      : hasQuery && results.length === 0
+        ? "No matching games found."
+        : hasQuery
+          ? ""
+          : "";
+
+  useEffect(() => {
+    onSearchStateChange({ hasQuery, results, status });
+  }, [hasQuery, onSearchStateChange, results, status]);
 
   return (
     <section
@@ -93,61 +110,41 @@ export function SearchConsole({
       enable-xr
       style={{ "--xr-background-material": "translucent" }}
     >
-      <div className="search-console__heading">
-        <div>
-          <span className="section-kicker">Command console</span>
-          <h2>Find your next world</h2>
-        </div>
-        <Sparkles aria-hidden="true" size={22} />
-      </div>
-
-      <label className="search-field">
-        <Search aria-hidden="true" size={20} />
-        <span className="sr-only">Search games</span>
-        <input
+      <label className="sr-only" htmlFor="game-search">
+        Search games
+      </label>
+      <InputGroup className="search-field">
+        <InputGroupAddon>
+          {isSearching ? (
+            <Spinner />
+          ) : (
+            <Search aria-hidden="true" />
+          )}
+        </InputGroupAddon>
+        <InputGroupInput
           autoComplete="off"
+          id="game-search"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search the RAWG catalog"
+          placeholder="Search games by title"
           type="search"
           value={query}
         />
         {query ? (
-          <button
-            aria-label="Clear search"
-            onClick={() => setQuery("")}
-            type="button"
-          >
-            <X aria-hidden="true" size={18} />
-          </button>
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              aria-label="Clear search"
+              onClick={() => setQuery("")}
+              size="icon-xs"
+            >
+              <X aria-hidden="true" />
+            </InputGroupButton>
+          </InputGroupAddon>
         ) : null}
-      </label>
+      </InputGroup>
 
       <div aria-live="polite" className="search-console__status">
-        {isSearching
-          ? "Scanning catalog…"
-          : error
-            ? error
-            : hasQuery && results.length === 0
-              ? "No matching games found."
-              : hasQuery
-                ? `${results.length} matches`
-                : "Type at least two characters to search."}
+        {status}
       </div>
-
-      {results.length > 0 ? (
-        <div className="search-results">
-          {results.map((game, index) => (
-            <GameCase
-              game={game}
-              isSaved={isSaved(game.id)}
-              key={game.id}
-              onAdd={onAdd}
-              onOpen={onOpen}
-              priority={index < 2}
-            />
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }

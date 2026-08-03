@@ -10,6 +10,13 @@ import type {
   GamesApiResponse,
 } from "@/app/types/game";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type PopularGamesProps = {
@@ -24,28 +31,35 @@ type PopularGamesProps = {
   onToggleMembership: (game: Game, collectionId: string) => void;
 };
 
-const POPULAR_GAME_COUNT = 8;
+const POPULAR_GAME_COUNT = 20;
 
 function PopularGamesSkeleton() {
   return (
-    <div aria-label="Loading popular games" className="library-grid">
-      {Array.from({ length: POPULAR_GAME_COUNT }, (_, index) => (
-        <Card
-          aria-hidden="true"
-          className="game-case game-case--skeleton"
-          key={index}
-          size="sm"
-        >
-          <Skeleton className="game-case__art" />
-          <CardContent className="game-case__body">
-            <Skeleton className="popular-games__skeleton-line popular-games__skeleton-line--short" />
-            <Skeleton className="popular-games__skeleton-line" />
-            <Skeleton className="popular-games__skeleton-platforms" />
-            <Skeleton className="popular-games__skeleton-action" />
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+    <Carousel
+      aria-label="Loading top-rated games"
+      className="popular-games__carousel"
+      opts={{ align: "start" }}
+    >
+      <CarouselContent>
+        {Array.from({ length: POPULAR_GAME_COUNT }, (_, index) => (
+          <CarouselItem className="popular-games__slide" key={index}>
+            <Card
+              aria-hidden="true"
+              className="game-case game-case--skeleton"
+              size="sm"
+            >
+              <Skeleton className="game-case__art" />
+              <CardContent className="game-case__body">
+                <Skeleton className="popular-games__skeleton-line popular-games__skeleton-line--short" />
+                <Skeleton className="popular-games__skeleton-line" />
+                <Skeleton className="popular-games__skeleton-platforms" />
+                <Skeleton className="popular-games__skeleton-action" />
+              </CardContent>
+            </Card>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }
 
@@ -114,27 +128,39 @@ export function PopularGames({
       {isLoading ? (
         <PopularGamesSkeleton />
       ) : (
-        <div className="library-grid">
-          {games.map((game) => (
-            <GameCase
-              activeCollectionName={activeCollectionName}
-              action={
-                <CollectionPicker
-                  collectionIds={getGameCollectionIds(game.id)}
-                  collections={collections}
+        <Carousel
+          aria-label="Top-rated games"
+          className="popular-games__carousel"
+          opts={{
+            align: "start",
+            slidesToScroll: "auto",
+          }}
+        >
+          <CarouselContent>
+            {games.map((game) => (
+              <CarouselItem className="popular-games__slide" key={game.id}>
+                <GameCase
+                  activeCollectionName={activeCollectionName}
+                  action={
+                    <CollectionPicker
+                      collectionIds={getGameCollectionIds(game.id)}
+                      collections={collections}
+                      game={game}
+                      onCreateCollection={onCreateCollection}
+                      onToggleMembership={onToggleMembership}
+                    />
+                  }
                   game={game}
-                  onCreateCollection={onCreateCollection}
-                  onToggleMembership={onToggleMembership}
+                  isInActiveCollection={isInActiveCollection(game.id)}
+                  onOpen={onOpen}
+                  onToggleActiveCollection={onToggleActiveCollection}
                 />
-              }
-              game={game}
-              isInActiveCollection={isInActiveCollection(game.id)}
-              key={game.id}
-              onOpen={onOpen}
-              onToggleActiveCollection={onToggleActiveCollection}
-            />
-          ))}
-        </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="popular-games__previous" />
+          <CarouselNext className="popular-games__next" />
+        </Carousel>
       )}
     </section>
   );

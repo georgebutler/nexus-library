@@ -118,7 +118,8 @@ export function CollectionPicker({
           <PopoverHeader>
             <PopoverTitle>Save to collections</PopoverTitle>
             <PopoverDescription>
-              Choose every collection that should include {game.name}.
+              Choose every collection that should include{" "}
+              <strong>{game.name}</strong>.
             </PopoverDescription>
           </PopoverHeader>
 

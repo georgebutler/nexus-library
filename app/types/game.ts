@@ -20,11 +20,12 @@ export type Game = {
   name: string;
   slug: string;
   background_image: string | null;
+  hero_image: string | null;
   description: string | null;
   website: string | null;
   released: string | null;
-  rating: number;
-  metacritic: number | null;
+  rating: number | null;
+  criticScore: number | null;
   genres: GameGenre[];
   platforms: string[];
   platformFamilies: GamePlatformFamily[];
@@ -44,5 +45,5 @@ export type GameApiResponse = {
 
 export type ApiErrorResponse = {
   error: string;
-  code?: "MISSING_API_KEY" | "RAWG_ERROR" | "INVALID_REQUEST";
+  code?: "MISSING_CREDENTIALS" | "CATALOG_ERROR" | "INVALID_REQUEST";
 };

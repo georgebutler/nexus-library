@@ -98,10 +98,16 @@ export function GameCase({
             )}
           </Button>
         ) : null}
-        <Badge className="game-case__rating" variant="secondary">
-          <Star aria-hidden="true" data-icon="inline-start" fill="currentColor" />
-          {game.rating.toFixed(1)}
-        </Badge>
+        {game.rating !== null ? (
+          <Badge className="game-case__rating" variant="secondary">
+            <Star
+              aria-hidden="true"
+              data-icon="inline-start"
+              fill="currentColor"
+            />
+            {game.rating.toFixed(1)}
+          </Badge>
+        ) : null}
       </div>
 
       <CardContent className="game-case__body">

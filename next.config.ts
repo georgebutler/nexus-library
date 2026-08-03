@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "media.rawg.io",
-        pathname: "/media/**",
+        hostname: "images.igdb.com",
+        pathname: "/igdb/image/upload/**",
       },
     ],
   },

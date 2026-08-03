@@ -8,7 +8,8 @@ import {
 import type { Game } from "@/app/types/game";
 
 export const LEGACY_LIBRARY_STORAGE_KEY = "nexus_library_games";
-export const COLLECTIONS_STORAGE_KEY = "nexus_library_collections_v2";
+export const PREVIOUS_COLLECTIONS_STORAGE_KEY = "nexus_library_collections_v2";
+export const COLLECTIONS_STORAGE_KEY = "nexus_library_collections_v3";
 export const DEFAULT_COLLECTION_ID = "my-games";
 export const COLLECTION_NAME_MAX_LENGTH = 40;
 
@@ -19,7 +20,7 @@ export type GameCollection = {
 };
 
 export type GameCollectionState = {
-  version: 2;
+  version: 3;
   games: Record<string, Game>;
   collections: GameCollection[];
   defaultCollectionId: string;
@@ -76,6 +77,12 @@ function normalizeGame(value: unknown): Game | null {
     slug: typeof game.slug === "string" ? game.slug : String(game.id),
     background_image:
       typeof game.background_image === "string" ? game.background_image : null,
+    hero_image:
+      typeof game.hero_image === "string"
+        ? game.hero_image
+        : typeof game.background_image === "string"
+          ? game.background_image
+          : null,
     description:
       typeof game.description === "string" ? game.description : null,
     website: typeof game.website === "string" ? game.website : null,
@@ -83,11 +90,11 @@ function normalizeGame(value: unknown): Game | null {
     rating:
       typeof game.rating === "number" && Number.isFinite(game.rating)
         ? game.rating
-        : 0,
-    metacritic:
-      typeof game.metacritic === "number" &&
-      Number.isFinite(game.metacritic)
-        ? game.metacritic
+        : null,
+    criticScore:
+      typeof game.criticScore === "number" &&
+      Number.isFinite(game.criticScore)
+        ? game.criticScore
         : null,
     genres: Array.isArray(game.genres) ? game.genres : [],
     platforms,
@@ -102,7 +109,7 @@ function normalizeGame(value: unknown): Game | null {
 
 function createEmptyState(): GameCollectionState {
   return {
-    version: 2,
+    version: 3,
     games: {},
     collections: [
       {
@@ -211,12 +218,35 @@ function normalizeCollectionState(value: unknown): GameCollectionState {
     : defaultCollectionId;
 
   return {
-    version: 2,
+    version: 3,
     games: normalizedGames,
     collections,
     defaultCollectionId,
     activeCollectionId,
   };
+}
+
+export function migrateCollectionStateToV3(
+  value: unknown,
+): GameCollectionState {
+  if (!value || typeof value !== "object") {
+    return createEmptyState();
+  }
+
+  const previousState = value as Partial<GameCollectionState>;
+  const collections = Array.isArray(previousState.collections)
+    ? previousState.collections.map((collection) => ({
+        ...collection,
+        gameIds: [],
+      }))
+    : [];
+
+  return normalizeCollectionState({
+    ...previousState,
+    version: 3,
+    games: {},
+    collections,
+  });
 }
 
 function readLegacyGames(): Game[] {
@@ -252,13 +282,20 @@ function readOrMigrateLibrary(): GameCollectionState {
     }
   }
 
-  const legacyGames = readLegacyGames();
-  const migratedState = createEmptyState();
+  const previousValue = window.localStorage.getItem(
+    PREVIOUS_COLLECTIONS_STORAGE_KEY,
+  );
+  let migratedState = createEmptyState();
 
-  legacyGames.forEach((game) => {
-    migratedState.games[String(game.id)] = game;
-    migratedState.collections[0].gameIds.push(game.id);
-  });
+  if (previousValue !== null) {
+    try {
+      migratedState = migrateCollectionStateToV3(JSON.parse(previousValue));
+    } catch {
+      migratedState = createEmptyState();
+    }
+  } else if (readLegacyGames().length > 0) {
+    migratedState = createEmptyState();
+  }
 
   window.localStorage.setItem(
     COLLECTIONS_STORAGE_KEY,

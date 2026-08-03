@@ -1,6 +1,7 @@
 "use client";
 
 import { faAndroid } from "@fortawesome/free-brands-svg-icons/faAndroid";
+import { faAmazon } from "@fortawesome/free-brands-svg-icons/faAmazon";
 import { faApple } from "@fortawesome/free-brands-svg-icons/faApple";
 import { faChrome } from "@fortawesome/free-brands-svg-icons/faChrome";
 import { faLinux } from "@fortawesome/free-brands-svg-icons/faLinux";
@@ -10,6 +11,17 @@ import { faXbox } from "@fortawesome/free-brands-svg-icons/faXbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Gamepad2 } from "lucide-react";
 import type { ComponentProps } from "react";
+import {
+  siAtari,
+  siBlackberry,
+  siCommodore,
+  siMeta,
+  siOculus,
+  siSega,
+  siStadia,
+  siSteam,
+  type SimpleIcon,
+} from "simple-icons/icons";
 import { getUniquePlatformFamilies } from "@/app/lib/platforms";
 import type { GamePlatformFamily } from "@/app/types/game";
 import { cn } from "@/lib/utils";
@@ -29,6 +41,7 @@ const PLATFORM_ICONS: Record<
   string,
   ComponentProps<typeof FontAwesomeIcon>["icon"]
 > = {
+  amazon: faAmazon,
   pc: faWindows,
   playstation: faPlaystation,
   xbox: faXbox,
@@ -39,8 +52,43 @@ const PLATFORM_ICONS: Record<
   web: faChrome,
 };
 
+const SIMPLE_PLATFORM_ICONS: Record<string, SimpleIcon> = {
+  atari: siAtari,
+  blackberry: siBlackberry,
+  "commodore-amiga": siCommodore,
+  meta: siMeta,
+  oculus: siOculus,
+  sega: siSega,
+  stadia: siStadia,
+  steam: siSteam,
+};
+
+function SimpleBrandIcon({ icon }: { icon: SimpleIcon }) {
+  return (
+    <svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
+function NintendoSwitchIcon() {
+  return (
+    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+      <path
+        d="M9.5 3.5H7.25a3.75 3.75 0 0 0-3.75 3.75v9.5a3.75 3.75 0 0 0 3.75 3.75H9.5v-17Zm5 0h2.25a3.75 3.75 0 0 1 3.75 3.75v9.5a3.75 3.75 0 0 1-3.75 3.75H14.5v-17Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <circle cx="7" cy="8" r="1.5" fill="currentColor" />
+      <circle cx="17" cy="15.5" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 function PlatformIcon({ platform }: { platform: GamePlatformFamily }) {
-  const icon = PLATFORM_ICONS[platform.slug.toLocaleLowerCase()];
+  const slug = platform.slug.toLocaleLowerCase();
+  const icon = PLATFORM_ICONS[slug];
+  const simpleIcon = SIMPLE_PLATFORM_ICONS[slug];
 
   return (
     <Tooltip>
@@ -53,8 +101,12 @@ function PlatformIcon({ platform }: { platform: GamePlatformFamily }) {
           />
         }
       >
-        {icon ? (
+        {slug === "nintendo-switch" || slug === "nintendo-switch-2" ? (
+          <NintendoSwitchIcon />
+        ) : icon ? (
           <FontAwesomeIcon aria-hidden="true" icon={icon} />
+        ) : simpleIcon ? (
+          <SimpleBrandIcon icon={simpleIcon} />
         ) : (
           <Gamepad2 aria-hidden="true" />
         )}

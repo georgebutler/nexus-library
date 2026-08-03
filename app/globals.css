@@ -434,8 +434,9 @@ html.isSpatial .glass-panel {
 }
 
 .search-console {
-  position: relative;
+  position: sticky;
   z-index: 40;
+  top: 20px;
   width: 100%;
   padding: 0;
   border-radius: 8px;
@@ -1044,12 +1045,16 @@ html.isSpatial .spatial-search-results .game-case__art {
 
 .screenshot {
   position: relative;
+  display: block;
+  width: 100%;
   aspect-ratio: 16 / 9;
   margin: 0;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: #151925;
+  cursor: zoom-in;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
   --xr-background-material: regular;
   --xr-back: 15px;
@@ -1057,6 +1062,85 @@ html.isSpatial .spatial-search-results .game-case__art {
 
 .screenshot img {
   object-fit: cover;
+  transition: transform 180ms ease;
+}
+
+.screenshot:hover img,
+.screenshot:focus-visible img {
+  transform: scale(1.025);
+}
+
+.screenshot:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+[data-slot="dialog-overlay"]:has(+ .screenshot-lightbox) {
+  background: rgba(0, 0, 0, 0.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.screenshot-lightbox {
+  width: min(96vw, 1440px);
+  max-width: none;
+  height: min(92vh, 960px);
+  padding: 0;
+  border-radius: var(--radius-lg);
+  background: #05070b;
+  overflow: hidden;
+}
+
+.screenshot-lightbox [data-slot="dialog-close"] {
+  z-index: 3;
+  top: 12px;
+  right: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 11, 18, 0.78);
+  color: #fff;
+}
+
+.screenshot-lightbox__image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.screenshot-lightbox__image img {
+  object-fit: contain;
+}
+
+.screenshot-lightbox__previous,
+.screenshot-lightbox__next {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 11, 18, 0.78);
+  color: #fff;
+  transform: translateY(-50%);
+}
+
+.screenshot-lightbox__previous {
+  left: 14px;
+}
+
+.screenshot-lightbox__next {
+  right: 14px;
+}
+
+.screenshot-lightbox__count {
+  position: absolute;
+  z-index: 3;
+  bottom: 12px;
+  left: 50%;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-xl);
+  background: rgba(8, 11, 18, 0.78);
+  color: #fff;
+  font-size: 0.75rem;
+  transform: translateX(-50%);
 }
 
 .details-state {
@@ -1676,10 +1760,48 @@ html.isSpatial .popular-games {
 
 .popular-games__heading h2 {
   margin: 0;
+  color: var(--primary);
   font-size: clamp(1.35rem, 2vw, 1.75rem);
   font-weight: 650;
   letter-spacing: -0.035em;
   line-height: 1.15;
+}
+
+.popular-games__carousel {
+  width: 100%;
+}
+
+.popular-games__slide {
+  flex-basis: clamp(174px, 20%, 220px);
+}
+
+.popular-games__previous,
+.popular-games__next {
+  top: -47px;
+  bottom: auto;
+  margin: 0;
+}
+
+.popular-games__previous {
+  right: 36px;
+  left: auto;
+}
+
+.popular-games__next {
+  right: 0;
+  left: auto;
+}
+
+@media (max-width: 720px) {
+  .popular-games__slide {
+    flex-basis: calc((100% - 16px) / 2);
+  }
+}
+
+@media (max-width: 390px) {
+  .popular-games__slide {
+    flex-basis: 86%;
+  }
 }
 
 .game-case--skeleton {

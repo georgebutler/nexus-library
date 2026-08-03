@@ -18,8 +18,10 @@ import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { NexusMark } from "@/app/components/NexusMark";
 import { PlatformIcons } from "@/app/components/PlatformIcons";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
+import { ScreenshotLightbox } from "@/app/components/ScreenshotLightbox";
 import { SiteHeader } from "@/app/components/SiteHeader";
 import { useLibrary } from "@/app/hooks/useLibrary";
+import { formatLongDate } from "@/app/lib/date";
 import type {
   ApiErrorResponse,
   Game,
@@ -164,11 +166,12 @@ export function GameDetails({ gameId }: GameDetailsProps) {
     );
   }
 
+  const heroImage = game.hero_image ?? game.background_image;
   const screenshots =
     (game.short_screenshots?.length ?? 0) > 0
       ? game.short_screenshots
-      : game.background_image
-        ? [{ id: game.id, image: game.background_image }]
+      : heroImage
+        ? [{ id: game.id, image: heroImage }]
         : [];
   const developers = game.developers ?? [];
   const publishers = game.publishers ?? [];
@@ -188,13 +191,13 @@ export function GameDetails({ gameId }: GameDetailsProps) {
           style={{ "--xr-background-material": "translucent" }}
         >
           <div className="details-cover">
-            {game.background_image ? (
+            {heroImage ? (
               <Image
-                alt={`${game.name} cover art`}
+                alt={`${game.name} artwork`}
                 fill
                 priority
                 sizes="(max-width: 800px) 100vw, 40vw"
-                src={game.background_image}
+                src={heroImage}
               />
             ) : (
               <div className="game-case__placeholder">
@@ -214,22 +217,24 @@ export function GameDetails({ gameId }: GameDetailsProps) {
             <h1>{game.name}</h1>
 
             <div className="details-metrics">
-              <Badge variant="outline">
-                <Star
-                  aria-hidden="true"
-                  data-icon="inline-start"
-                  fill="currentColor"
-                />
-                {game.rating.toFixed(1)} rating
-              </Badge>
+              {game.rating !== null ? (
+                <Badge variant="outline">
+                  <Star
+                    aria-hidden="true"
+                    data-icon="inline-start"
+                    fill="currentColor"
+                  />
+                  {game.rating.toFixed(1)} rating
+                </Badge>
+              ) : null}
               <Badge variant="outline">
                 <CalendarDays aria-hidden="true" data-icon="inline-start" />
-                {game.released ?? "Release TBA"}
+                {formatLongDate(game.released)}
               </Badge>
-              {game.metacritic !== null ? (
+              {game.criticScore !== null ? (
                 <Badge variant="outline">
                   <Trophy aria-hidden="true" data-icon="inline-start" />
-                  {game.metacritic} Metacritic
+                  {Math.round(game.criticScore)} Critic score
                 </Badge>
               ) : null}
             </div>
@@ -325,22 +330,10 @@ export function GameDetails({ gameId }: GameDetailsProps) {
             <div className="screenshot-section__heading">
               <h2>Screenshots</h2>
             </div>
-            <div className="screenshot-grid">
-              {screenshots.slice(0, 6).map((screenshot, index) => (
-                <figure
-                  className="screenshot"
-                  enable-xr
-                  key={`${screenshot.id}-${index}`}
-                >
-                  <Image
-                    alt={`${game.name} screenshot ${index + 1}`}
-                    fill
-                    sizes="(max-width: 720px) 100vw, (max-width: 980px) 50vw, 33vw"
-                    src={screenshot.image}
-                  />
-                </figure>
-              ))}
-            </div>
+            <ScreenshotLightbox
+              gameName={game.name}
+              screenshots={screenshots.slice(0, 6)}
+            />
           </section>
         ) : null}
 

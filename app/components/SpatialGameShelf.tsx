@@ -20,6 +20,7 @@ type SpatialGameShelfProps = {
   page: number;
   emptyTitle: string;
   emptyDescription: string;
+  placementKey: string;
   onPageChange: (page: number) => void;
   onOpen: (game: Game) => void;
   onToggleActiveCollection: (game: Game) => void;
@@ -33,6 +34,7 @@ export function SpatialGameShelf({
   page,
   emptyTitle,
   emptyDescription,
+  placementKey,
   onPageChange,
   onOpen,
   onToggleActiveCollection,
@@ -75,6 +77,7 @@ export function SpatialGameShelf({
             key={game.id}
             onOpen={onOpen}
             onToggleActiveCollection={onToggleActiveCollection}
+            placementKey={placementKey}
             priority={index < 3}
           />
         ))}

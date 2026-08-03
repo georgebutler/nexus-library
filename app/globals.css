@@ -850,6 +850,12 @@ html.isSpatial .glass-panel {
   align-content: start;
 }
 
+.spatial-shelf-item:hover,
+.spatial-shelf-item:focus-within,
+.spatial-shelf-item.is-grabbing {
+  z-index: 2;
+}
+
 .spatial-shelf-item__cover {
   position: relative;
   display: block;
@@ -862,6 +868,7 @@ html.isSpatial .glass-panel {
   outline: 0;
   background: transparent;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+  cursor: grab;
 }
 
 .spatial-shelf-item__cover:hover,
@@ -870,6 +877,10 @@ html.isSpatial .glass-panel {
   box-shadow:
     0 24px 52px rgba(0, 0, 0, 0.42),
     0 0 24px rgba(158, 255, 143, 0.1);
+}
+
+.spatial-shelf-item.is-grabbing .spatial-shelf-item__cover {
+  cursor: grabbing;
 }
 
 .spatial-shelf-item__cover:focus-visible {
@@ -898,6 +909,18 @@ html.isSpatial .glass-panel {
   display: grid;
   min-width: 0;
   padding: 12px 2px 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 160ms ease,
+    visibility 160ms ease;
+}
+
+.spatial-shelf-item:hover .spatial-shelf-item__metadata,
+.spatial-shelf-item:focus-within .spatial-shelf-item__metadata,
+.spatial-shelf-item.is-grabbing .spatial-shelf-item__metadata {
+  opacity: 1;
+  visibility: visible;
 }
 
 .spatial-shelf-item__eyebrow {

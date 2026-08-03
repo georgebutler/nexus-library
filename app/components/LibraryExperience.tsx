@@ -401,6 +401,7 @@ export function LibraryExperience({
                   onPageChange={setPage}
                   onToggleActiveCollection={toggleActiveCollection}
                   page={currentPage}
+                  placementKey={`${feedKey}:page:${currentPage}`}
                 />
               </section>
             </section>

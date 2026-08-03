@@ -1011,7 +1011,7 @@ html.isSpatial .spatial-search-results .game-case__art {
 }
 
 .details-cover img {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .details-copy {
@@ -1838,23 +1838,42 @@ html.isSpatial .popular-games {
 
 .details-panel {
   display: grid;
-  grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
-  gap: 0;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
   min-height: 0;
   padding: 0;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
+  overflow: visible;
+  border-radius: 0;
 }
 
 .details-panel--loading {
   min-height: 400px;
 }
 
+.details-cover-card,
+.details-summary-card {
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.details-cover-card {
+  aspect-ratio: var(--cover-aspect-ratio, 0.75);
+}
+
+.details-summary-card .details-copy {
+  flex: 1;
+}
+
 .details-cover {
   position: relative;
-  min-height: 390px;
-  aspect-ratio: auto;
-  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: calc(var(--radius-lg) - 1px);
   background: var(--muted);
 }
 
@@ -1906,6 +1925,10 @@ html.isSpatial .popular-games {
 .details-information [data-slot="card"] {
   border: 1px solid var(--border);
   box-shadow: none;
+}
+
+.details-information [data-slot="card-title"] {
+  font-weight: 700;
 }
 
 .details-information [data-slot="card-content"] > p {
@@ -1963,6 +1986,17 @@ html.isSpatial .popular-games {
   align-items: center;
   gap: 6px;
   color: var(--primary);
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
+.game-information a:hover,
+.game-information a:focus-visible {
+  color: color-mix(in srgb, var(--primary) 75%, white);
+  text-decoration-color: currentColor;
 }
 
 .game-information a svg {
@@ -2017,11 +2051,11 @@ html.isSpatial .popular-games {
 @media (max-width: 720px) {
   .details-panel {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .details-cover {
     min-height: 0;
-    aspect-ratio: 16 / 10;
   }
 
   .details-copy {

@@ -77,6 +77,12 @@ function normalizeGame(value: unknown): Game | null {
     slug: typeof game.slug === "string" ? game.slug : String(game.id),
     background_image:
       typeof game.background_image === "string" ? game.background_image : null,
+    coverAspectRatio:
+      typeof game.coverAspectRatio === "number" &&
+      Number.isFinite(game.coverAspectRatio) &&
+      game.coverAspectRatio > 0
+        ? game.coverAspectRatio
+        : null,
     hero_image:
       typeof game.hero_image === "string"
         ? game.hero_image

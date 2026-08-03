@@ -13,7 +13,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { NexusMark } from "@/app/components/NexusMark";
 import { PlatformIcons } from "@/app/components/PlatformIcons";
@@ -129,16 +129,20 @@ export function GameDetails({ gameId }: GameDetailsProps) {
       <main className="details-page">
         {header}
         <div className="details-shell">
-          <Card className="details-panel details-panel--loading">
-            <Skeleton className="details-cover" />
-            <div className="details-copy">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-10 w-3/4" />
-              <Skeleton className="h-5 w-1/2" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-9 w-36" />
-            </div>
-          </Card>
+          <div className="details-panel details-panel--loading">
+            <Card className="details-cover-card">
+              <Skeleton className="details-cover" />
+            </Card>
+            <Card className="details-summary-card">
+              <div className="details-copy">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-9 w-36" />
+              </div>
+            </Card>
+          </div>
         </div>
       </main>
     );
@@ -165,13 +169,12 @@ export function GameDetails({ gameId }: GameDetailsProps) {
     );
   }
 
-  const heroImage = game.hero_image;
-  const screenshots =
-    (game.short_screenshots?.length ?? 0) > 0
-      ? game.short_screenshots
-      : heroImage
-        ? [{ id: game.id, image: heroImage }]
-        : [];
+  const coverImage = game.background_image;
+  const coverAspectRatio = game.coverAspectRatio ?? 3 / 4;
+  const coverStyle = {
+    "--cover-aspect-ratio": coverAspectRatio,
+  } as CSSProperties;
+  const screenshots = game.short_screenshots ?? [];
   const developers = game.developers ?? [];
   const publishers = game.publishers ?? [];
 
@@ -184,75 +187,86 @@ export function GameDetails({ gameId }: GameDetailsProps) {
       {header}
 
       <div className="details-shell">
-        <Card
-          className="details-panel glass-panel"
-          enable-xr
-          style={{ "--xr-background-material": "translucent" }}
-        >
-          <div className="details-cover">
-            {heroImage ? (
-              <Image
-                alt={`${game.name} artwork`}
-                fill
-                priority
-                sizes="(max-width: 800px) 100vw, 40vw"
-                src={heroImage}
-              />
-            ) : (
-              <div className="game-case__placeholder">
-                {game.name.slice(0, 2).toUpperCase()}
+        <div className="details-panel">
+          <Card
+            className="details-cover-card glass-panel"
+            enable-xr
+            style={{
+              ...coverStyle,
+              "--xr-background-material": "translucent",
+            }}
+          >
+            <div className="details-cover">
+              {coverImage ? (
+                <Image
+                  alt={`${game.name} cover art`}
+                  fill
+                  priority
+                  sizes="(max-width: 720px) 100vw, 40vw"
+                  src={coverImage}
+                />
+              ) : (
+                <div className="game-case__placeholder">
+                  {game.name.slice(0, 2).toUpperCase()}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          <Card
+            className="details-summary-card glass-panel"
+            enable-xr
+            style={{ "--xr-background-material": "translucent" }}
+          >
+            <CardContent className="details-copy">
+              <div className="details-genres">
+                {(game.genres ?? []).map((genre) => (
+                  <Badge key={genre.id} variant="secondary">
+                    {genre.name}
+                  </Badge>
+                ))}
               </div>
-            )}
-          </div>
+              <h1>{game.name}</h1>
 
-          <CardContent className="details-copy">
-            <div className="details-genres">
-              {(game.genres ?? []).map((genre) => (
-                <Badge key={genre.id} variant="secondary">
-                  {genre.name}
-                </Badge>
-              ))}
-            </div>
-            <h1>{game.name}</h1>
-
-            <div className="details-metrics">
-              {game.rating !== null ? (
+              <div className="details-metrics">
+                {game.rating !== null ? (
+                  <Badge variant="outline">
+                    <Star
+                      aria-hidden="true"
+                      data-icon="inline-start"
+                      fill="currentColor"
+                    />
+                    {game.rating.toFixed(1)} rating
+                  </Badge>
+                ) : null}
                 <Badge variant="outline">
-                  <Star
-                    aria-hidden="true"
-                    data-icon="inline-start"
-                    fill="currentColor"
-                  />
-                  {game.rating.toFixed(1)} rating
+                  <CalendarDays aria-hidden="true" data-icon="inline-start" />
+                  {formatLongDate(game.released)}
                 </Badge>
-              ) : null}
-              <Badge variant="outline">
-                <CalendarDays aria-hidden="true" data-icon="inline-start" />
-                {formatLongDate(game.released)}
-              </Badge>
-              {game.criticScore !== null ? (
-                <Badge variant="outline">
-                  <Trophy aria-hidden="true" data-icon="inline-start" />
-                  {Math.round(game.criticScore)} Critic score
-                </Badge>
-              ) : null}
-            </div>
+                {game.criticScore !== null ? (
+                  <Badge variant="outline">
+                    <Trophy aria-hidden="true" data-icon="inline-start" />
+                    {Math.round(game.criticScore)} Critic score
+                  </Badge>
+                ) : null}
+              </div>
 
-            {game.description ? (
-              <p className="details-summary">{game.description}</p>
-            ) : null}
+              {game.description ? (
+                <p className="details-summary">{game.description}</p>
+              ) : null}
 
-            <CollectionPicker
-              collectionIds={getGameCollectionIds(game.id)}
-              collections={collections}
-              disabled={!isLoaded}
-              game={game}
-              onCreateCollection={createCollection}
-              onToggleMembership={toggleGameMembership}
-              size="large"
-            />
-          </CardContent>
-        </Card>
+              <CollectionPicker
+                collectionIds={getGameCollectionIds(game.id)}
+                collections={collections}
+                disabled={!isLoaded}
+                game={game}
+                onCreateCollection={createCollection}
+                onToggleMembership={toggleGameMembership}
+                size="large"
+              />
+            </CardContent>
+          </Card>
+        </div>
 
         <section className="details-information">
           <Card>

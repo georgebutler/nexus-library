@@ -16,7 +16,11 @@ const sourceGame = {
   first_release_date: 1303084800,
   total_rating: 80,
   aggregated_rating: 92.4,
-  cover: { image_id: "cover-id" },
+  cover: {
+    image_id: "cover-id",
+    width: 528,
+    height: 704,
+  },
   artworks: [
     {
       id: 3,
@@ -129,6 +133,7 @@ describe("IGDB catalog mapping", () => {
       criticScore: 92.4,
       background_image:
         "https://images.igdb.com/igdb/image/upload/t_cover_big_2x/cover-id.jpg",
+      coverAspectRatio: 0.75,
       hero_image:
         "https://images.igdb.com/igdb/image/upload/t_1080p/hero-artwork-id.jpg",
       developers: ["Valve"],

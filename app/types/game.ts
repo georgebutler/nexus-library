@@ -20,6 +20,7 @@ export type Game = {
   name: string;
   slug: string;
   background_image: string | null;
+  coverAspectRatio: number | null;
   hero_image: string | null;
   description: string | null;
   website: string | null;

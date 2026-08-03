@@ -30,6 +30,8 @@ const GAME_FIELDS = [
   "aggregated_rating",
   "aggregated_rating_count",
   "cover.image_id",
+  "cover.width",
+  "cover.height",
   "artworks.id",
   "artworks.image_id",
   "artworks.width",
@@ -339,6 +341,15 @@ export function normalizeIgdbGame(value: unknown): Game | null {
 
   const cover = asRecord(sourceGame?.cover);
   const coverImage = createIgdbImageUrl(cover?.image_id, "cover_big_2x");
+  const coverWidth = asNumber(cover?.width);
+  const coverHeight = asNumber(cover?.height);
+  const coverAspectRatio =
+    coverWidth !== null &&
+    coverHeight !== null &&
+    coverWidth > 0 &&
+    coverHeight > 0
+      ? coverWidth / coverHeight
+      : null;
   const screenshots = sanitizeScreenshots(sourceGame?.screenshots);
   const heroArtwork = selectHeroArtwork(sourceGame?.artworks);
   const platforms = sanitizePlatforms(sourceGame?.platforms);
@@ -348,6 +359,7 @@ export function normalizeIgdbGame(value: unknown): Game | null {
     name,
     slug: asString(sourceGame?.slug) ?? String(id),
     background_image: coverImage,
+    coverAspectRatio,
     hero_image: heroArtwork ?? screenshots[0]?.image ?? null,
     description: asString(sourceGame?.summary),
     website: sanitizeOfficialWebsite(sourceGame?.websites),

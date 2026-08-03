@@ -44,6 +44,8 @@ type CollectionSidebarProps = {
   onDeleteCollection: (collectionId: string) => void;
   onRenameCollection: (collectionId: string, name: string) => void;
   onSelectCollection: (collectionId: string) => void;
+  managementMode?: "full" | "create-only";
+  isSpatial?: boolean;
 };
 
 export function CollectionSidebar({
@@ -54,6 +56,8 @@ export function CollectionSidebar({
   onDeleteCollection,
   onRenameCollection,
   onSelectCollection,
+  managementMode = "full",
+  isSpatial = false,
 }: CollectionSidebarProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
@@ -117,8 +121,8 @@ export function CollectionSidebar({
     <aside
       aria-label="Game collections"
       className="collection-sidebar glass-panel"
-      enable-xr
       style={{ "--xr-background-material": "translucent" }}
+      {...(isSpatial ? { "enable-xr": true } : {})}
     >
       <div className="collection-sidebar__heading">
         <span>Collections</span>
@@ -199,44 +203,46 @@ export function CollectionSidebar({
                     <Folder aria-hidden="true" data-icon="inline-start" />
                     <span>{collection.name}</span>
                   </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      aria-label={`Manage ${collection.name}`}
-                      className="collection-row__menu-button"
-                      render={
-                        <Button
-                          size="icon-sm"
-                          type="button"
-                          variant="ghost"
-                        />
-                      }
-                    >
-                      <MoreHorizontal aria-hidden="true" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setEditingId(collection.id);
-                            setEditingName(collection.name);
-                            setError(null);
-                          }}
-                        >
-                          <Pencil aria-hidden="true" />
-                          Rename
-                        </DropdownMenuItem>
-                        {collection.id !== defaultCollectionId ? (
+                  {managementMode === "full" ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        aria-label={`Manage ${collection.name}`}
+                        className="collection-row__menu-button"
+                        render={
+                          <Button
+                            size="icon-sm"
+                            type="button"
+                            variant="ghost"
+                          />
+                        }
+                      >
+                        <MoreHorizontal aria-hidden="true" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuGroup>
                           <DropdownMenuItem
-                            onClick={() => setDeletingCollection(collection)}
-                            variant="destructive"
+                            onClick={() => {
+                              setEditingId(collection.id);
+                              setEditingName(collection.name);
+                              setError(null);
+                            }}
                           >
-                            <Trash2 aria-hidden="true" />
-                            Delete
+                            <Pencil aria-hidden="true" />
+                            Rename
                           </DropdownMenuItem>
-                        ) : null}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                          {collection.id !== defaultCollectionId ? (
+                            <DropdownMenuItem
+                              onClick={() => setDeletingCollection(collection)}
+                              variant="destructive"
+                            >
+                              <Trash2 aria-hidden="true" />
+                              Delete
+                            </DropdownMenuItem>
+                          ) : null}
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : null}
                 </>
               )}
             </div>

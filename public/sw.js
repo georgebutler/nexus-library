@@ -1,4 +1,4 @@
-const CACHE_NAME = "nexus-library-shell-v1";
+const CACHE_NAME = "nexus-library-shell-v2";
 const APP_SHELL = [
   "/offline.html",
   "/manifest.webmanifest",

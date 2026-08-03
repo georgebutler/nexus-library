@@ -1,26 +1,73 @@
 "use client";
 
-import { useEffect } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { SpatialRuntimeContext } from "@/app/components/SpatialRuntimeContext";
+import {
+  INITIAL_SPATIAL_RUNTIME_STATE,
+  initializeSpatialRuntime,
+  type SpatialRuntimeState,
+} from "@/app/lib/spatial-runtime";
 
-export function SpatialRuntime() {
+type SpatialRuntimeProviderProps = {
+  children: ReactNode;
+};
+
+export function SpatialRuntimeProvider({
+  children,
+}: SpatialRuntimeProviderProps) {
+  const [runtimeState, setRuntimeState] = useState<SpatialRuntimeState>(
+    INITIAL_SPATIAL_RUNTIME_STATE,
+  );
+  const fallbackToBrowser = useCallback((error: Error) => {
+    setRuntimeState({
+      mode: "browser",
+      runtime: "browser",
+      error: error.message || "WebSpatial rendering failed.",
+      isInitialized: true,
+    });
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
-    void import("@webspatial/core-sdk").then(({ Spatial }) => {
-      if (cancelled) {
-        return;
+    void initializeSpatialRuntime(() =>
+      import("@webspatial/core-sdk"),
+    ).then((nextState) => {
+      if (!cancelled) {
+        setRuntimeState(nextState);
       }
-
-      const isSpatial = Spatial.prototype.runInSpatialWeb();
-      document.documentElement.classList.toggle("isSpatial", isSpatial);
-      document.documentElement.dataset.spatial = isSpatial ? "true" : "false";
     });
 
     return () => {
       cancelled = true;
-      delete document.documentElement.dataset.spatial;
     };
   }, []);
 
-  return null;
+  useEffect(() => {
+    const isSpatial = runtimeState.mode === "spatial";
+    const root = document.documentElement;
+
+    root.classList.toggle("isSpatial", isSpatial);
+    root.dataset.spatial = isSpatial ? "true" : "false";
+    root.dataset.spatialRuntime = runtimeState.runtime;
+
+    if (runtimeState.error) {
+      root.dataset.spatialError = runtimeState.error;
+    } else {
+      delete root.dataset.spatialError;
+    }
+  }, [runtimeState]);
+
+  return (
+    <SpatialRuntimeContext.Provider
+      value={{ ...runtimeState, fallbackToBrowser }}
+    >
+      {children}
+    </SpatialRuntimeContext.Provider>
+  );
 }

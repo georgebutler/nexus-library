@@ -49,7 +49,6 @@ export function GameCase({
   return (
     <Card
       className="game-case group"
-      enable-xr
       size="sm"
       style={style}
     >

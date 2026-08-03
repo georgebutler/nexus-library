@@ -20,6 +20,7 @@ import { PlatformIcons } from "@/app/components/PlatformIcons";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { ScreenshotLightbox } from "@/app/components/ScreenshotLightbox";
 import { SiteHeader } from "@/app/components/SiteHeader";
+import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useLibrary } from "@/app/hooks/useLibrary";
 import { formatLongDate } from "@/app/lib/date";
 import type {
@@ -47,10 +48,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type GameDetailsProps = {
   gameId: string;
+  returnTo: string;
 };
 
-export function GameDetails({ gameId }: GameDetailsProps) {
+export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
   const router = useRouter();
+  const { mode } = useSpatialRuntime();
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -104,14 +107,7 @@ export function GameDetails({ gameId }: GameDetailsProps) {
   }, [gameId]);
 
   const handleBackToLibrary = () => {
-    if (
-      document.documentElement.dataset.spatial === "true" &&
-      window.opener
-    ) {
-      window.close();
-    } else {
-      router.push("/");
-    }
+    router.push(returnTo);
   };
   const header = (
     <SiteHeader
@@ -179,22 +175,18 @@ export function GameDetails({ gameId }: GameDetailsProps) {
   const publishers = game.publishers ?? [];
 
   return (
-    <main
-      className="details-page"
-      enable-xr
-      style={{ "--xr-background-material": "transparent" }}
-    >
+    <main className="details-page">
       {header}
 
       <div className="details-shell">
         <div className="details-panel">
           <Card
             className="details-cover-card glass-panel"
-            enable-xr
             style={{
               ...coverStyle,
               "--xr-background-material": "translucent",
             }}
+            {...(mode === "spatial" ? { "enable-xr": true } : {})}
           >
             <div className="details-cover">
               {coverImage ? (
@@ -215,8 +207,8 @@ export function GameDetails({ gameId }: GameDetailsProps) {
 
           <Card
             className="details-summary-card glass-panel"
-            enable-xr
             style={{ "--xr-background-material": "translucent" }}
+            {...(mode === "spatial" ? { "enable-xr": true } : {})}
           >
             <CardContent className="details-copy">
               <div className="details-genres">
@@ -269,7 +261,9 @@ export function GameDetails({ gameId }: GameDetailsProps) {
         </div>
 
         <section className="details-information">
-          <Card>
+          <Card
+            {...(mode === "spatial" ? { "enable-xr": true } : {})}
+          >
             <CardHeader>
               <CardTitle>About</CardTitle>
             </CardHeader>
@@ -281,7 +275,9 @@ export function GameDetails({ gameId }: GameDetailsProps) {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card
+            {...(mode === "spatial" ? { "enable-xr": true } : {})}
+          >
             <CardHeader>
               <CardTitle>Information</CardTitle>
             </CardHeader>

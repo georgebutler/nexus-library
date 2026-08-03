@@ -1,8 +1,12 @@
 "use client";
 
-import { initScene } from "@webspatial/react-sdk";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { CollectionSidebar } from "@/app/components/CollectionSidebar";
 import { GameCase } from "@/app/components/GameCase";
@@ -11,7 +15,21 @@ import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { SearchConsole } from "@/app/components/SearchConsole";
 import { SiteHeader } from "@/app/components/SiteHeader";
+import { SpatialErrorBoundary } from "@/app/components/SpatialErrorBoundary";
+import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
+import { useCatalogFeeds } from "@/app/hooks/useCatalogFeeds";
 import { useLibrary } from "@/app/hooks/useLibrary";
+import {
+  clampPage,
+  getGalleryFeedKey,
+  getPageAfterFeedChange,
+  selectGalleryFeed,
+} from "@/app/lib/library-gallery";
+import {
+  buildGameUrl,
+  buildLibraryUrl,
+  type LibraryLocationState,
+} from "@/app/lib/library-navigation";
 import type { Game } from "@/app/types/game";
 import {
   Empty,
@@ -21,20 +39,19 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type SearchViewState = {
-  hasQuery: boolean;
-  results: Game[];
-  status: string;
+type LibraryExperienceProps = {
+  initialLocation: LibraryLocationState;
 };
 
-const INITIAL_SEARCH_STATE: SearchViewState = {
-  hasQuery: false,
-  results: [],
-  status: "",
-};
-
-export function LibraryExperience() {
+export function LibraryExperience({
+  initialLocation,
+}: LibraryExperienceProps) {
   const router = useRouter();
+  const {
+    mode,
+    error: runtimeError,
+    fallbackToBrowser,
+  } = useSpatialRuntime();
   const {
     collections,
     defaultCollectionId,
@@ -48,44 +65,141 @@ export function LibraryExperience() {
     toggleGameMembership,
     getGameCollectionIds,
   } = useLibrary();
-  const [searchView, setSearchView] =
-    useState<SearchViewState>(INITIAL_SEARCH_STATE);
+  const [query, setQuery] = useState(initialLocation.query);
+  const [page, setPage] = useState(initialLocation.page);
+  const [isCollectionRestored, setIsCollectionRestored] = useState(false);
+  const requestedCollectionId = useRef(initialLocation.collectionId);
+  const hasRestoredCollection = useRef(false);
+  const hasAppliedInitialFeed = useRef(false);
+  const {
+    hasSearchQuery,
+    searchGames,
+    searchStatus,
+    isSearching,
+    discoverGames,
+    discoverError,
+    isDiscoverLoading,
+  } = useCatalogFeeds(query);
 
-  const openGame = useCallback((game: Game) => {
-    const sceneName = `nexus-game-${game.id}`;
-    const gameUrl = `/game/${game.id}`;
-
-    if (document.documentElement.dataset.spatial !== "true") {
-      router.push(gameUrl);
+  useEffect(() => {
+    if (!isLoaded || hasRestoredCollection.current) {
       return;
     }
 
-    initScene(sceneName, (previousConfig) => ({
-      ...previousConfig,
-      defaultSize: {
-        width: 1080,
-        height: 760,
-      },
-    }));
+    hasRestoredCollection.current = true;
 
-    const scene = window.open(gameUrl, sceneName);
-
-    if (!scene) {
-      router.push(gameUrl);
+    if (
+      collections.some(
+        (collection) => collection.id === requestedCollectionId.current,
+      )
+    ) {
+      selectCollection(requestedCollectionId.current);
+    } else {
+      requestedCollectionId.current = activeCollection.id;
     }
-  }, [router]);
 
-  const handleSearchStateChange = useCallback(
-    (nextState: SearchViewState) => {
-      setSearchView(nextState);
+    setIsCollectionRestored(true);
+  }, [
+    activeCollection.id,
+    collections,
+    isLoaded,
+    selectCollection,
+  ]);
+
+  const galleryFeed = selectGalleryFeed({
+    hasSearchQuery,
+    searchResults: searchGames,
+    collectionGames: activeCollectionGames,
+    collectionName: activeCollection.name,
+    discoverGames,
+  });
+  const isGalleryLoading =
+    !isLoaded ||
+    !isCollectionRestored ||
+    (galleryFeed.kind === "search" && isSearching) ||
+    (galleryFeed.kind === "discover" && isDiscoverLoading);
+  const feedKey = getGalleryFeedKey(
+    galleryFeed.kind,
+    activeCollection.id,
+    query,
+  );
+  const previousFeedKey = useRef(feedKey);
+  const currentPage = isGalleryLoading
+    ? page
+    : !hasAppliedInitialFeed.current
+      ? clampPage(page, galleryFeed.games.length)
+    : getPageAfterFeedChange(
+        previousFeedKey.current,
+        feedKey,
+        page,
+        galleryFeed.games.length,
+      );
+
+  useEffect(() => {
+    if (!isGalleryLoading) {
+      hasAppliedInitialFeed.current = true;
+      previousFeedKey.current = feedKey;
+    }
+
+    if (!isGalleryLoading && currentPage !== page) {
+      setPage(currentPage);
+    }
+  }, [currentPage, feedKey, isGalleryLoading, page]);
+
+  useEffect(() => {
+    if (!isLoaded || !isCollectionRestored) {
+      return;
+    }
+
+    const nextUrl = buildLibraryUrl({
+      collectionId: activeCollection.id,
+      query,
+      page: currentPage,
+    });
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+
+    if (currentUrl !== nextUrl) {
+      router.replace(nextUrl, { scroll: false });
+    }
+  }, [
+    activeCollection.id,
+    currentPage,
+    isCollectionRestored,
+    isLoaded,
+    query,
+    router,
+  ]);
+
+  const openGame = useCallback(
+    (game: Game) => {
+      const returnTo = buildLibraryUrl({
+        collectionId: activeCollection.id,
+        query,
+        page: currentPage,
+      });
+      router.push(buildGameUrl(game.id, returnTo));
     },
-    [],
+    [activeCollection.id, currentPage, query, router],
   );
 
-  const visibleGames = searchView.hasQuery
-    ? searchView.results
+  const handleQueryChange = useCallback((nextQuery: string) => {
+    setQuery(nextQuery);
+    setPage(1);
+  }, []);
+
+  const handleSelectCollection = useCallback(
+    (collectionId: string) => {
+      requestedCollectionId.current = collectionId;
+      selectCollection(collectionId);
+      setPage(1);
+    },
+    [selectCollection],
+  );
+
+  const visibleGames = hasSearchQuery
+    ? searchGames
     : activeCollectionGames;
-  const viewHeading = searchView.hasQuery
+  const viewHeading = hasSearchQuery
     ? "Search results"
     : activeCollection.name;
   const isInActiveCollection = useCallback(
@@ -99,12 +213,18 @@ export function LibraryExperience() {
     [activeCollection.id, toggleGameMembership],
   );
 
-  return (
-    <main
-      className="nexus-shell"
-      enable-xr
-      style={{ "--xr-background-material": "transparent" }}
-    >
+  const searchConsole = (
+    <SearchConsole
+      isSearching={isSearching}
+      isSpatial={mode === "spatial"}
+      onQueryChange={handleQueryChange}
+      query={query}
+      status={searchStatus}
+    />
+  );
+
+  const browserExperience = (
+    <main className="nexus-shell">
       <SiteHeader />
 
       <div className="library-layout">
@@ -115,15 +235,20 @@ export function LibraryExperience() {
           onCreateCollection={createCollection}
           onDeleteCollection={deleteCollection}
           onRenameCollection={renameCollection}
-          onSelectCollection={selectCollection}
+          onSelectCollection={handleSelectCollection}
         />
 
         <section className="library-content">
-          <SearchConsole onSearchStateChange={handleSearchStateChange} />
+          <SearchConsole
+            isSearching={isSearching}
+            onQueryChange={handleQueryChange}
+            query={query}
+            status={searchStatus}
+          />
 
           <div className="library-view">
             <div className="library-view__heading">
-              {searchView.hasQuery ? (
+              {hasSearchQuery ? (
                 <>
                   <span className="section-kicker">Catalog</span>
                   <h1>{viewHeading}</h1>
@@ -149,7 +274,7 @@ export function LibraryExperience() {
                   <GameCase
                     activeCollectionName={activeCollection.name}
                     action={
-                      searchView.hasQuery ? (
+                      hasSearchQuery ? (
                         <CollectionPicker
                           collectionIds={getGameCollectionIds(game.id)}
                           collections={collections}
@@ -168,12 +293,12 @@ export function LibraryExperience() {
                   />
                 ))}
               </div>
-            ) : searchView.hasQuery ? (
+            ) : hasSearchQuery ? (
               <Empty className="library-grid-state">
                 <EmptyHeader>
                   <EmptyTitle>Search results</EmptyTitle>
                   <EmptyDescription>
-                    {searchView.status || "No matching games found."}
+                    {searchStatus || "No matching games found."}
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>
@@ -192,9 +317,11 @@ export function LibraryExperience() {
           <PopularGames
             activeCollectionName={activeCollection.name}
             collections={collections}
+            games={discoverGames}
             getGameCollectionIds={getGameCollectionIds}
             isInActiveCollection={isInActiveCollection}
-            isVisible={!searchView.hasQuery}
+            isLoading={isDiscoverLoading}
+            isVisible={!hasSearchQuery}
             onCreateCollection={createCollection}
             onOpen={openGame}
             onToggleActiveCollection={toggleActiveCollection}
@@ -204,64 +331,83 @@ export function LibraryExperience() {
           <ProjectFooter />
         </section>
       </div>
-
-      <section aria-label={activeCollection.name} className="spatial-library">
-        <div
-          className="spatial-library__heading glass-panel"
-          enable-xr
-          style={{ "--xr-background-material": "translucent" }}
-        >
-          <h1 className="collection-title">
-            <span className="section-kicker">Collection</span>
-            <span aria-hidden="true"> - </span>
-            {activeCollection.name}
-          </h1>
-        </div>
-        <LibraryArc
-          activeCollectionName={activeCollection.name}
-          games={activeCollectionGames}
-          isLoaded={isLoaded}
-          onOpen={openGame}
-          onToggleActiveCollection={toggleActiveCollection}
-        />
-      </section>
-
-      {searchView.hasQuery ? (
-        <section
-          aria-label="Search results"
-          className="spatial-search-results glass-panel"
-          enable-xr
-          style={{ "--xr-background-material": "translucent" }}
-        >
-          <h2>Search results</h2>
-          {searchView.results.length > 0 ? (
-            <div className="spatial-search-results__grid">
-              {searchView.results.map((game) => (
-                <GameCase
-                  activeCollectionName={activeCollection.name}
-                  action={
-                    <CollectionPicker
-                      collectionIds={getGameCollectionIds(game.id)}
-                      collections={collections}
-                      game={game}
-                      onCreateCollection={createCollection}
-                      onToggleMembership={toggleGameMembership}
-                    />
-                  }
-                  game={game}
-                  isInActiveCollection={isInActiveCollection(game.id)}
-                  key={game.id}
-                  onOpen={openGame}
-                  onToggleActiveCollection={toggleActiveCollection}
-                />
-              ))}
-            </div>
-          ) : (
-            <p>{searchView.status || "No matching games found."}</p>
-          )}
-        </section>
-      ) : null}
-
     </main>
   );
+
+  if (mode === "spatial" && !runtimeError) {
+    const emptyTitle =
+      galleryFeed.kind === "search"
+        ? "Search results"
+        : galleryFeed.kind === "discover"
+          ? "Discover unavailable"
+          : "No games in this collection";
+    const emptyDescription =
+      galleryFeed.kind === "search"
+        ? searchStatus || "No matching games found."
+        : galleryFeed.kind === "discover"
+          ? discoverError || "Discover games could not be loaded."
+          : "Search for a game by title to add one.";
+
+    return (
+      <SpatialErrorBoundary
+        fallback={browserExperience}
+        onError={fallbackToBrowser}
+      >
+        <main className="nexus-shell spatial-workspace">
+          <SiteHeader />
+
+          <div className="spatial-workspace__layout">
+            <CollectionSidebar
+              activeCollectionId={activeCollection.id}
+              collections={collections}
+              defaultCollectionId={defaultCollectionId}
+              isSpatial
+              managementMode="create-only"
+              onCreateCollection={createCollection}
+              onDeleteCollection={deleteCollection}
+              onRenameCollection={renameCollection}
+              onSelectCollection={handleSelectCollection}
+            />
+
+            <section className="spatial-workspace__content">
+              {searchConsole}
+
+              <section
+                aria-label={galleryFeed.heading}
+                className="spatial-gallery"
+              >
+                <div
+                  className="spatial-gallery__heading glass-panel"
+                  enable-xr
+                  style={{ "--xr-background-material": "translucent" }}
+                >
+                  <span className="section-kicker">
+                    {galleryFeed.kind === "collection"
+                      ? "Collection"
+                      : "Catalog"}
+                  </span>
+                  <h1>{galleryFeed.heading}</h1>
+                </div>
+
+                <LibraryArc
+                  activeCollectionName={activeCollection.name}
+                  emptyDescription={emptyDescription}
+                  emptyTitle={emptyTitle}
+                  games={galleryFeed.games}
+                  isInActiveCollection={isInActiveCollection}
+                  isLoaded={!isGalleryLoading}
+                  onOpen={openGame}
+                  onPageChange={setPage}
+                  onToggleActiveCollection={toggleActiveCollection}
+                  page={currentPage}
+                />
+              </section>
+            </section>
+          </div>
+        </main>
+      </SpatialErrorBoundary>
+    );
+  }
+
+  return browserExperience;
 }

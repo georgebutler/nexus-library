@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { PwaRuntime } from "@/app/components/PwaRuntime";
-import { SpatialRuntime } from "@/app/components/SpatialRuntime";
+import { SpatialRuntimeProvider } from "@/app/components/SpatialRuntime";
 import { WebSpatialProvider } from "@/app/components/WebSpatialProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -59,8 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <TooltipProvider>
           <WebSpatialProvider>
             <PwaRuntime />
-            <SpatialRuntime />
-            {children}
+            <SpatialRuntimeProvider>{children}</SpatialRuntimeProvider>
           </WebSpatialProvider>
         </TooltipProvider>
       </body>

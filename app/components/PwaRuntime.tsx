@@ -14,6 +14,7 @@ export function PwaRuntime() {
     const registerServiceWorker = () => {
       void navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
+        .then((registration) => registration.update())
         .catch(() => undefined);
     };
 

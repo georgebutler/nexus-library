@@ -31,7 +31,7 @@
 - **Platform identification** — scan accessible brand and fallback icons across current, legacy, and spatial platforms.
 - **Screenshot lightbox** — open full-bleed screenshots with arrow controls, keyboard navigation, and a position counter.
 - **Installable PWA** — add Nexus Library to a desktop or mobile home screen with a dedicated offline fallback.
-- **WebSpatial scenes** — use the same routes in spatial mode with pass-through materials, elevated panels, and separate game-detail scenes.
+- **PICO spatial workspace** — browse a paged curved-cover gallery with spatialized collection, search, and detail panels.
 
 ## How It Works
 
@@ -116,7 +116,7 @@ Launch WebSpatial Builder in another:
 pnpm spatial
 ```
 
-The browser and spatial experiences share one route tree. In spatial mode, the library uses transparent pass-through materials and spatialized panels; opening a game creates a named detail scene.
+The browser and spatial experiences share one route tree. In spatial mode, the library uses transparent pass-through materials, explicit spatialized panels, and same-scene detail navigation so Back restores the selected collection, search query, and gallery page.
 
 ## PWA Behavior
 

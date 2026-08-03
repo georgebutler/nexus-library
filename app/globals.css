@@ -1082,9 +1082,10 @@ html.isSpatial .spatial-search-results .game-case__art {
 }
 
 .screenshot-lightbox {
-  width: min(96vw, 1440px);
+  width: min(96vw, 1440px, calc(92vh * 16 / 9));
   max-width: none;
-  height: min(92vh, 960px);
+  height: auto;
+  aspect-ratio: 16 / 9;
   padding: 0;
   border-radius: var(--radius-lg);
   background: #05070b;
@@ -1107,7 +1108,7 @@ html.isSpatial .spatial-search-results .game-case__art {
 }
 
 .screenshot-lightbox__image img {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .screenshot-lightbox__previous,
@@ -1939,6 +1940,15 @@ html.isSpatial .popular-games {
   font-size: 0.75rem;
 }
 
+.game-information > div:first-child > svg,
+.game-information > div:first-child > span {
+  align-self: end;
+}
+
+.game-information > div:first-child > svg {
+  margin-top: 0;
+}
+
 .game-information strong,
 .game-information a,
 .game-information .platform-icons {
@@ -2050,6 +2060,15 @@ html.isSpatial .popular-games {
 
   .game-information span {
     grid-column: 2;
+  }
+
+  .game-information > div:first-child > svg,
+  .game-information > div:first-child > span {
+    align-self: auto;
+  }
+
+  .game-information > div:first-child > svg {
+    margin-top: 2px;
   }
 
   .game-information strong,

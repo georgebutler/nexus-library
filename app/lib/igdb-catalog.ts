@@ -30,6 +30,12 @@ const GAME_FIELDS = [
   "aggregated_rating",
   "aggregated_rating_count",
   "cover.image_id",
+  "artworks.id",
+  "artworks.image_id",
+  "artworks.width",
+  "artworks.height",
+  "artworks.alpha_channel",
+  "artworks.animated",
   "screenshots.id",
   "screenshots.image_id",
   "genres.id",
@@ -84,7 +90,7 @@ export function parsePageSize(value: string | null): number {
 
 export function createIgdbImageUrl(
   imageId: unknown,
-  size: "cover_big_2x" | "screenshot_big_2x",
+  size: "1080p" | "cover_big_2x" | "screenshot_big_2x",
 ): string | null {
   const normalizedImageId = asString(imageId);
 
@@ -274,6 +280,54 @@ function sanitizeScreenshots(value: unknown): GameScreenshot[] {
   });
 }
 
+function selectHeroArtwork(value: unknown): string | null {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+
+  const targetAspectRatio = 16 / 9;
+  const candidates = value.flatMap((item) => {
+    const artwork = asRecord(item);
+    const imageId = asString(artwork?.image_id);
+    const width = asNumber(artwork?.width);
+    const height = asNumber(artwork?.height);
+
+    if (
+      !imageId ||
+      width === null ||
+      height === null ||
+      width <= height ||
+      artwork?.animated === true
+    ) {
+      return [];
+    }
+
+    const aspectRatio = width / height;
+
+    if (aspectRatio < 1.4 || aspectRatio > 4) {
+      return [];
+    }
+
+    return [
+      {
+        imageId,
+        hasAlphaChannel: artwork?.alpha_channel === true,
+        aspectRatioDistance: Math.abs(aspectRatio - targetAspectRatio),
+        area: width * height,
+      },
+    ];
+  });
+
+  candidates.sort(
+    (first, second) =>
+      Number(first.hasAlphaChannel) - Number(second.hasAlphaChannel) ||
+      first.aspectRatioDistance - second.aspectRatioDistance ||
+      second.area - first.area,
+  );
+
+  return createIgdbImageUrl(candidates[0]?.imageId, "1080p");
+}
+
 export function normalizeIgdbGame(value: unknown): Game | null {
   const sourceGame = asRecord(value);
   const id = asNumber(sourceGame?.id);
@@ -286,6 +340,7 @@ export function normalizeIgdbGame(value: unknown): Game | null {
   const cover = asRecord(sourceGame?.cover);
   const coverImage = createIgdbImageUrl(cover?.image_id, "cover_big_2x");
   const screenshots = sanitizeScreenshots(sourceGame?.screenshots);
+  const heroArtwork = selectHeroArtwork(sourceGame?.artworks);
   const platforms = sanitizePlatforms(sourceGame?.platforms);
 
   return {
@@ -293,7 +348,7 @@ export function normalizeIgdbGame(value: unknown): Game | null {
     name,
     slug: asString(sourceGame?.slug) ?? String(id),
     background_image: coverImage,
-    hero_image: screenshots[0]?.image ?? coverImage,
+    hero_image: heroArtwork ?? screenshots[0]?.image ?? null,
     description: asString(sourceGame?.summary),
     website: sanitizeOfficialWebsite(sourceGame?.websites),
     released: toReleaseDate(sourceGame?.first_release_date),
@@ -304,7 +359,7 @@ export function normalizeIgdbGame(value: unknown): Game | null {
     platformFamilies: sanitizePlatformFamilies(sourceGame?.platforms, platforms),
     developers: sanitizeCompanies(sourceGame?.involved_companies, "developer"),
     publishers: sanitizeCompanies(sourceGame?.involved_companies, "publisher"),
-    short_screenshots: screenshots.slice(1),
+    short_screenshots: screenshots.slice(0, 6),
   };
 }
 

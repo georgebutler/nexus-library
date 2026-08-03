@@ -17,6 +17,32 @@ const sourceGame = {
   total_rating: 80,
   aggregated_rating: 92.4,
   cover: { image_id: "cover-id" },
+  artworks: [
+    {
+      id: 3,
+      image_id: "portrait-artwork-id",
+      width: 900,
+      height: 1600,
+      alpha_channel: false,
+      animated: false,
+    },
+    {
+      id: 4,
+      image_id: "transparent-artwork-id",
+      width: 1920,
+      height: 1080,
+      alpha_channel: true,
+      animated: false,
+    },
+    {
+      id: 5,
+      image_id: "hero-artwork-id",
+      width: 1920,
+      height: 1080,
+      alpha_channel: false,
+      animated: false,
+    },
+  ],
   screenshots: [
     { id: 1, image_id: "hero-id" },
     { id: 2, image_id: "gallery-id" },
@@ -104,7 +130,7 @@ describe("IGDB catalog mapping", () => {
       background_image:
         "https://images.igdb.com/igdb/image/upload/t_cover_big_2x/cover-id.jpg",
       hero_image:
-        "https://images.igdb.com/igdb/image/upload/t_screenshot_big_2x/hero-id.jpg",
+        "https://images.igdb.com/igdb/image/upload/t_1080p/hero-artwork-id.jpg",
       developers: ["Valve"],
       publishers: ["Valve", "Electronic Arts"],
       website: "https://example.com/",
@@ -127,6 +153,11 @@ describe("IGDB catalog mapping", () => {
     ]);
     expect(game?.short_screenshots).toEqual([
       {
+        id: 1,
+        image:
+          "https://images.igdb.com/igdb/image/upload/t_screenshot_big_2x/hero-id.jpg",
+      },
+      {
         id: 2,
         image:
           "https://images.igdb.com/igdb/image/upload/t_screenshot_big_2x/gallery-id.jpg",
@@ -144,6 +175,27 @@ describe("IGDB catalog mapping", () => {
       rating: null,
       criticScore: null,
     });
+  });
+
+  it("falls back to the first screenshot when official landscape artwork is unavailable", () => {
+    expect(
+      normalizeIgdbGame({
+        id: 2,
+        name: "Screenshot fallback",
+        cover: { image_id: "cover-id" },
+        artworks: [
+          {
+            id: 10,
+            image_id: "portrait-id",
+            width: 900,
+            height: 1600,
+          },
+        ],
+        screenshots: [{ id: 11, image_id: "screenshot-id" }],
+      })?.hero_image,
+    ).toBe(
+      "https://images.igdb.com/igdb/image/upload/t_screenshot_big_2x/screenshot-id.jpg",
+    );
   });
 
   it("escapes searches and excludes editions", () => {

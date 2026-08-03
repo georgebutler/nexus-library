@@ -32,7 +32,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -166,7 +165,7 @@ export function GameDetails({ gameId }: GameDetailsProps) {
     );
   }
 
-  const heroImage = game.hero_image ?? game.background_image;
+  const heroImage = game.hero_image;
   const screenshots =
     (game.short_screenshots?.length ?? 0) > 0
       ? game.short_screenshots
@@ -270,10 +269,7 @@ export function GameDetails({ gameId }: GameDetailsProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>Game information</CardTitle>
-              <CardDescription>
-                Platforms, creators, and official links.
-              </CardDescription>
+              <CardTitle>Information</CardTitle>
             </CardHeader>
             <CardContent className="game-information">
               <div>

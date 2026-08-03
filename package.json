@@ -2,6 +2,19 @@
   "name": "nexus-library",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgebutler/nexus-library.git"
+  },
+  "homepage": "https://nexus-library-six.vercel.app",
+  "bugs": {
+    "url": "https://github.com/georgebutler/nexus-library/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

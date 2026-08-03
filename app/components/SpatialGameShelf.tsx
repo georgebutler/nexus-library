@@ -1,12 +1,8 @@
 "use client";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { CSSProperties } from "react";
-import { GameCase } from "@/app/components/GameCase";
-import {
-  getArcTransform,
-  paginateGames,
-} from "@/app/lib/library-gallery";
+import { SpatialGameShelfItem } from "@/app/components/SpatialGameShelfItem";
+import { paginateGames } from "@/app/lib/library-gallery";
 import type { Game } from "@/app/types/game";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +13,7 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type LibraryArcProps = {
+type SpatialGameShelfProps = {
   activeCollectionName: string;
   games: Game[];
   isLoaded: boolean;
@@ -30,23 +26,7 @@ type LibraryArcProps = {
   isInActiveCollection: (gameId: number) => boolean;
 };
 
-type ArcStyle = CSSProperties & {
-  "--arc-x": string;
-  "--arc-z": string;
-  "--arc-rotation": string;
-};
-
-function getArcStyle(index: number, total: number): ArcStyle {
-  const transform = getArcTransform(index, total);
-
-  return {
-    "--arc-x": `${transform.x.toFixed(2)}px`,
-    "--arc-z": `${transform.z.toFixed(2)}px`,
-    "--arc-rotation": `${transform.rotationY.toFixed(2)}deg`,
-  };
-}
-
-export function LibraryArc({
+export function SpatialGameShelf({
   activeCollectionName,
   games,
   isLoaded,
@@ -57,7 +37,7 @@ export function LibraryArc({
   onOpen,
   onToggleActiveCollection,
   isInActiveCollection,
-}: LibraryArcProps) {
+}: SpatialGameShelfProps) {
   if (!isLoaded) {
     return (
       <div aria-label="Loading library" className="library-loading">
@@ -82,35 +62,28 @@ export function LibraryArc({
   const paginated = paginateGames(games, page);
 
   return (
-    <div className="library-arc-frame">
+    <div className="spatial-shelf-frame">
       <div
         aria-label="Games in the current spatial feed"
-        className="library-arc"
+        className="spatial-shelf"
       >
         {paginated.games.map((game, index) => (
-          <div
-            className="library-arc__slot"
-            enable-xr
+          <SpatialGameShelfItem
+            activeCollectionName={activeCollectionName}
+            game={game}
+            isInActiveCollection={isInActiveCollection(game.id)}
             key={game.id}
-            style={getArcStyle(index, paginated.games.length)}
-          >
-            <GameCase
-              activeCollectionName={activeCollectionName}
-              game={game}
-              isInActiveCollection={isInActiveCollection(game.id)}
-              onOpen={onOpen}
-              onToggleActiveCollection={onToggleActiveCollection}
-              priority={index < 3}
-            />
-          </div>
+            onOpen={onOpen}
+            onToggleActiveCollection={onToggleActiveCollection}
+            priority={index < 3}
+          />
         ))}
       </div>
 
       {paginated.pageCount > 1 ? (
         <div
           aria-label="Spatial gallery pagination"
-          className="library-arc-pagination glass-panel"
-          enable-xr
+          className="spatial-shelf-pagination glass-panel"
         >
           <Button
             aria-label="Previous page"

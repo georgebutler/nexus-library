@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   clampPage,
-  getArcTransform,
   getPageAfterFeedChange,
   getPageCount,
   paginateGames,
@@ -125,29 +124,5 @@ describe("gallery pagination", () => {
         8,
       ),
     ).toBe(2);
-  });
-});
-
-describe("getArcTransform", () => {
-  it("keeps the center cover facing forward", () => {
-    expect(getArcTransform(3, 7)).toEqual({
-      x: 0,
-      z: 0,
-      rotationY: 0,
-      angle: 0,
-    });
-  });
-
-  it("places seven covers on a symmetric fixed 96 degree arc", () => {
-    const left = getArcTransform(0, 7);
-    const right = getArcTransform(6, 7);
-
-    expect(left.angle).toBe(-48);
-    expect(right.angle).toBe(48);
-    expect(left.x).toBeCloseTo(-right.x, 8);
-    expect(left.z).toBeCloseTo(right.z, 8);
-    expect(left.rotationY).toBe(48);
-    expect(right.rotationY).toBe(-48);
-    expect(left.z).toBeLessThan(0);
   });
 });

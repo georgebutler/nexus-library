@@ -831,34 +831,137 @@ html.isSpatial .glass-panel {
   }
 }
 
-.library-arc-frame {
-  position: relative;
-  min-height: 490px;
+.spatial-shelf-frame {
+  min-height: 430px;
 }
 
-.library-arc {
-  position: relative;
-  z-index: 6;
+.spatial-shelf {
+  display: grid;
+  grid-template-columns: repeat(7, 140px);
+  justify-content: center;
+  gap: 12px;
   width: 100%;
-  height: 410px;
-  perspective: 1500px;
-  transform-style: preserve-3d;
-  --xr-background-material: transparent;
 }
 
-.library-arc__slot {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 170px;
-  transform:
-    translate3d(calc(var(--arc-x) - 85px), 28px, var(--arc-z))
-    rotateY(var(--arc-rotation));
-  transform-origin: center bottom;
-  --xr-background-material: regular;
+.spatial-shelf-item {
+  display: grid;
+  width: 140px;
+  min-width: 0;
+  align-content: start;
 }
 
-.library-arc-pagination {
+.spatial-shelf-item__cover {
+  position: relative;
+  display: block;
+  width: 140px;
+  padding: 0;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: 0;
+  background: transparent;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+}
+
+.spatial-shelf-item__cover:hover,
+.spatial-shelf-item__cover:focus-visible {
+  border-color: var(--border-bright);
+  box-shadow:
+    0 24px 52px rgba(0, 0, 0, 0.42),
+    0 0 24px rgba(158, 255, 143, 0.1);
+}
+
+.spatial-shelf-item__cover:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+.spatial-shelf-item__cover img {
+  object-fit: cover;
+}
+
+.spatial-shelf-item__placeholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background:
+    linear-gradient(145deg, rgba(158, 255, 143, 0.2), transparent),
+    #171c28;
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: 650;
+}
+
+.spatial-shelf-item__metadata {
+  display: grid;
+  min-width: 0;
+  padding: 12px 2px 0;
+}
+
+.spatial-shelf-item__eyebrow {
+  margin: 0 0 5px;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spatial-shelf-item__metadata h2 {
+  display: -webkit-box;
+  height: 2.3rem;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.spatial-shelf-item__platforms {
+  height: 24px;
+  margin-top: 7px;
+  flex-wrap: nowrap;
+}
+
+.spatial-shelf-item__footer {
+  display: flex;
+  height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.spatial-shelf-item__rating {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+  color: #fff5b8;
+  font-size: 0.7rem;
+}
+
+.spatial-shelf-item__rating svg {
+  width: 12px;
+  height: 12px;
+}
+
+.spatial-shelf-item__collection-toggle {
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.spatial-shelf-item__collection-toggle.is-add,
+.spatial-shelf-item__collection-toggle.is-add:hover {
+  color: #061006;
+}
+
+.spatial-shelf-pagination {
   display: flex;
   width: fit-content;
   align-items: center;
@@ -866,11 +969,9 @@ html.isSpatial .glass-panel {
   margin: 6px auto 0;
   padding: 6px;
   border-radius: var(--radius);
-  --xr-background-material: translucent;
-  --xr-back: 48px;
 }
 
-.library-arc-pagination span {
+.spatial-shelf-pagination span {
   min-width: 92px;
   color: var(--muted-foreground);
   font-size: 0.75rem;
@@ -881,6 +982,8 @@ html.isSpatial .glass-panel {
   width: 100%;
   min-height: 900px;
   padding-inline: 32px;
+  --xr-background-material: transparent;
+  --xr-back: 0px;
 }
 
 .spatial-workspace__layout {
@@ -894,10 +997,8 @@ html.isSpatial .glass-panel {
 .spatial-workspace .collection-sidebar {
   position: relative;
   top: auto;
-  z-index: 20;
   width: 100%;
   height: fit-content;
-  --xr-back: 72px;
 }
 
 .spatial-workspace .collection-row__menu-button {
@@ -914,10 +1015,8 @@ html.isSpatial .glass-panel {
 .spatial-workspace .search-console {
   position: relative;
   top: auto;
-  z-index: 30;
   width: min(720px, 100%);
   margin-inline: auto;
-  --xr-back: 96px;
 }
 
 .spatial-gallery {
@@ -931,7 +1030,6 @@ html.isSpatial .glass-panel {
   padding: 14px 18px;
   border-radius: var(--radius);
   text-align: center;
-  --xr-back: 64px;
 }
 
 .spatial-gallery__heading h1 {
@@ -946,7 +1044,7 @@ html.isSpatial .glass-panel {
 
 .spatial-workspace .library-loading {
   min-height: 390px;
-  grid-template-columns: repeat(3, 170px);
+  grid-template-columns: repeat(3, 140px);
   justify-content: center;
 }
 
@@ -956,12 +1054,6 @@ html.isSpatial .glass-panel {
   left: auto;
   margin: 84px auto 0;
   transform: none;
-  --xr-back: 48px;
-}
-
-.spatial-workspace .game-case:hover,
-.spatial-workspace .game-case:focus-within {
-  transform: translateY(-4px);
 }
 
 .details-page {

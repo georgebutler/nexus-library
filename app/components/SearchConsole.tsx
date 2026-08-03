@@ -14,7 +14,6 @@ type SearchConsoleProps = {
   status: string;
   isSearching: boolean;
   onQueryChange: (query: string) => void;
-  isSpatial?: boolean;
 };
 
 export function SearchConsole({
@@ -22,14 +21,9 @@ export function SearchConsole({
   status,
   isSearching,
   onQueryChange,
-  isSpatial = false,
 }: SearchConsoleProps) {
   return (
-    <section
-      className="search-console glass-panel"
-      style={{ "--xr-background-material": "translucent" }}
-      {...(isSpatial ? { "enable-xr": true } : {})}
-    >
+    <section className="search-console glass-panel">
       <label className="sr-only" htmlFor="game-search">
         Search games
       </label>

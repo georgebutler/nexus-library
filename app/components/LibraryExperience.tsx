@@ -10,11 +10,11 @@ import {
 import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { CollectionSidebar } from "@/app/components/CollectionSidebar";
 import { GameCase } from "@/app/components/GameCase";
-import { LibraryArc } from "@/app/components/LibraryArc";
 import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { SearchConsole } from "@/app/components/SearchConsole";
 import { SiteHeader } from "@/app/components/SiteHeader";
+import { SpatialGameShelf } from "@/app/components/SpatialGameShelf";
 import { SpatialErrorBoundary } from "@/app/components/SpatialErrorBoundary";
 import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useCatalogFeeds } from "@/app/hooks/useCatalogFeeds";
@@ -216,7 +216,6 @@ export function LibraryExperience({
   const searchConsole = (
     <SearchConsole
       isSearching={isSearching}
-      isSpatial={mode === "spatial"}
       onQueryChange={handleQueryChange}
       query={query}
       status={searchStatus}
@@ -353,7 +352,14 @@ export function LibraryExperience({
         fallback={browserExperience}
         onError={fallbackToBrowser}
       >
-        <main className="nexus-shell spatial-workspace">
+        <main
+          className="nexus-shell spatial-workspace"
+          enable-xr
+          style={{
+            "--xr-background-material": "transparent",
+            "--xr-back": "0px",
+          }}
+        >
           <SiteHeader />
 
           <div className="spatial-workspace__layout">
@@ -361,7 +367,6 @@ export function LibraryExperience({
               activeCollectionId={activeCollection.id}
               collections={collections}
               defaultCollectionId={defaultCollectionId}
-              isSpatial
               managementMode="create-only"
               onCreateCollection={createCollection}
               onDeleteCollection={deleteCollection}
@@ -376,11 +381,7 @@ export function LibraryExperience({
                 aria-label={galleryFeed.heading}
                 className="spatial-gallery"
               >
-                <div
-                  className="spatial-gallery__heading glass-panel"
-                  enable-xr
-                  style={{ "--xr-background-material": "translucent" }}
-                >
+                <div className="spatial-gallery__heading glass-panel">
                   <span className="section-kicker">
                     {galleryFeed.kind === "collection"
                       ? "Collection"
@@ -389,7 +390,7 @@ export function LibraryExperience({
                   <h1>{galleryFeed.heading}</h1>
                 </div>
 
-                <LibraryArc
+                <SpatialGameShelf
                   activeCollectionName={activeCollection.name}
                   emptyDescription={emptyDescription}
                   emptyTitle={emptyTitle}

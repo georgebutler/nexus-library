@@ -1,8 +1,6 @@
 import type { Game } from "@/app/types/game";
 
 export const SPATIAL_GALLERY_PAGE_SIZE = 7;
-export const SPATIAL_GALLERY_ARC_DEGREES = 96;
-export const SPATIAL_GALLERY_RADIUS = 760;
 
 export type GalleryFeedKind = "search" | "collection" | "discover";
 
@@ -18,13 +16,6 @@ type SelectGalleryFeedOptions = {
   collectionGames: Game[];
   collectionName: string;
   discoverGames: Game[];
-};
-
-export type ArcTransform = {
-  x: number;
-  z: number;
-  rotationY: number;
-  angle: number;
 };
 
 export function selectGalleryFeed({
@@ -110,27 +101,4 @@ export function getPageAfterFeedChange(
   return previousFeedKey === nextFeedKey
     ? clampPage(page, itemCount)
     : 1;
-}
-
-export function getArcTransform(
-  index: number,
-  total: number,
-  radius = SPATIAL_GALLERY_RADIUS,
-  arcDegrees = SPATIAL_GALLERY_ARC_DEGREES,
-): ArcTransform {
-  if (total <= 1) {
-    return { x: 0, z: 0, rotationY: 0, angle: 0 };
-  }
-
-  const slotDegrees = arcDegrees / (SPATIAL_GALLERY_PAGE_SIZE - 1);
-  const angle = (index - (total - 1) / 2) * slotDegrees;
-  const angleRadians = (angle * Math.PI) / 180;
-  const rotationY = angle === 0 ? 0 : -angle;
-
-  return {
-    x: radius * Math.sin(angleRadians),
-    z: radius * (Math.cos(angleRadians) - 1),
-    rotationY,
-    angle,
-  };
 }

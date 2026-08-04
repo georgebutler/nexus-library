@@ -147,7 +147,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
           className="details-shell"
           style={
             isSpatial
-              ? { "--xr-background-material": "regular" }
+              ? { "--xr-background-material": "transparent" }
               : undefined
           }
           {...(isSpatial ? { "enable-xr": true } : {})}
@@ -187,7 +187,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
           className="details-shell details-state"
           style={
             isSpatial
-              ? { "--xr-background-material": "regular" }
+              ? { "--xr-background-material": "transparent" }
               : undefined
           }
           {...(isSpatial ? { "enable-xr": true } : {})}
@@ -228,7 +228,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
         className="details-shell"
         style={
           isSpatial
-            ? { "--xr-background-material": "regular" }
+            ? { "--xr-background-material": "transparent" }
             : undefined
         }
         {...(isSpatial ? { "enable-xr": true } : {})}

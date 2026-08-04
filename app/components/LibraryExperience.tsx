@@ -198,7 +198,7 @@ export function LibraryExperience({
           className="library-content"
           style={
             isSpatial
-              ? { "--xr-background-material": "regular" }
+              ? { "--xr-background-material": "transparent" }
               : undefined
           }
           {...(isSpatial ? { "enable-xr": true } : {})}

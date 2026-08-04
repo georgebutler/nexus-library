@@ -1290,13 +1290,17 @@ a {
 
 html.isSpatialLibrary,
 html.isSpatialDetails {
-  --spatial-panel: #ffffff;
-  --spatial-text: #20242c;
-  --spatial-muted: #66707d;
-  --spatial-border: #d8dde5;
-  --spatial-subtle: #f4f6f8;
-  --spatial-accent: #2f8f46;
-  --spatial-accent-soft: #e8f4eb;
+  --spatial-panel: #121722;
+  --spatial-text: #f7f8fb;
+  --spatial-muted: #9da6b8;
+  --spatial-border: rgba(255, 255, 255, 0.12);
+  --spatial-subtle: #202633;
+  --spatial-accent: #9eff8f;
+  --spatial-accent-soft: color-mix(
+    in srgb,
+    var(--spatial-accent) 10%,
+    var(--spatial-panel)
+  );
 }
 
 html.isSpatialLibrary .nexus-shell,
@@ -1332,7 +1336,7 @@ html.isSpatialDetails .details-shell {
   --popover: var(--spatial-panel);
   --popover-foreground: var(--spatial-text);
   --primary: var(--spatial-accent);
-  --primary-foreground: #ffffff;
+  --primary-foreground: #061006;
   --secondary: var(--spatial-subtle);
   --secondary-foreground: var(--spatial-text);
   --muted: var(--spatial-subtle);
@@ -1362,7 +1366,7 @@ html.isSpatialLibrary .library-content {
   overflow-y: auto;
   padding: 0;
   overscroll-behavior: contain;
-  scrollbar-color: #c3c9d1 transparent;
+  scrollbar-color: #465064 transparent;
 }
 
 html.isSpatialLibrary .library-content__inner {
@@ -1405,7 +1409,11 @@ html.isSpatialLibrary .project-footer {
 }
 
 html.isSpatialLibrary .collection-row.is-active {
-  border-color: #a7d8b2;
+  border-color: color-mix(
+    in srgb,
+    var(--spatial-accent) 35%,
+    transparent
+  );
   background: var(--spatial-accent-soft);
 }
 
@@ -1602,7 +1610,11 @@ html.isSpatialLibrary .collection-picker__trigger:hover {
 
 html.isSpatialLibrary .library-grid-state {
   border-color: var(--spatial-border);
-  background: var(--spatial-subtle);
+  background: color-mix(
+    in srgb,
+    var(--spatial-subtle) 72%,
+    transparent
+  );
 }
 
 html.isSpatialLibrary .popular-games__spatial-grid {
@@ -1657,7 +1669,7 @@ html.isSpatialDetails .details-shell {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-color: #c3c9d1 transparent;
+  scrollbar-color: #465064 transparent;
 }
 
 html.isSpatialDetails .details-panel,
@@ -1676,7 +1688,11 @@ html.isSpatialDetails .details-cover-card {
 html.isSpatialDetails .details-summary-card,
 html.isSpatialDetails .details-information [data-slot="card"] {
   border-color: var(--spatial-border);
-  background: var(--spatial-subtle);
+  background: color-mix(
+    in srgb,
+    var(--spatial-subtle) 72%,
+    var(--spatial-panel)
+  );
   color: var(--spatial-text);
 }
 
@@ -1702,12 +1718,12 @@ html.isSpatialDetails .details-copy [data-slot="badge"] {
 html.isSpatialDetails .details-copy .collection-picker__trigger {
   border-color: var(--spatial-accent);
   background: var(--spatial-accent);
-  color: #ffffff;
+  color: #061006;
 }
 
 html.isSpatialDetails .screenshot {
   border-color: var(--spatial-border);
-  background: var(--spatial-subtle);
+  background: var(--spatial-panel);
 }
 
 .game-case {

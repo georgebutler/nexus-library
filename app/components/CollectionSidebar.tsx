@@ -123,7 +123,7 @@ export function CollectionSidebar({
       className="collection-sidebar glass-panel"
       style={
         isSpatial
-          ? { "--xr-background-material": "regular" }
+          ? { "--xr-background-material": "transparent" }
           : undefined
       }
       {...(isSpatial ? { "enable-xr": true } : {})}

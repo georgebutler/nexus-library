@@ -117,17 +117,11 @@ export function GameCase({
           {rating}
         </div>
       </div>
-      <div className="game-case__spatial-action">
-        {collectionToggle}
-      </div>
 
       <CardContent className="game-case__body">
-        <div className="game-case__metadata-row">
-          <p className="game-case__eyebrow">
-            {game.genres[0]?.name ?? "Game"} · {releaseYear}
-          </p>
-          <div className="game-case__spatial-rating">{rating}</div>
-        </div>
+        <p className="game-case__eyebrow">
+          {game.genres[0]?.name ?? "Game"} · {releaseYear}
+        </p>
         <h3>{game.name}</h3>
         <div className="game-case__platform-slot">
           <PlatformIcons

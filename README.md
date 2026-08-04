@@ -31,7 +31,7 @@
 - **Platform identification** — scan accessible brand and fallback icons across current, legacy, and spatial platforms.
 - **Screenshot lightbox** — open full-bleed screenshots with arrow controls, keyboard navigation, and a position counter.
 - **Installable PWA** — add Nexus Library to a desktop or mobile home screen with a dedicated offline fallback.
-- **Spatial game cards** — WebSpatial mode uses anchored 50px cards with cover artwork and metadata layered together in front of the same dark library theme.
+- **Spatial game cards** — WebSpatial mode raises complete 50px cards while preserving the same artwork-above, metadata-below layout and dark theme.
 
 ## How It Works
 
@@ -116,7 +116,7 @@ Launch WebSpatial Builder in another:
 pnpm spatial
 ```
 
-The browser and spatial experiences share the same route and component tree. In spatial mode, the library uses a transparent outer workspace with separate dark regular-material sidebar and content panels that match the browser palette. Complete game cards sit 50px in front of the scrolling content panel, keeping artwork, metadata, and controls anchored together. Discover uses static five- or six-card page swaps instead of a transformed carousel, and game details keep the same dark visual system.
+The browser and spatial experiences share the same route and component tree. In spatial mode, the library uses a transparent outer workspace with separate dark sidebar and content panels that match the browser palette. Complete game cards sit 50px in front of the scrolling content panel and preserve the browser card layout, keeping artwork, metadata, and controls anchored together. Discover uses static five- or six-card page swaps instead of a transformed carousel, and game details keep the same dark visual system.
 
 ## PWA Behavior
 

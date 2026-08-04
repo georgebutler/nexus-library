@@ -687,17 +687,8 @@ a {
   border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
 }
 
-.game-case__metadata-row {
-  min-width: 0;
-}
-
 .game-case__browser-controls {
   display: contents;
-}
-
-.game-case__spatial-rating,
-.game-case__spatial-action {
-  display: none;
 }
 
 .game-case__eyebrow {
@@ -1323,6 +1314,8 @@ html.isSpatialDetails .nexus-brand__mark {
 
 html.isSpatialLibrary .library-layout {
   min-height: 0;
+  grid-template-columns: 232px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   align-items: stretch;
 }
 
@@ -1358,7 +1351,34 @@ html.isSpatialDetails .details-shell {
 html.isSpatialLibrary .collection-sidebar {
   position: relative;
   top: auto;
-  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+html.isSpatialLibrary .collection-sidebar__heading {
+  flex: 0 0 auto;
+  padding: 2px 2px 8px 8px;
+}
+
+html.isSpatialLibrary .collection-sidebar__heading > span {
+  display: inline;
+}
+
+html.isSpatialLibrary .collection-sidebar__list {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  align-content: start;
+  overflow-y: auto;
+  scrollbar-color: #465064 transparent;
+}
+
+html.isSpatialLibrary .collection-row {
+  width: 100%;
 }
 
 html.isSpatialLibrary .library-content {
@@ -1438,11 +1458,10 @@ html.isSpatialLibrary .collection-sidebar__create input {
 }
 
 html.isSpatialLibrary .game-case {
-  aspect-ratio: 3 / 4;
   overflow: hidden;
   border-color: rgba(255, 255, 255, 0.45);
   border-radius: calc(var(--radius) * 1.4);
-  background: #151925;
+  background: var(--card);
   color: #ffffff;
   box-shadow: 0 16px 32px rgba(31, 36, 44, 0.18);
 }
@@ -1455,17 +1474,17 @@ html.isSpatialLibrary .game-case:focus-within {
 }
 
 html.isSpatialLibrary .game-case__art {
-  position: absolute;
-  inset: 0;
+  position: relative;
   overflow: hidden;
-  aspect-ratio: auto;
-  border-radius: inherit;
+  aspect-ratio: 3 / 4;
+  border-radius: calc(var(--radius) - 1px)
+    calc(var(--radius) - 1px) 0 0;
 }
 
 html.isSpatialLibrary .game-cover-media {
   width: 100%;
   height: 100%;
-  aspect-ratio: auto;
+  aspect-ratio: var(--game-cover-aspect-ratio, 0.75);
   border-radius: inherit;
 }
 
@@ -1475,64 +1494,48 @@ html.isSpatialLibrary .game-case:focus-within .game-cover-media img {
 }
 
 html.isSpatialLibrary .game-case__scrim {
-  inset: 28% 0 0;
-  z-index: 1;
+  inset: auto 0 0;
   display: block;
-  height: auto;
-  background: linear-gradient(
-    180deg,
-    rgba(5, 8, 13, 0) 0%,
-    rgba(5, 8, 13, 0.54) 34%,
-    rgba(5, 8, 13, 0.96) 100%
-  );
+  height: 50%;
+  background: linear-gradient(transparent, rgba(7, 9, 14, 0.9));
 }
 
 html.isSpatialLibrary .game-case__browser-controls {
-  display: none;
+  display: contents;
 }
 
 html.isSpatialLibrary .game-case__body {
-  position: absolute;
-  z-index: 2;
-  inset: auto 0 0;
-  min-height: 0;
-  padding: 14px;
-  border-radius: 0;
+  position: relative;
+  min-height: 86px;
+  padding: 12px;
+  border-radius: 0 0 calc(var(--radius) - 1px)
+    calc(var(--radius) - 1px);
   color: #ffffff;
-  pointer-events: none;
-}
-
-html.isSpatialLibrary .game-case__metadata-row {
-  display: flex;
-  min-height: 20px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  pointer-events: auto;
 }
 
 html.isSpatialLibrary .game-case__eyebrow {
-  min-width: 0;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.68rem;
+  margin: 0 0 5px;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
 }
 
 html.isSpatialLibrary .game-case h3 {
-  height: auto;
-  margin-top: 5px;
+  height: 2.275rem;
+  margin: 0;
   color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 html.isSpatialLibrary .game-case__platform-slot {
-  height: 22px;
+  height: 24px;
   margin-top: 7px;
 }
 
 html.isSpatialLibrary .platform-icons {
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--muted-foreground);
   pointer-events: auto;
 }
 
@@ -1541,50 +1544,6 @@ html.isSpatialLibrary .platform-icons__trigger:focus-visible,
 html.isSpatialLibrary .platform-icons__more:hover,
 html.isSpatialLibrary .platform-icons__more:focus-visible {
   background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-}
-
-html.isSpatialLibrary .game-case__spatial-rating {
-  display: block;
-  flex: 0 0 auto;
-}
-
-html.isSpatialLibrary .game-case__spatial-action {
-  position: absolute;
-  z-index: 3;
-  top: 10px;
-  right: 10px;
-  display: block;
-  pointer-events: auto;
-}
-
-html.isSpatialLibrary .game-case__spatial-rating .game-case__rating,
-html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
-  position: static;
-  opacity: 1;
-  pointer-events: auto;
-  transform: none;
-}
-
-html.isSpatialLibrary .game-case__spatial-rating .game-case__rating {
-  height: 20px;
-  padding: 3px 6px;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(5, 8, 13, 0.62);
-  color: #ffffff;
-}
-
-html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
-  width: 30px;
-  height: 30px;
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(5, 8, 13, 0.68);
-  color: #ffffff;
-  box-shadow: none;
-}
-
-html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle:hover {
-  background: rgba(5, 8, 13, 0.84);
   color: #ffffff;
 }
 

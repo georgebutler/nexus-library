@@ -20,7 +20,7 @@
   <a href="https://nexus-library-six.vercel.app">Open the live demo →</a>
 </p>
 
-![Nexus Library desktop interface showing collections, search, and the Discover carousel](docs/images/nexus-library.webp)
+![Nexus Library desktop interface showing populated collections, six saved games, search, and the Discover carousel](docs/images/nexus-library.webp)
 
 ## Features
 

@@ -200,14 +200,17 @@ a {
   display: grid;
   flex: 1;
   grid-template-columns: 232px minmax(0, 1fr);
-  gap: 24px;
+  column-gap: 24px;
+  row-gap: 0;
   margin-top: 22px;
 }
 
 .collection-sidebar {
   position: sticky;
   top: 20px;
-  align-self: start;
+  grid-column: 1;
+  grid-row: 1 / 4;
+  align-self: stretch;
   min-width: 0;
   padding: 15px;
   border-radius: 8px;
@@ -423,17 +426,32 @@ a {
 }
 
 .library-content {
-  display: flex;
+  display: contents;
   min-width: 0;
-  min-height: 100%;
-  flex-direction: column;
 }
 
 .library-content__inner {
-  display: flex;
-  min-height: 100%;
-  flex: 1;
-  flex-direction: column;
+  display: contents;
+}
+
+.library-content .search-console {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.library-content .library-view {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.library-content .popular-games {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.library-content .project-footer {
+  grid-column: 2;
+  grid-row: 4;
 }
 
 .search-console {
@@ -986,13 +1004,15 @@ a {
 @media (max-width: 980px) {
   .library-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto auto;
     gap: 18px;
   }
 
   .collection-sidebar {
     position: relative;
     top: auto;
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1057,6 +1077,26 @@ a {
     padding: 8px;
     border-radius: 4px;
     background: #171c28;
+  }
+
+  .library-content .search-console {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .library-content .library-view {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .library-content .popular-games {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .library-content .project-footer {
+    grid-column: 1;
+    grid-row: 5;
   }
 
   .library-grid {
@@ -1382,7 +1422,9 @@ html.isSpatialLibrary .collection-row {
 }
 
 html.isSpatialLibrary .library-content {
+  display: flex;
   min-height: 0;
+  flex-direction: column;
   overflow-y: auto;
   padding: 0;
   overscroll-behavior: contain;
@@ -1390,8 +1432,19 @@ html.isSpatialLibrary .library-content {
 }
 
 html.isSpatialLibrary .library-content__inner {
+  display: flex;
   min-height: 100%;
+  flex: 1;
+  flex-direction: column;
   padding: 18px;
+}
+
+html.isSpatialLibrary .library-content .search-console,
+html.isSpatialLibrary .library-content .library-view,
+html.isSpatialLibrary .library-content .popular-games,
+html.isSpatialLibrary .library-content .project-footer {
+  grid-column: auto;
+  grid-row: auto;
 }
 
 html.isSpatialLibrary .search-console {

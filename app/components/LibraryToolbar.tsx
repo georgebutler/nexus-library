@@ -1,6 +1,9 @@
 "use client";
 
-import { GameFilterControl } from "@/app/components/GameFilterControl";
+import {
+  GameFilterButtons,
+  GameFilterChips,
+} from "@/app/components/GameFilterControl";
 import { SearchConsole } from "@/app/components/SearchConsole";
 import type {
   GameFilterOptions,
@@ -38,10 +41,17 @@ export function LibraryToolbar({
         query={query}
         status={status}
       />
-      <GameFilterControl
-        className="library-toolbar__filters"
+      <GameFilterButtons
+        className="library-toolbar__filter-buttons"
         filters={filters}
         onClear={onClearFilters}
+        onToggleGenre={onToggleGenre}
+        onTogglePlatform={onTogglePlatform}
+        options={options}
+      />
+      <GameFilterChips
+        className="library-toolbar__filter-chips"
+        filters={filters}
         onToggleGenre={onToggleGenre}
         onTogglePlatform={onTogglePlatform}
         options={options}

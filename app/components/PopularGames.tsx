@@ -174,6 +174,7 @@ export function PopularGames({
         )}
         <GameFilterControl
           className="popular-games__filters"
+          density="compact"
           filters={filters}
           onClear={() => onFiltersChange(EMPTY_GAME_FILTERS)}
           onToggleGenre={(slug) => {

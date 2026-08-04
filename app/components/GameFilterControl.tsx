@@ -34,6 +34,7 @@ type GameFilterControlProps = {
   onToggleGenre: (value: string) => void;
   onTogglePlatform: (value: string) => void;
   className?: string;
+  density?: "default" | "compact";
 };
 
 type FilterOptionGroupProps = {
@@ -88,14 +89,114 @@ function getSelectedOptions(
   return options.filter((option) => selectedValueSet.has(option.slug));
 }
 
-export function GameFilterControl({
+type GameFilterButtonsProps = GameFilterControlProps;
+
+export function GameFilterButtons({
   filters,
   options,
   onClear,
   onToggleGenre,
   onTogglePlatform,
   className,
-}: GameFilterControlProps) {
+  density = "default",
+}: GameFilterButtonsProps) {
+  const activeCount = filters.genres.length + filters.platforms.length;
+  const hasOptions =
+    options.genres.length > 0 || options.platforms.length > 0;
+
+  return (
+    <ButtonGroup
+      className={cn("game-filter__buttons", className)}
+      data-density={density}
+    >
+      <Popover>
+        <PopoverTrigger
+          disabled={!hasOptions}
+          render={
+            <Button
+              aria-label="Filter games"
+              className="game-filter__trigger"
+              size="lg"
+              variant="outline"
+            />
+          }
+        >
+          <ListFilter aria-hidden="true" data-icon="inline-start" />
+          <span>Filter</span>
+          {activeCount > 0 ? (
+            <Badge variant="secondary">{activeCount}</Badge>
+          ) : null}
+        </PopoverTrigger>
+        <PopoverContent
+          align="end"
+          className="game-filter-popover"
+          sideOffset={8}
+        >
+          <Command>
+            <CommandInput placeholder="Search filters…" />
+            <CommandList>
+              <CommandEmpty>No filters found.</CommandEmpty>
+              <FilterOptionGroup
+                heading="Genre"
+                onToggle={onToggleGenre}
+                options={options.genres}
+                selectedValues={filters.genres}
+              />
+              {options.genres.length > 0 &&
+              options.platforms.length > 0 ? (
+                <CommandSeparator />
+              ) : null}
+              <FilterOptionGroup
+                heading="Platform"
+                onToggle={onTogglePlatform}
+                options={options.platforms}
+                selectedValues={filters.platforms}
+              />
+            </CommandList>
+            <CommandSeparator />
+            <Button
+              className="game-filter-command__clear"
+              disabled={activeCount === 0}
+              onClick={onClear}
+              size="sm"
+              variant="ghost"
+            >
+              Clear All
+            </Button>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {activeCount > 0 ? (
+        <Button
+          aria-label="Clear all filters"
+          className="game-filter__clear"
+          onClick={onClear}
+          size="icon-lg"
+          variant="outline"
+        >
+          <X aria-hidden="true" />
+        </Button>
+      ) : null}
+    </ButtonGroup>
+  );
+}
+
+type GameFilterChipsProps = Pick<
+  GameFilterControlProps,
+  | "className"
+  | "filters"
+  | "onToggleGenre"
+  | "onTogglePlatform"
+  | "options"
+>;
+
+export function GameFilterChips({
+  className,
+  filters,
+  onToggleGenre,
+  onTogglePlatform,
+  options,
+}: GameFilterChipsProps) {
   const selectedGenres = getSelectedOptions(
     options.genres,
     filters.genres,
@@ -114,107 +215,52 @@ export function GameFilterControl({
       type: "Platform" as const,
     })),
   ];
-  const activeCount = filters.genres.length + filters.platforms.length;
-  const hasOptions =
-    options.genres.length > 0 || options.platforms.length > 0;
+
+  if (selectedOptions.length === 0) {
+    return null;
+  }
 
   return (
-    <div className={cn("game-filter", className)}>
-      <ButtonGroup className="game-filter__buttons">
-        <Popover>
-          <PopoverTrigger
-            disabled={!hasOptions}
-            render={
-              <Button
-                aria-label="Filter games"
-                size="lg"
-                variant="outline"
-              />
-            }
-          >
-            <ListFilter aria-hidden="true" data-icon="inline-start" />
-            <span>Filter</span>
-            {activeCount > 0 ? (
-              <Badge variant="secondary">{activeCount}</Badge>
-            ) : null}
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            className="game-filter-popover"
-            sideOffset={8}
-          >
-            <Command>
-              <CommandInput placeholder="Search filters…" />
-              <CommandList>
-                <CommandEmpty>No filters found.</CommandEmpty>
-                <FilterOptionGroup
-                  heading="Genre"
-                  onToggle={onToggleGenre}
-                  options={options.genres}
-                  selectedValues={filters.genres}
-                />
-                {options.genres.length > 0 &&
-                options.platforms.length > 0 ? (
-                  <CommandSeparator />
-                ) : null}
-                <FilterOptionGroup
-                  heading="Platform"
-                  onToggle={onTogglePlatform}
-                  options={options.platforms}
-                  selectedValues={filters.platforms}
-                />
-              </CommandList>
-              <CommandSeparator />
-              <Button
-                className="game-filter-command__clear"
-                disabled={activeCount === 0}
-                onClick={onClear}
-                size="sm"
-                variant="ghost"
-              >
-                Clear All
-              </Button>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        {activeCount > 0 ? (
-          <Button
-            aria-label="Clear all filters"
-            onClick={onClear}
-            size="icon-lg"
-            variant="outline"
+    <div
+      aria-label="Active filters"
+      className={cn("game-filter__chips", className)}
+    >
+      {selectedOptions.map((option) => (
+        <Badge
+          className="game-filter-chip"
+          key={`${option.type}-${option.slug}`}
+          variant="secondary"
+        >
+          <span>{option.name}</span>
+          <button
+            aria-label={`Remove ${option.name} ${option.type.toLocaleLowerCase()} filter`}
+            onClick={() => {
+              if (option.type === "Genre") {
+                onToggleGenre(option.slug);
+              } else {
+                onTogglePlatform(option.slug);
+              }
+            }}
+            type="button"
           >
             <X aria-hidden="true" />
-          </Button>
-        ) : null}
-      </ButtonGroup>
+          </button>
+        </Badge>
+      ))}
+    </div>
+  );
+}
 
-      {selectedOptions.length > 0 ? (
-        <div aria-label="Active filters" className="game-filter__chips">
-          {selectedOptions.map((option) => (
-            <Badge
-              className="game-filter-chip"
-              key={`${option.type}-${option.slug}`}
-              variant="secondary"
-            >
-              <span>{option.name}</span>
-              <button
-                aria-label={`Remove ${option.name} ${option.type.toLocaleLowerCase()} filter`}
-                onClick={() => {
-                  if (option.type === "Genre") {
-                    onToggleGenre(option.slug);
-                  } else {
-                    onTogglePlatform(option.slug);
-                  }
-                }}
-                type="button"
-              >
-                <X aria-hidden="true" />
-              </button>
-            </Badge>
-          ))}
-        </div>
-      ) : null}
+export function GameFilterControl(props: GameFilterControlProps) {
+  return (
+    <div className={cn("game-filter", props.className)}>
+      <GameFilterButtons {...props} className={undefined} />
+      <GameFilterChips
+        filters={props.filters}
+        onToggleGenre={props.onToggleGenre}
+        onTogglePlatform={props.onTogglePlatform}
+        options={props.options}
+      />
     </div>
   );
 }

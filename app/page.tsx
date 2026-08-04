@@ -1,14 +1,13 @@
 import { LibraryExperience } from "@/app/components/LibraryExperience";
 import { DEFAULT_COLLECTION_ID } from "@/app/hooks/useLibrary";
 import { parseLibraryLocation } from "@/app/lib/library-navigation";
-import { cookies } from "next/headers";
 
 type HomePageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const [query, cookieStore] = await Promise.all([searchParams, cookies()]);
+  const query = await searchParams;
   const initialSearchParams = new URLSearchParams();
 
   for (const key of [
@@ -40,9 +39,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         initialSearchParams,
         DEFAULT_COLLECTION_ID,
       )}
-      initialSidebarOpen={
-        cookieStore.get("sidebar_state")?.value !== "false"
-      }
     />
   );
 }

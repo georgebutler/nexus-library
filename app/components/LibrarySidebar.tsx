@@ -406,6 +406,7 @@ export function LibrarySidebar({
                     return (
                       <SidebarMenuItem key={smartGenre.slug}>
                         <SidebarMenuButton
+                          className="nexus-sidebar-genre-link"
                           isActive={activeGenreSlug === smartGenre.slug}
                           render={
                             <a

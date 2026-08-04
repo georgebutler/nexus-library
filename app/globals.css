@@ -2740,31 +2740,7 @@ html.isSpatialDetails .screenshot {
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-rows: auto auto;
   gap: 12px;
-  align-items: start;
-}
-
-.library-toolbar > .search-console,
-.library-toolbar__filters {
-  grid-column: auto;
-}
-
-.library-toolbar__filters,
-.popular-games__filters {
-  min-width: 0;
-}
-
-.library-toolbar__filters {
-  display: contents;
-}
-
-.library-toolbar__filters .game-filter__buttons {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.library-toolbar__filters .game-filter__chips {
-  grid-column: 1 / -1;
-  grid-row: 2;
+  align-items: center;
 }
 
 .game-filter {
@@ -2778,7 +2754,7 @@ html.isSpatialDetails .screenshot {
   margin-left: auto;
 }
 
-.game-filter__buttons > [data-slot="popover-trigger"] {
+.game-filter__trigger {
   min-width: 108px;
 }
 
@@ -2921,24 +2897,6 @@ html.isSpatialDetails .screenshot {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto auto;
     gap: 8px;
-  }
-
-  .library-toolbar__filters {
-    display: contents;
-  }
-
-  .library-toolbar__filters .game-filter__buttons,
-  .library-toolbar__filters .game-filter__chips {
-    grid-column: 1;
-  }
-
-  .library-toolbar__filters .game-filter__buttons {
-    grid-row: 2;
-    margin-left: 0;
-  }
-
-  .library-toolbar__filters .game-filter__chips {
-    grid-row: 3;
   }
 
   .nexus-sidebar-brand [data-slot="item-content"] {
@@ -3142,6 +3100,19 @@ html:not(.isSpatialLibrary)
 
 html:not(.isSpatialLibrary)
   .nexus-library-sidebar
+  [data-slot="sidebar-menu-button"].nexus-sidebar-genre-link {
+  padding-right: 42px;
+}
+
+html:not(.isSpatialLibrary) .nexus-sidebar-genre-link > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
   [data-slot="sidebar-separator"] {
   margin-block: 8px;
   margin-inline: 16px;
@@ -3150,9 +3121,15 @@ html:not(.isSpatialLibrary)
 
 html:not(.isSpatialLibrary) .library-header {
   z-index: 40;
-  width: calc(100% - 32px);
-  margin-left: 32px;
-  padding: 8px 0 12px;
+  top: 0;
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  column-gap: 0;
+  margin-top: -20px;
+  margin-left: 0;
+  padding: 28px 0 12px;
   border: 0;
   border-radius: 0;
   background: color-mix(in srgb, var(--background) 92%, transparent);
@@ -3164,17 +3141,22 @@ html:not(.isSpatialLibrary) .library-header {
 html:not(.isSpatialLibrary)
   .library-header
   [data-slot="sidebar-trigger"] {
-  top: 14px;
-  left: -42px;
+  display: none;
 }
 
 html:not(.isSpatialLibrary) .library-toolbar {
-  grid-template-columns: minmax(0, 720px) minmax(108px, 1fr);
+  grid-column: 1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "search buttons"
+    "chips chips";
+  align-items: center;
   column-gap: 18px;
   row-gap: 8px;
 }
 
 html:not(.isSpatialLibrary) .search-console {
+  grid-area: search;
   max-width: 720px;
   border: 0;
   background: transparent;
@@ -3196,16 +3178,59 @@ html:not(.isSpatialLibrary) .search-console__status {
   font-size: 0.72rem;
 }
 
-html:not(.isSpatialLibrary) .game-filter__buttons {
+html:not(.isSpatialLibrary) .library-toolbar__filter-buttons {
+  grid-area: buttons;
+  justify-self: end;
   margin-left: auto;
 }
 
+html:not(.isSpatialLibrary) .library-toolbar__filter-chips {
+  grid-area: chips;
+}
+
 html:not(.isSpatialLibrary)
-  .game-filter__buttons
-  > [data-slot="popover-trigger"] {
-  min-width: 104px;
+  .library-toolbar
+  .game-filter__buttons {
+  align-items: center;
+}
+
+html:not(.isSpatialLibrary)
+  .library-toolbar
+  .game-filter__trigger,
+html:not(.isSpatialLibrary)
+  .library-toolbar
+  .game-filter__clear {
   height: 40px;
+}
+
+html:not(.isSpatialLibrary)
+  .library-toolbar
+  .game-filter__clear {
+  width: 40px;
+  min-width: 40px;
+}
+
+html:not(.isSpatialLibrary)
+  .library-toolbar
+  .game-filter__trigger {
+  min-width: 104px;
   background: color-mix(in srgb, var(--card) 72%, transparent);
+}
+
+html:not(.isSpatialLibrary)
+  .game-filter__buttons[data-density="compact"]
+  .game-filter__trigger,
+html:not(.isSpatialLibrary)
+  .game-filter__buttons[data-density="compact"]
+  .game-filter__clear {
+  height: 36px;
+}
+
+html:not(.isSpatialLibrary)
+  .game-filter__buttons[data-density="compact"]
+  .game-filter__clear {
+  width: 36px;
+  min-width: 36px;
 }
 
 html:not(.isSpatialLibrary) .game-filter__chips {
@@ -3227,7 +3252,7 @@ html:not(.isSpatialLibrary) .game-filter-chip button:focus-visible {
 }
 
 html:not(.isSpatialLibrary) .library-content__scroll {
-  margin-left: 32px;
+  margin-left: 0;
   scroll-margin-top: 88px;
 }
 
@@ -3469,22 +3494,38 @@ html:not(.isSpatialLibrary) .game-case--compact .game-case__rating {
     padding-top: 12px;
   }
 
-  html:not(.isSpatialLibrary) .library-header,
-  html:not(.isSpatialLibrary) .library-content__scroll {
-    margin-left: 0;
-  }
-
   html:not(.isSpatialLibrary) .library-header {
-    top: 12px;
+    top: 0;
     width: 100%;
-    padding: 8px 10px 12px;
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 10px;
+    margin-top: -12px;
+    margin-left: 0;
+    padding: 20px 10px 12px;
     border-radius: var(--radius);
     box-shadow: 0 1px 0 var(--border);
   }
 
+  html:not(.isSpatialLibrary)
+    .library-header
+    [data-slot="sidebar-trigger"] {
+    display: inline-flex;
+    grid-column: 1;
+    align-self: start;
+    margin-top: 6px;
+  }
+
   html:not(.isSpatialLibrary) .library-toolbar {
-    grid-template-columns: minmax(0, 1fr);
+    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "search buttons"
+      "chips chips";
     row-gap: 8px;
+  }
+
+  html:not(.isSpatialLibrary) .library-content__scroll {
+    margin-left: 0;
   }
 
   html:not(.isSpatialLibrary) .library-view {
@@ -3493,6 +3534,19 @@ html:not(.isSpatialLibrary) .game-case--compact .game-case__rating {
 }
 
 @media (max-width: 719px) {
+  html:not(.isSpatialLibrary) .library-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "search"
+      "buttons"
+      "chips";
+  }
+
+  html:not(.isSpatialLibrary) .library-toolbar__filter-buttons {
+    justify-self: start;
+    margin-left: 0;
+  }
+
   html:not(.isSpatialLibrary) .library-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;

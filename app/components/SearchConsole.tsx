@@ -38,10 +38,12 @@ export function SearchConsole({
         <InputGroupInput
           autoComplete="off"
           id="game-search"
+          inputMode="search"
           name="game-search"
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search games by title…"
-          type="search"
+          role="searchbox"
+          type="text"
           value={query}
         />
         {query ? (

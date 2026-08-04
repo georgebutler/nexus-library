@@ -51,19 +51,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type LibraryExperienceProps = {
   initialLocation: LibraryLocationState;
-  initialSidebarOpen: boolean;
 };
 
 export function LibraryExperience({
   initialLocation,
-  initialSidebarOpen,
 }: LibraryExperienceProps) {
   const router = useRouter();
   const { mode } = useSpatialRuntime();
   const isSpatial = mode === "spatial";
+  const isMobile = useIsMobile();
   const {
     collections,
     defaultCollectionId,
@@ -471,11 +471,11 @@ export function LibraryExperience({
   return (
     <SidebarProvider
       className="nexus-shell"
-      defaultOpen={isSpatial ? true : initialSidebarOpen}
-      disablePersistence={isSpatial}
-      disableShortcut={isSpatial}
+      defaultOpen
+      disablePersistence
+      disableShortcut
       forceDesktop={isSpatial}
-      open={isSpatial ? true : undefined}
+      open
       style={
         {
           "--sidebar-width": "240px",
@@ -511,7 +511,9 @@ export function LibraryExperience({
 
       <SidebarInset className="library-content">
         <header className="site-header library-header">
-          {isSpatial ? null : <SidebarTrigger />}
+          {!isSpatial && isMobile ? (
+            <SidebarTrigger className="library-header__mobile-trigger" />
+          ) : null}
           <LibraryToolbar
             filters={primaryFilters}
             isSearching={isSearching}

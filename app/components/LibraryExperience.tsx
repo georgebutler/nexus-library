@@ -203,99 +203,101 @@ export function LibraryExperience({
           }
           {...(isSpatial ? { "enable-xr": true } : {})}
         >
-          <SearchConsole
-            isSearching={isSearching}
-            onQueryChange={handleQueryChange}
-            query={query}
-            status={searchStatus}
-          />
+          <div className="library-content__inner">
+            <SearchConsole
+              isSearching={isSearching}
+              onQueryChange={handleQueryChange}
+              query={query}
+              status={searchStatus}
+            />
 
-          <div className="library-view">
-            <div className="library-view__heading">
-              {hasSearchQuery ? (
-                <>
-                  <span className="section-kicker">Catalog</span>
-                  <h1>{viewHeading}</h1>
-                </>
+            <div className="library-view">
+              <div className="library-view__heading">
+                {hasSearchQuery ? (
+                  <>
+                    <span className="section-kicker">Catalog</span>
+                    <h1>{viewHeading}</h1>
+                  </>
+                ) : (
+                  <h1 className="collection-title">
+                    <span className="section-kicker">Collection</span>
+                    <span aria-hidden="true"> - </span>
+                    {viewHeading}
+                  </h1>
+                )}
+              </div>
+
+              {!isLoaded ? (
+                <div
+                  aria-label="Loading library"
+                  className="library-grid library-loading"
+                >
+                  <Skeleton />
+                  <Skeleton />
+                  <Skeleton />
+                </div>
+              ) : visibleGames.length > 0 ? (
+                <div className="library-grid">
+                  {visibleGames.map((game, index) => (
+                    <GameCase
+                      activeCollectionName={activeCollection.name}
+                      action={
+                        hasSearchQuery ? (
+                          <CollectionPicker
+                            collectionIds={getGameCollectionIds(game.id)}
+                            collections={collections}
+                            game={game}
+                            onCreateCollection={createCollection}
+                            onToggleMembership={toggleGameMembership}
+                          />
+                        ) : undefined
+                      }
+                      game={game}
+                      isInActiveCollection={isInActiveCollection(game.id)}
+                      key={game.id}
+                      onOpen={openGame}
+                      onToggleActiveCollection={toggleActiveCollection}
+                      priority={index < 5}
+                    />
+                  ))}
+                </div>
+              ) : hasSearchQuery ? (
+                <Empty className="library-grid-state">
+                  <EmptyHeader>
+                    <EmptyTitle>Search results</EmptyTitle>
+                    <EmptyDescription>
+                      {searchStatus || "No matching games found."}
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               ) : (
-                <h1 className="collection-title">
-                  <span className="section-kicker">Collection</span>
-                  <span aria-hidden="true"> - </span>
-                  {viewHeading}
-                </h1>
+                <Empty className="library-grid-state">
+                  <EmptyHeader>
+                    <EmptyTitle>No games in this collection</EmptyTitle>
+                    <EmptyDescription>
+                      Search for a game by title to add one.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               )}
             </div>
 
-            {!isLoaded ? (
-              <div
-                aria-label="Loading library"
-                className="library-grid library-loading"
-              >
-                <Skeleton />
-                <Skeleton />
-                <Skeleton />
-              </div>
-            ) : visibleGames.length > 0 ? (
-              <div className="library-grid">
-                {visibleGames.map((game, index) => (
-                  <GameCase
-                    activeCollectionName={activeCollection.name}
-                    action={
-                      hasSearchQuery ? (
-                        <CollectionPicker
-                          collectionIds={getGameCollectionIds(game.id)}
-                          collections={collections}
-                          game={game}
-                          onCreateCollection={createCollection}
-                          onToggleMembership={toggleGameMembership}
-                        />
-                      ) : undefined
-                    }
-                    game={game}
-                    isInActiveCollection={isInActiveCollection(game.id)}
-                    key={game.id}
-                    onOpen={openGame}
-                    onToggleActiveCollection={toggleActiveCollection}
-                    priority={index < 5}
-                  />
-                ))}
-              </div>
-            ) : hasSearchQuery ? (
-              <Empty className="library-grid-state">
-                <EmptyHeader>
-                  <EmptyTitle>Search results</EmptyTitle>
-                  <EmptyDescription>
-                    {searchStatus || "No matching games found."}
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            ) : (
-              <Empty className="library-grid-state">
-                <EmptyHeader>
-                  <EmptyTitle>No games in this collection</EmptyTitle>
-                  <EmptyDescription>
-                    Search for a game by title to add one.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            )}
+            <PopularGames
+              activeCollectionName={activeCollection.name}
+              collections={collections}
+              games={discoverGames}
+              getGameCollectionIds={getGameCollectionIds}
+              isInActiveCollection={isInActiveCollection}
+              isLoading={isDiscoverLoading}
+              isVisible={!hasSearchQuery}
+              onCreateCollection={createCollection}
+              onOpen={openGame}
+              onToggleActiveCollection={toggleActiveCollection}
+              onToggleMembership={toggleGameMembership}
+            />
+
+            <ProjectFooter />
           </div>
-
-          <PopularGames
-            activeCollectionName={activeCollection.name}
-            collections={collections}
-            games={discoverGames}
-            getGameCollectionIds={getGameCollectionIds}
-            isInActiveCollection={isInActiveCollection}
-            isLoading={isDiscoverLoading}
-            isVisible={!hasSearchQuery}
-            onCreateCollection={createCollection}
-            onOpen={openGame}
-            onToggleActiveCollection={toggleActiveCollection}
-            onToggleMembership={toggleGameMembership}
-          />
-
-          <ProjectFooter />
         </section>
       </div>
     </main>

@@ -68,7 +68,11 @@ body {
 }
 
 html.isSpatialLibrary,
-html.isSpatialLibrary body {
+html.isSpatialLibrary body,
+html.isSpatialDetails,
+html.isSpatialDetails body {
+  height: 100%;
+  overflow: hidden;
   background: transparent;
   --xr-background-material: transparent;
 }
@@ -422,6 +426,13 @@ a {
   display: flex;
   min-width: 0;
   min-height: 100%;
+  flex-direction: column;
+}
+
+.library-content__inner {
+  display: flex;
+  min-height: 100%;
+  flex: 1;
   flex-direction: column;
 }
 
@@ -1277,108 +1288,177 @@ a {
   -webkit-backdrop-filter: blur(18px);
 }
 
-html.isSpatialLibrary {
-  --foreground: #ffffff;
-  --card-foreground: #ffffff;
-  --popover-foreground: #ffffff;
-  --secondary-foreground: #ffffff;
-  --muted-foreground: #d3d9e3;
-  --accent-foreground: #ffffff;
-  --text: #ffffff;
-  --border: rgba(255, 255, 255, 0.2);
-  --border-bright: rgba(255, 255, 255, 0.38);
+html.isSpatialLibrary,
+html.isSpatialDetails {
+  --spatial-panel: #ffffff;
+  --spatial-text: #20242c;
+  --spatial-muted: #66707d;
+  --spatial-border: #d8dde5;
+  --spatial-subtle: #f4f6f8;
+  --spatial-accent: #2f8f46;
+  --spatial-accent-soft: #e8f4eb;
 }
 
-html.isSpatialLibrary .nexus-shell {
-  color: var(--foreground);
+html.isSpatialLibrary .nexus-shell,
+html.isSpatialDetails .details-page {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.isSpatialLibrary .nexus-shell > .site-header,
+html.isSpatialDetails .site-header {
+  flex: 0 0 auto;
+  color: #ffffff;
+}
+
+html.isSpatialLibrary .nexus-brand__mark,
+html.isSpatialDetails .nexus-brand__mark {
+  color: #9eff8f;
 }
 
 html.isSpatialLibrary .library-layout {
-  align-items: start;
+  min-height: 0;
+  align-items: stretch;
 }
 
 html.isSpatialLibrary .collection-sidebar,
-html.isSpatialLibrary .library-content {
-  border: 1px solid var(--border);
+html.isSpatialLibrary .library-content,
+html.isSpatialDetails .details-shell {
+  --background: var(--spatial-panel);
+  --foreground: var(--spatial-text);
+  --card: var(--spatial-panel);
+  --card-foreground: var(--spatial-text);
+  --popover: var(--spatial-panel);
+  --popover-foreground: var(--spatial-text);
+  --primary: var(--spatial-accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--spatial-subtle);
+  --secondary-foreground: var(--spatial-text);
+  --muted: var(--spatial-subtle);
+  --muted-foreground: var(--spatial-muted);
+  --accent: var(--spatial-accent-soft);
+  --accent-foreground: var(--spatial-text);
+  --border: var(--spatial-border);
+  --input: var(--spatial-border);
+  --ring: var(--spatial-accent);
+  border: 1px solid var(--spatial-border);
   border-radius: calc(var(--radius) * 2.5);
-  background: rgba(8, 11, 18, 0.18);
-  color: var(--foreground);
+  background: var(--spatial-panel);
+  color: var(--spatial-text);
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
 html.isSpatialLibrary .collection-sidebar {
-  top: 20px;
+  position: relative;
+  top: auto;
+  height: fit-content;
 }
 
 html.isSpatialLibrary .library-content {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0;
+  overscroll-behavior: contain;
+  scrollbar-color: #c3c9d1 transparent;
+}
+
+html.isSpatialLibrary .library-content__inner {
+  min-height: 100%;
   padding: 18px;
 }
 
 html.isSpatialLibrary .search-console {
-  top: 20px;
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(6, 9, 15, 0.72);
+  top: 0;
+  border-color: var(--spatial-border);
+  background: var(--spatial-panel);
 }
 
 html.isSpatialLibrary .search-field {
-  background: rgba(3, 6, 11, 0.72);
+  border-color: var(--spatial-border);
+  background: var(--spatial-subtle);
 }
 
-html.isSpatialLibrary .search-field input,
-html.isSpatialLibrary .search-field input::placeholder {
-  color: var(--foreground);
+html.isSpatialLibrary .search-field input {
+  color: var(--spatial-text);
 }
 
 html.isSpatialLibrary .search-field input::placeholder {
-  opacity: 0.68;
+  color: var(--spatial-muted);
+  opacity: 1;
+}
+
+html.isSpatialLibrary .section-kicker,
+html.isSpatialLibrary .popular-games__heading h2,
+html.isSpatialLibrary .collection-row.is-active .collection-row__select svg {
+  color: var(--spatial-accent);
 }
 
 html.isSpatialLibrary .collection-sidebar__heading,
 html.isSpatialLibrary .collection-row__select,
 html.isSpatialLibrary .search-console__status,
-html.isSpatialLibrary .game-case__eyebrow,
-html.isSpatialLibrary .platform-icons,
+html.isSpatialLibrary .library-grid-state,
 html.isSpatialLibrary .project-footer {
-  color: var(--muted-foreground);
-}
-
-html.isSpatialLibrary .collection-row.is-active .collection-row__select,
-html.isSpatialLibrary .game-case h3,
-html.isSpatialLibrary .project-footer a {
-  color: var(--foreground);
+  color: var(--spatial-muted);
 }
 
 html.isSpatialLibrary .collection-row.is-active {
-  border-color: rgba(158, 255, 143, 0.42);
-  background: rgba(158, 255, 143, 0.14);
+  border-color: #a7d8b2;
+  background: var(--spatial-accent-soft);
+}
+
+html.isSpatialLibrary .collection-row.is-active .collection-row__select,
+html.isSpatialLibrary .project-footer a {
+  color: var(--spatial-text);
+}
+
+html.isSpatialLibrary .collection-sidebar__heading button:hover,
+html.isSpatialLibrary .collection-sidebar__heading button:focus-visible,
+html.isSpatialLibrary .collection-row__menu-button:hover,
+html.isSpatialLibrary .collection-row__menu-button:focus-visible {
+  background: var(--spatial-subtle);
+  color: var(--spatial-text);
+}
+
+html.isSpatialLibrary .collection-row__edit input,
+html.isSpatialLibrary .collection-sidebar__create input {
+  border-color: var(--spatial-border);
+  background: var(--spatial-panel);
+  color: var(--spatial-text);
 }
 
 html.isSpatialLibrary .game-case {
-  overflow: visible;
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(8, 11, 18, 0.82);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.45);
+  border-radius: calc(var(--radius) * 1.4);
+  background: #151925;
+  color: #ffffff;
+  box-shadow: 0 16px 32px rgba(31, 36, 44, 0.18);
 }
 
 html.isSpatialLibrary .game-case:hover,
 html.isSpatialLibrary .game-case:focus-within {
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 34px rgba(31, 36, 44, 0.22);
   transform: none;
 }
 
 html.isSpatialLibrary .game-case__art {
-  overflow: visible;
-  background: rgba(5, 8, 13, 0.54);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  aspect-ratio: auto;
+  border-radius: inherit;
 }
 
-html.isSpatialLibrary .game-cover-media[data-cover-mode="spatial"] {
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: calc(var(--radius) - 1px)
-    calc(var(--radius) - 1px) 0 0;
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.3);
+html.isSpatialLibrary .game-cover-media {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: inherit;
 }
 
 html.isSpatialLibrary .game-case:hover .game-cover-media img,
@@ -1386,23 +1466,74 @@ html.isSpatialLibrary .game-case:focus-within .game-cover-media img {
   transform: none;
 }
 
-html.isSpatialLibrary .game-case__scrim,
+html.isSpatialLibrary .game-case__scrim {
+  inset: 28% 0 0;
+  z-index: 1;
+  display: block;
+  height: auto;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 8, 13, 0) 0%,
+    rgba(5, 8, 13, 0.54) 34%,
+    rgba(5, 8, 13, 0.96) 100%
+  );
+}
+
 html.isSpatialLibrary .game-case__browser-controls {
   display: none;
 }
 
+html.isSpatialLibrary .game-case__body {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0;
+  min-height: 0;
+  padding: 14px;
+  border-radius: 0;
+  color: #ffffff;
+  pointer-events: none;
+}
+
 html.isSpatialLibrary .game-case__metadata-row {
   display: flex;
-  min-height: 24px;
+  min-height: 20px;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-right: 34px;
 }
 
 html.isSpatialLibrary .game-case__eyebrow {
   min-width: 0;
   margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.68rem;
+}
+
+html.isSpatialLibrary .game-case h3 {
+  height: auto;
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+html.isSpatialLibrary .game-case__platform-slot {
+  height: 22px;
+  margin-top: 7px;
+}
+
+html.isSpatialLibrary .platform-icons {
+  color: rgba(255, 255, 255, 0.88);
+  pointer-events: auto;
+}
+
+html.isSpatialLibrary .platform-icons__trigger:hover,
+html.isSpatialLibrary .platform-icons__trigger:focus-visible,
+html.isSpatialLibrary .platform-icons__more:hover,
+html.isSpatialLibrary .platform-icons__more:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 
 html.isSpatialLibrary .game-case__spatial-rating {
@@ -1413,9 +1544,10 @@ html.isSpatialLibrary .game-case__spatial-rating {
 html.isSpatialLibrary .game-case__spatial-action {
   position: absolute;
   z-index: 3;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   display: block;
+  pointer-events: auto;
 }
 
 html.isSpatialLibrary .game-case__spatial-rating .game-case__rating,
@@ -1427,15 +1559,155 @@ html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
 }
 
 html.isSpatialLibrary .game-case__spatial-rating .game-case__rating {
-  height: 21px;
+  height: 20px;
   padding: 3px 6px;
-  background: rgba(8, 11, 18, 0.74);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(5, 8, 13, 0.62);
+  color: #ffffff;
 }
 
 html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(5, 8, 13, 0.68);
+  color: #ffffff;
   box-shadow: none;
+}
+
+html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle:hover {
+  background: rgba(5, 8, 13, 0.84);
+  color: #ffffff;
+}
+
+html.isSpatialLibrary .game-case__body > .collection-picker {
+  margin-top: 8px;
+  pointer-events: auto;
+}
+
+html.isSpatialLibrary .collection-picker__trigger {
+  height: 28px;
+  min-height: 28px;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(5, 8, 13, 0.62);
+  color: #ffffff;
+  font-size: 0.7rem;
+}
+
+html.isSpatialLibrary .collection-picker__trigger:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(5, 8, 13, 0.8);
+  color: #ffffff;
+}
+
+html.isSpatialLibrary .library-grid-state {
+  border-color: var(--spatial-border);
+  background: var(--spatial-subtle);
+}
+
+html.isSpatialLibrary .popular-games__spatial-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    var(--spatial-discover-columns),
+    minmax(0, 1fr)
+  );
+  gap: 14px;
+}
+
+html.isSpatialLibrary .popular-games__spatial-pagination {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 9px;
+  margin: 14px 0 0 auto;
+}
+
+html.isSpatialLibrary .popular-games__spatial-pagination span {
+  min-width: 44px;
+  color: var(--spatial-muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+html.isSpatialLibrary .popular-games__spatial-pagination button {
+  border-color: var(--spatial-border);
+  background: var(--spatial-panel);
+  color: var(--spatial-text);
+}
+
+html.isSpatialLibrary .popular-games__spatial-pagination button:hover:not(:disabled) {
+  background: var(--spatial-subtle);
+}
+
+html.isSpatialLibrary [data-slot="popover-content"],
+html.isSpatialLibrary [data-slot="dropdown-menu-content"],
+html.isSpatialDetails [data-slot="popover-content"],
+html.isSpatialDetails [data-slot="dropdown-menu-content"] {
+  border-color: var(--spatial-border);
+  background: var(--spatial-panel);
+  color: var(--spatial-text);
+}
+
+html.isSpatialDetails .details-page {
+  color: #ffffff;
+}
+
+html.isSpatialDetails .details-shell {
+  height: calc(100vh - 92px);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #c3c9d1 transparent;
+}
+
+html.isSpatialDetails .details-panel,
+html.isSpatialDetails .details-information,
+html.isSpatialDetails .screenshot-section,
+html.isSpatialDetails .project-footer {
+  color: var(--spatial-text);
+}
+
+html.isSpatialDetails .details-cover-card {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: #151925;
+  box-shadow: 0 18px 36px rgba(31, 36, 44, 0.2);
+}
+
+html.isSpatialDetails .details-summary-card,
+html.isSpatialDetails .details-information [data-slot="card"] {
+  border-color: var(--spatial-border);
+  background: var(--spatial-subtle);
+  color: var(--spatial-text);
+}
+
+html.isSpatialDetails .details-summary,
+html.isSpatialDetails .details-information [data-slot="card-content"] > p,
+html.isSpatialDetails .game-information span,
+html.isSpatialDetails .game-information svg,
+html.isSpatialDetails .project-footer {
+  color: var(--spatial-muted);
+}
+
+html.isSpatialDetails .game-information strong,
+html.isSpatialDetails .game-information .platform-icons {
+  color: var(--spatial-text);
+}
+
+html.isSpatialDetails .details-copy [data-slot="badge"] {
+  border-color: var(--spatial-border);
+  background: var(--spatial-panel);
+  color: var(--spatial-text);
+}
+
+html.isSpatialDetails .details-copy .collection-picker__trigger {
+  border-color: var(--spatial-accent);
+  background: var(--spatial-accent);
+  color: #ffffff;
+}
+
+html.isSpatialDetails .screenshot {
+  border-color: var(--spatial-border);
+  background: var(--spatial-subtle);
 }
 
 .game-case {
@@ -1694,7 +1966,7 @@ html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
   text-transform: none;
 }
 
-.library-content > .project-footer {
+.library-content__inner > .project-footer {
   margin-top: auto;
   padding-top: 40px;
 }

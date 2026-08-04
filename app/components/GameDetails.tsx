@@ -54,6 +54,7 @@ type GameDetailsProps = {
 export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
   const router = useRouter();
   const { mode } = useSpatialRuntime();
+  const isSpatial = mode === "spatial";
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,6 +65,16 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
     toggleGameMembership,
     getGameCollectionIds,
   } = useLibrary();
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.classList.toggle("isSpatialDetails", isSpatial);
+
+    return () => {
+      root.classList.remove("isSpatialDetails");
+    };
+  }, [isSpatial]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -122,9 +133,25 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
 
   if (isLoading) {
     return (
-      <main className="details-page">
+      <main
+        className="details-page"
+        style={
+          isSpatial
+            ? { "--xr-background-material": "transparent" }
+            : undefined
+        }
+        {...(isSpatial ? { "enable-xr": true } : {})}
+      >
         {header}
-        <div className="details-shell">
+        <div
+          className="details-shell"
+          style={
+            isSpatial
+              ? { "--xr-background-material": "regular" }
+              : undefined
+          }
+          {...(isSpatial ? { "enable-xr": true } : {})}
+        >
           <div className="details-panel details-panel--loading">
             <Card className="details-cover-card">
               <Skeleton className="details-cover" />
@@ -146,9 +173,25 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
 
   if (error || !game) {
     return (
-      <main className="details-page">
+      <main
+        className="details-page"
+        style={
+          isSpatial
+            ? { "--xr-background-material": "transparent" }
+            : undefined
+        }
+        {...(isSpatial ? { "enable-xr": true } : {})}
+      >
         {header}
-        <div className="details-shell details-state">
+        <div
+          className="details-shell details-state"
+          style={
+            isSpatial
+              ? { "--xr-background-material": "regular" }
+              : undefined
+          }
+          {...(isSpatial ? { "enable-xr": true } : {})}
+        >
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
@@ -170,16 +213,42 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
   const publishers = game.publishers ?? [];
 
   return (
-    <main className="details-page">
+    <main
+      className="details-page"
+      style={
+        isSpatial
+          ? { "--xr-background-material": "transparent" }
+          : undefined
+      }
+      {...(isSpatial ? { "enable-xr": true } : {})}
+    >
       {header}
 
-      <div className="details-shell">
+      <div
+        className="details-shell"
+        style={
+          isSpatial
+            ? { "--xr-background-material": "regular" }
+            : undefined
+        }
+        {...(isSpatial ? { "enable-xr": true } : {})}
+      >
         <div className="details-panel">
-          <Card className="details-cover-card glass-panel">
+          <Card
+            className="details-cover-card glass-panel"
+            style={
+              isSpatial
+                ? {
+                    "--xr-background-material": "transparent",
+                    "--xr-back": "50px",
+                  }
+                : undefined
+            }
+            {...(isSpatial ? { "enable-xr": true } : {})}
+          >
             <div className="details-cover">
               <GameCoverMedia
                 game={game}
-                mode={mode}
                 priority
                 variant="detail"
               />

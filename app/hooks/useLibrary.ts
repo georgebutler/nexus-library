@@ -5,6 +5,7 @@ import {
   getUniquePlatformFamilies,
   resolvePlatformFamilies,
 } from "@/app/lib/platforms";
+import { getAllSavedGames } from "@/app/lib/smart-genres";
 import type { Game } from "@/app/types/game";
 
 export const LEGACY_LIBRARY_STORAGE_KEY = "nexus_library_games";
@@ -570,6 +571,10 @@ export function useLibrary() {
       }),
     [activeCollection.gameIds, library.games],
   );
+  const allSavedGames = useMemo(
+    () => getAllSavedGames(library.collections, library.games),
+    [library.collections, library.games],
+  );
 
   const getGameCollectionIds = useCallback(
     (gameId: number) =>
@@ -592,6 +597,7 @@ export function useLibrary() {
     defaultCollectionId: library.defaultCollectionId,
     activeCollection,
     activeCollectionGames,
+    allSavedGames,
     isLoaded,
     createCollection,
     renameCollection,

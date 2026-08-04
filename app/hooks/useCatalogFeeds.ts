@@ -18,12 +18,14 @@ export const DISCOVER_GAME_COUNT = 20;
 type FeedState = {
   games: Game[];
   isLoading: boolean;
+  isSettled: boolean;
   error: string | null;
 };
 
 const INITIAL_FEED_STATE: FeedState = {
   games: [],
   isLoading: false,
+  isSettled: false,
   error: null,
 };
 
@@ -59,13 +61,19 @@ export function useCatalogFeeds(query: string) {
       controller.signal,
     )
       .then((games) => {
-        setDiscover({ games, isLoading: false, error: null });
+        setDiscover({
+          games,
+          isLoading: false,
+          isSettled: true,
+          error: null,
+        });
       })
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
           setDiscover({
             games: [],
             isLoading: false,
+            isSettled: true,
             error:
               error instanceof Error
                 ? error.message
@@ -90,6 +98,7 @@ export function useCatalogFeeds(query: string) {
       setSearch((current) => ({
         games: current.games,
         isLoading: true,
+        isSettled: false,
         error: null,
       }));
 
@@ -99,7 +108,12 @@ export function useCatalogFeeds(query: string) {
       )
         .then((games) => {
           if (requestId === searchRequestId.current) {
-            setSearch({ games, isLoading: false, error: null });
+            setSearch({
+              games,
+              isLoading: false,
+              isSettled: true,
+              error: null,
+            });
           }
         })
         .catch((error: unknown) => {
@@ -110,6 +124,7 @@ export function useCatalogFeeds(query: string) {
             setSearch({
               games: [],
               isLoading: false,
+              isSettled: true,
               error:
                 error instanceof Error
                   ? error.message
@@ -140,6 +155,7 @@ export function useCatalogFeeds(query: string) {
     searchGames: search.games,
     searchStatus,
     isSearching: search.isLoading,
+    isSearchSettled: search.isSettled,
     discoverGames: discover.games,
     discoverError: discover.error,
     isDiscoverLoading: discover.isLoading,

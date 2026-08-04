@@ -39,7 +39,7 @@ export function SearchConsole({
           autoComplete="off"
           id="game-search"
           onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search games by title"
+          placeholder="Search games by title…"
           type="search"
           value={query}
         />

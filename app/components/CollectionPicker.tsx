@@ -33,6 +33,7 @@ type CollectionPickerProps = {
   collections: GameCollection[];
   collectionIds: string[];
   disabled?: boolean;
+  forceEditLabel?: boolean;
   onCreateCollection: (name: string) => string;
   onToggleMembership: (game: Game, collectionId: string) => void;
   size?: "compact" | "large";
@@ -43,6 +44,7 @@ export function CollectionPicker({
   collections,
   collectionIds,
   disabled = false,
+  forceEditLabel = false,
   onCreateCollection,
   onToggleMembership,
   size = "compact",
@@ -95,19 +97,19 @@ export function CollectionPicker({
             <Button
               className={cn(
                 "collection-picker__trigger",
-                isSaved ? "is-saved" : "is-unsaved",
+                isSaved || forceEditLabel ? "is-saved" : "is-unsaved",
               )}
               size={size === "large" ? "lg" : "sm"}
-              variant={isSaved ? "outline" : "default"}
+              variant={isSaved || forceEditLabel ? "outline" : "default"}
             />
           }
         >
-          {isSaved ? (
+          {isSaved || forceEditLabel ? (
             <Check aria-hidden="true" data-icon="inline-start" />
           ) : (
             <Plus aria-hidden="true" data-icon="inline-start" />
           )}
-          {isSaved ? "Edit collections" : "Save"}
+          {isSaved || forceEditLabel ? "Edit collections" : "Save"}
         </PopoverTrigger>
         <PopoverContent
           align="start"

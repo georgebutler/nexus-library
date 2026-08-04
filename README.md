@@ -20,12 +20,14 @@
   <a href="https://nexus-library-six.vercel.app">Open the live demo →</a>
 </p>
 
-![Nexus Library desktop interface showing populated collections, six saved games, search, and the Discover carousel](docs/images/nexus-library.webp)
+![Nexus Library desktop interface showing populated user collections, smart genre collections, six saved games, a unified Filter control, and the Discover carousel](docs/images/nexus-library.webp)
 
 ## Features
 
 - **Named local collections** — create, rename, delete, and organize collections without an account or database.
+- **Smart genre collections** — browse deduplicated saved games in URL-addressable genre views derived from every user collection.
 - **Catalog search** — find games by title through an authenticated, server-side IGDB proxy.
+- **Faceted filters** — search and combine contextual genre and platform filters independently across the library, search results, and Discover.
 - **Discover carousel** — browse a recent-popular selection when no search is active.
 - **Detailed game pages** — view descriptions, release dates, ratings, critic scores, developers, publishers, and official links.
 - **Platform identification** — scan accessible brand and fallback icons across current, legacy, and spatial platforms.

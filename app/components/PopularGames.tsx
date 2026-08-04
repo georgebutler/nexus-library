@@ -6,11 +6,22 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type Dispatch,
+  type SetStateAction,
 } from "react";
 import { CollectionPicker } from "@/app/components/CollectionPicker";
+import { GameFilterControl } from "@/app/components/GameFilterControl";
 import { GameCase } from "@/app/components/GameCase";
 import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import type { GameCollection } from "@/app/hooks/useLibrary";
+import {
+  EMPTY_GAME_FILTERS,
+  filterGames,
+  hasActiveGameFilters,
+  toggleFilterValue,
+  type GameFilterOptions,
+  type GameFilters,
+} from "@/app/lib/game-filters";
 import {
   getSpatialDiscoverPageSize,
   paginateSpatialDiscover,
@@ -27,16 +38,27 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 type PopularGamesProps = {
   activeCollectionName: string;
   collections: GameCollection[];
+  filters: GameFilters;
+  filterOptions: GameFilterOptions;
   getGameCollectionIds: (gameId: number) => string[];
   isInActiveCollection: (gameId: number) => boolean;
+  isSmartView: boolean;
   isVisible: boolean;
   games: Game[];
   isLoading: boolean;
   onCreateCollection: (name: string) => string;
+  onFiltersChange: Dispatch<SetStateAction<GameFilters>>;
   onOpen: (game: Game) => void;
   onToggleActiveCollection: (game: Game) => void;
   onToggleMembership: (game: Game, collectionId: string) => void;
@@ -75,12 +97,16 @@ function PopularGamesSkeleton() {
 export function PopularGames({
   activeCollectionName,
   collections,
+  filters,
+  filterOptions,
   getGameCollectionIds,
   isInActiveCollection,
+  isSmartView,
   isVisible,
   games,
   isLoading,
   onCreateCollection,
+  onFiltersChange,
   onOpen,
   onToggleActiveCollection,
   onToggleMembership,
@@ -92,6 +118,8 @@ export function PopularGames({
   const [spatialPageSize, setSpatialPageSize] = useState(
     SPATIAL_DISCOVER_NARROW_PAGE_SIZE,
   );
+  const filteredGames = filterGames(games, filters);
+  const hasFilters = hasActiveGameFilters(filters);
 
   useEffect(() => {
     if (!isSpatial || !spatialSectionRef.current) {
@@ -111,7 +139,7 @@ export function PopularGames({
   }, [isSpatial]);
 
   const spatialPageData = paginateSpatialDiscover(
-    games,
+    filteredGames,
     spatialPage,
     spatialPageSize,
   );
@@ -133,10 +161,52 @@ export function PopularGames({
     >
       <div className="popular-games__heading">
         <h2 id="popular-games-heading">Discover</h2>
+        <GameFilterControl
+          className="popular-games__filters"
+          filters={filters}
+          onClear={() => onFiltersChange(EMPTY_GAME_FILTERS)}
+          onToggleGenre={(slug) => {
+            onFiltersChange((currentFilters) => ({
+              ...currentFilters,
+              genres: toggleFilterValue(
+                currentFilters.genres,
+                slug,
+              ),
+            }));
+          }}
+          onTogglePlatform={(slug) => {
+            onFiltersChange((currentFilters) => ({
+              ...currentFilters,
+              platforms: toggleFilterValue(
+                currentFilters.platforms,
+                slug,
+              ),
+            }));
+          }}
+          options={filterOptions}
+        />
       </div>
 
       {isLoading ? (
         <PopularGamesSkeleton />
+      ) : filteredGames.length === 0 && hasFilters ? (
+        <Empty className="library-grid-state popular-games__empty">
+          <EmptyHeader>
+            <EmptyTitle>No Discover games match these filters</EmptyTitle>
+            <EmptyDescription>
+              Clear the active genre and platform filters to show more games.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button
+              onClick={() => onFiltersChange(EMPTY_GAME_FILTERS)}
+              size="sm"
+              variant="outline"
+            >
+              Clear filters
+            </Button>
+          </EmptyContent>
+        </Empty>
       ) : isSpatial ? (
         <div className="popular-games__spatial">
           <div
@@ -148,11 +218,14 @@ export function PopularGames({
           >
             {spatialPageData.games.map((game) => (
               <GameCase
-                activeCollectionName={activeCollectionName}
+                activeCollectionName={
+                  isSmartView ? undefined : activeCollectionName
+                }
                 action={
                   <CollectionPicker
                     collectionIds={getGameCollectionIds(game.id)}
                     collections={collections}
+                    forceEditLabel={isSmartView}
                     game={game}
                     onCreateCollection={onCreateCollection}
                     onToggleMembership={onToggleMembership}
@@ -162,7 +235,9 @@ export function PopularGames({
                 isInActiveCollection={isInActiveCollection(game.id)}
                 key={game.id}
                 onOpen={onOpen}
-                onToggleActiveCollection={onToggleActiveCollection}
+                onToggleActiveCollection={
+                  isSmartView ? undefined : onToggleActiveCollection
+                }
               />
             ))}
           </div>
@@ -213,14 +288,17 @@ export function PopularGames({
           }}
         >
           <CarouselContent>
-            {games.map((game) => (
+            {filteredGames.map((game) => (
               <CarouselItem className="popular-games__slide" key={game.id}>
                 <GameCase
-                  activeCollectionName={activeCollectionName}
+                  activeCollectionName={
+                    isSmartView ? undefined : activeCollectionName
+                  }
                   action={
                     <CollectionPicker
                       collectionIds={getGameCollectionIds(game.id)}
                       collections={collections}
+                      forceEditLabel={isSmartView}
                       game={game}
                       onCreateCollection={onCreateCollection}
                       onToggleMembership={onToggleMembership}
@@ -229,7 +307,9 @@ export function PopularGames({
                   game={game}
                   isInActiveCollection={isInActiveCollection(game.id)}
                   onOpen={onOpen}
-                  onToggleActiveCollection={onToggleActiveCollection}
+                  onToggleActiveCollection={
+                    isSmartView ? undefined : onToggleActiveCollection
+                  }
                 />
               </CarouselItem>
             ))}

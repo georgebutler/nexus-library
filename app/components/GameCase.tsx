@@ -14,6 +14,7 @@ import type { Game } from "@/app/types/game";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type GameCaseProps = {
   game: Game;
@@ -24,6 +25,7 @@ type GameCaseProps = {
   onToggleActiveCollection?: (game: Game) => void;
   style?: CSSProperties;
   priority?: boolean;
+  presentation?: "library" | "compact";
 };
 
 export function GameCase({
@@ -35,6 +37,7 @@ export function GameCase({
   onToggleActiveCollection,
   style,
   priority = false,
+  presentation = "library",
 }: GameCaseProps) {
   const { mode } = useSpatialRuntime();
   const isSpatial = mode === "spatial";
@@ -86,7 +89,10 @@ export function GameCase({
 
   return (
     <Card
-      className="game-case group"
+      className={cn(
+        "game-case group",
+        !isSpatial && `game-case--${presentation}`,
+      )}
       size="sm"
       style={
         isSpatial
@@ -115,6 +121,9 @@ export function GameCase({
         <div className="game-case__browser-controls">
           {collectionToggle}
           {rating}
+          {!isSpatial && action ? (
+            <div className="game-case__collection-action">{action}</div>
+          ) : null}
         </div>
       </div>
 
@@ -129,7 +138,7 @@ export function GameCase({
             platforms={game.platformFamilies ?? []}
           />
         </div>
-        {action}
+        {isSpatial ? action : null}
       </CardContent>
     </Card>
   );

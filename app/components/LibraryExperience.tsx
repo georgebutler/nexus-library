@@ -487,6 +487,12 @@ export function LibraryExperience({
       }
       {...(isSpatial ? { "enable-xr": true } : {})}
     >
+      {isSpatial ? null : (
+        <a className="skip-link" href="#library-main">
+          Skip to game library
+        </a>
+      )}
+
       <LibrarySidebar
         activeCollectionId={activeCollection.id}
         activeGenreSlug={activeSmartGenre?.slug ?? null}
@@ -521,29 +527,44 @@ export function LibraryExperience({
 
         <section
           className="library-content__scroll"
+          id="library-main"
           style={
             isSpatial
               ? { "--xr-background-material": "transparent" }
               : undefined
           }
+          tabIndex={-1}
           {...(isSpatial ? { "enable-xr": true } : {})}
         >
           <div className="library-content__inner">
             <div className="library-view">
               <div className="library-view__heading">
-                {hasSearchQuery ? (
-                  <>
-                    <span className="section-kicker">Catalog</span>
-                    <h1>{viewHeading}</h1>
-                  </>
+                {isSpatial ? (
+                  hasSearchQuery ? (
+                    <>
+                      <span className="section-kicker">Catalog</span>
+                      <h1>{viewHeading}</h1>
+                    </>
+                  ) : (
+                    <h1 className="collection-title">
+                      <span className="section-kicker">
+                        {isSmartView ? "Smart collection" : "Collection"}
+                      </span>
+                      <span aria-hidden="true"> - </span>
+                      {viewHeading}
+                    </h1>
+                  )
                 ) : (
-                  <h1 className="collection-title">
+                  <>
                     <span className="section-kicker">
-                      {isSmartView ? "Smart collection" : "Collection"}
+                      {hasSearchQuery
+                        ? "Catalog"
+                        : isSmartView
+                          ? "Smart collection"
+                          : "Your library"}
                     </span>
-                    <span aria-hidden="true"> - </span>
-                    {viewHeading}
-                  </h1>
+                    <h1 className="collection-title">{viewHeading}</h1>
+                  </>
                 )}
               </div>
 

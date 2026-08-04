@@ -26,6 +26,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 type CollectionPickerProps = {
@@ -49,6 +50,7 @@ export function CollectionPicker({
   onToggleMembership,
   size = "compact",
 }: CollectionPickerProps) {
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
@@ -164,9 +166,11 @@ export function CollectionPicker({
                 <div className="collection-picker__new-controls">
                   <Input
                     aria-invalid={Boolean(error)}
-                    autoFocus
+                    autoComplete="off"
+                    autoFocus={!isMobile}
                     id={`new-collection-${game.id}`}
                     maxLength={COLLECTION_NAME_MAX_LENGTH}
+                    name="new-collection"
                     onChange={(event) => {
                       setNewCollectionName(event.target.value);
                       setError(null);

@@ -3001,3 +3001,542 @@ html.isSpatialLibrary .library-content__inner {
   min-height: 100%;
   padding: 18px;
 }
+
+/* Editorial browser library */
+html:not(.isSpatialLibrary) body:has(.nexus-shell) {
+  background:
+    radial-gradient(
+      circle at 58% -8%,
+      rgba(98, 121, 148, 0.12),
+      transparent 31%
+    ),
+    var(--background);
+}
+
+html:not(.isSpatialLibrary) .skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 12px;
+  left: 50%;
+  padding: 9px 13px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.8rem;
+  font-weight: 650;
+  transform: translate(-50%, calc(-100% - 20px));
+  transition: transform 140ms ease;
+}
+
+html:not(.isSpatialLibrary) .skip-link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 38%, white);
+  outline-offset: 3px;
+  transform: translate(-50%, 0);
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-shell
+  [data-slot="sidebar-container"] {
+  height: calc(100vh - 40px);
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-shell
+  [data-slot="sidebar-inner"] {
+  border-width: 0 1px 0 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-header"] {
+  padding: 8px 14px 22px 8px;
+}
+
+html:not(.isSpatialLibrary) .nexus-sidebar-brand {
+  min-height: 44px;
+  padding-inline: 8px;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-group"] {
+  padding: 8px 16px 12px 8px;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-group-label"] {
+  height: 28px;
+  padding-inline: 8px;
+  color: color-mix(
+    in srgb,
+    var(--sidebar-foreground) 48%,
+    transparent
+  );
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-group-action"] {
+  top: 12px;
+  right: 20px;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu"] {
+  gap: 3px;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu-button"] {
+  height: 36px;
+  padding-inline: 9px;
+  color: color-mix(
+    in srgb,
+    var(--sidebar-foreground) 64%,
+    transparent
+  );
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu-button"]:hover,
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu-button"]:focus-visible {
+  background: color-mix(
+    in srgb,
+    var(--sidebar-accent) 66%,
+    transparent
+  );
+  color: var(--sidebar-foreground);
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu-button"][data-active] {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--sidebar-foreground);
+  box-shadow: inset 2px 0 0 var(--primary);
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-menu-badge"] {
+  right: 8px;
+  color: color-mix(
+    in srgb,
+    var(--sidebar-foreground) 42%,
+    transparent
+  );
+  font-size: 0.68rem;
+}
+
+html:not(.isSpatialLibrary)
+  .nexus-library-sidebar
+  [data-slot="sidebar-separator"] {
+  margin-block: 8px;
+  margin-inline: 16px;
+  opacity: 0.72;
+}
+
+html:not(.isSpatialLibrary) .library-header {
+  z-index: 40;
+  width: calc(100% - 32px);
+  margin-left: 32px;
+  padding: 8px 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--background) 92%, transparent);
+  box-shadow: 0 1px 0 var(--border);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
+
+html:not(.isSpatialLibrary)
+  .library-header
+  [data-slot="sidebar-trigger"] {
+  top: 14px;
+  left: -42px;
+}
+
+html:not(.isSpatialLibrary) .library-toolbar {
+  grid-template-columns: minmax(0, 720px) minmax(108px, 1fr);
+  column-gap: 18px;
+  row-gap: 8px;
+}
+
+html:not(.isSpatialLibrary) .search-console {
+  max-width: 720px;
+  border: 0;
+  background: transparent;
+}
+
+html:not(.isSpatialLibrary) .search-field {
+  height: 40px;
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+}
+
+html:not(.isSpatialLibrary) .search-field:focus-within {
+  border-color: color-mix(in srgb, var(--ring) 52%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 14%, transparent);
+}
+
+html:not(.isSpatialLibrary) .search-console__status {
+  padding: 6px 4px 0;
+  font-size: 0.72rem;
+}
+
+html:not(.isSpatialLibrary) .game-filter__buttons {
+  margin-left: auto;
+}
+
+html:not(.isSpatialLibrary)
+  .game-filter__buttons
+  > [data-slot="popover-trigger"] {
+  min-width: 104px;
+  height: 40px;
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+}
+
+html:not(.isSpatialLibrary) .game-filter__chips {
+  gap: 7px;
+  padding-top: 1px;
+}
+
+html:not(.isSpatialLibrary) .game-filter-chip {
+  height: 26px;
+  background: color-mix(in srgb, var(--secondary) 82%, transparent);
+}
+
+html:not(.isSpatialLibrary) .game-filter-chip button:focus-visible {
+  background: color-mix(in srgb, var(--foreground) 13%, transparent);
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+  outline: 0;
+}
+
+html:not(.isSpatialLibrary) .library-content__scroll {
+  margin-left: 32px;
+  scroll-margin-top: 88px;
+}
+
+html:not(.isSpatialLibrary) .library-content__scroll:focus {
+  outline: 0;
+}
+
+html:not(.isSpatialLibrary) .library-content__inner {
+  padding-bottom: 4px;
+}
+
+html:not(.isSpatialLibrary) .library-view {
+  padding-top: 40px;
+}
+
+html:not(.isSpatialLibrary) .library-view__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 24px;
+}
+
+html:not(.isSpatialLibrary) .library-view__heading .section-kicker,
+html:not(.isSpatialLibrary) .popular-games__title .section-kicker {
+  color: var(--muted-foreground);
+  font-size: 0.69rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html:not(.isSpatialLibrary) .library-view__heading h1 {
+  max-width: 760px;
+  margin: 0;
+  color: var(--foreground);
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+html:not(.isSpatialLibrary) .library-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
+}
+
+html:not(.isSpatialLibrary) .game-case {
+  border-color: color-mix(in srgb, var(--border) 88%, transparent);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.14);
+}
+
+html:not(.isSpatialLibrary) .game-case:hover,
+html:not(.isSpatialLibrary) .game-case:focus-within {
+  border-color: color-mix(in srgb, var(--border-bright) 78%, transparent);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
+}
+
+html:not(.isSpatialLibrary) .game-case:focus-within {
+  outline-width: 2px;
+  outline-offset: 3px;
+}
+
+html:not(.isSpatialLibrary) .game-cover-media img {
+  transition: transform 240ms ease;
+}
+
+html:not(.isSpatialLibrary)
+  .game-case:hover
+  .game-cover-media
+  img,
+html:not(.isSpatialLibrary)
+  .game-case:focus-within
+  .game-cover-media
+  img {
+  transform: scale(1.018);
+}
+
+html:not(.isSpatialLibrary) .game-case__body {
+  min-height: 104px;
+  padding: 14px 14px 13px;
+}
+
+html:not(.isSpatialLibrary) .game-case__eyebrow {
+  margin-bottom: 6px;
+  font-size: 0.76rem;
+}
+
+html:not(.isSpatialLibrary) .game-case h3 {
+  height: 2.45rem;
+  font-size: 0.96rem;
+  font-weight: 620;
+  line-height: 1.28;
+}
+
+html:not(.isSpatialLibrary) .game-case__platform-slot {
+  height: 26px;
+  margin-top: 8px;
+}
+
+html:not(.isSpatialLibrary) .game-case__collection-action {
+  position: absolute;
+  z-index: 3;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+html:not(.isSpatialLibrary)
+  .game-case:hover
+  .game-case__collection-action,
+html:not(.isSpatialLibrary)
+  .game-case:focus-within
+  .game-case__collection-action {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+html:not(.isSpatialLibrary)
+  .game-case__collection-action
+  .collection-picker {
+  margin-top: 0;
+}
+
+html:not(.isSpatialLibrary)
+  .game-case__collection-action
+  .collection-picker__trigger {
+  min-height: 34px;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(8, 11, 18, 0.9);
+  color: var(--foreground);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+html:not(.isSpatialLibrary)
+  .game-case__collection-action
+  .collection-picker__trigger:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(18, 23, 34, 0.96);
+  color: var(--foreground);
+}
+
+html:not(.isSpatialLibrary) .popular-games {
+  margin-top: 56px;
+}
+
+html:not(.isSpatialLibrary) .popular-games__separator {
+  margin-bottom: 28px;
+  opacity: 0.8;
+}
+
+html:not(.isSpatialLibrary) .popular-games__heading {
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+html:not(.isSpatialLibrary) .popular-games__title {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+html:not(.isSpatialLibrary) .popular-games__heading h2 {
+  color: var(--foreground);
+  font-size: clamp(1.4rem, 2vw, 1.75rem);
+  letter-spacing: -0.035em;
+}
+
+html:not(.isSpatialLibrary) .popular-games__filters {
+  margin-right: 76px;
+}
+
+html:not(.isSpatialLibrary) .popular-games__carousel {
+  overflow: hidden;
+}
+
+html:not(.isSpatialLibrary) .popular-games__slide {
+  flex-basis: clamp(154px, 16.75%, 192px);
+}
+
+html:not(.isSpatialLibrary) .game-case--compact .game-case__body {
+  min-height: 88px;
+  padding: 11px 12px 10px;
+}
+
+html:not(.isSpatialLibrary) .game-case--compact h3 {
+  height: 2.2rem;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+html:not(.isSpatialLibrary) .game-case--compact .game-case__eyebrow {
+  margin-bottom: 4px;
+  font-size: 0.7rem;
+}
+
+html:not(.isSpatialLibrary)
+  .game-case--compact
+  .game-case__platform-slot {
+  height: 22px;
+  margin-top: 5px;
+}
+
+html:not(.isSpatialLibrary) .game-case--compact .game-case__rating {
+  height: 21px;
+  font-size: 0.66rem;
+}
+
+@media (max-width: 1439px) {
+  html:not(.isSpatialLibrary) .library-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1179px) {
+  html:not(.isSpatialLibrary) .library-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  html:not(.isSpatialLibrary) .popular-games__slide {
+    flex-basis: clamp(156px, 22%, 190px);
+  }
+}
+
+@media (max-width: 979px) {
+  html:not(.isSpatialLibrary) .nexus-shell[data-slot="sidebar-wrapper"] {
+    padding-top: 12px;
+  }
+
+  html:not(.isSpatialLibrary) .library-header,
+  html:not(.isSpatialLibrary) .library-content__scroll {
+    margin-left: 0;
+  }
+
+  html:not(.isSpatialLibrary) .library-header {
+    top: 12px;
+    width: 100%;
+    padding: 8px 10px 12px;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  html:not(.isSpatialLibrary) .library-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+
+  html:not(.isSpatialLibrary) .library-view {
+    padding-top: 34px;
+  }
+}
+
+@media (max-width: 719px) {
+  html:not(.isSpatialLibrary) .library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  html:not(.isSpatialLibrary) .library-view__heading h1 {
+    font-size: clamp(1.8rem, 8vw, 2.25rem);
+  }
+
+  html:not(.isSpatialLibrary) .popular-games__heading {
+    align-items: stretch;
+  }
+
+  html:not(.isSpatialLibrary) .popular-games__filters {
+    margin-right: 0;
+  }
+
+  html:not(.isSpatialLibrary) .popular-games__slide {
+    flex-basis: calc((100% - 14px) / 2);
+  }
+}
+
+@media (max-width: 419px) {
+  html:not(.isSpatialLibrary) .library-grid {
+    grid-template-columns: 1fr;
+  }
+
+  html:not(.isSpatialLibrary) .popular-games__slide {
+    flex-basis: 82%;
+  }
+}
+
+@media (hover: none) {
+  html:not(.isSpatialLibrary) .game-case__collection-action {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.isSpatialLibrary) .game-case,
+  html:not(.isSpatialLibrary) .game-cover-media img,
+  html:not(.isSpatialLibrary) .game-case__collection-action {
+    transform: none !important;
+  }
+}

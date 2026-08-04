@@ -20,7 +20,7 @@
   <a href="https://nexus-library-six.vercel.app">Open the live demo →</a>
 </p>
 
-![Nexus Library desktop interface showing populated user collections, smart genre collections, six saved games, a unified Filter control, and the Discover carousel](docs/images/nexus-library.webp)
+![Nexus Library editorial desktop interface showing integrated collection navigation, a five-card Windows-filtered library grid, and a compact Discover rail](docs/images/nexus-library.webp)
 
 ## Features
 

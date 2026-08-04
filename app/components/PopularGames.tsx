@@ -45,6 +45,7 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Separator } from "@/components/ui/separator";
 
 type PopularGamesProps = {
   activeCollectionName: string;
@@ -159,8 +160,18 @@ export function PopularGames({
       hidden={!isVisible}
       ref={spatialSectionRef}
     >
+      {isSpatial ? null : (
+        <Separator className="popular-games__separator" />
+      )}
       <div className="popular-games__heading">
-        <h2 id="popular-games-heading">Discover</h2>
+        {isSpatial ? (
+          <h2 id="popular-games-heading">Discover</h2>
+        ) : (
+          <div className="popular-games__title">
+            <span className="section-kicker">Beyond your library</span>
+            <h2 id="popular-games-heading">Discover</h2>
+          </div>
+        )}
         <GameFilterControl
           className="popular-games__filters"
           filters={filters}
@@ -238,6 +249,7 @@ export function PopularGames({
                 onToggleActiveCollection={
                   isSmartView ? undefined : onToggleActiveCollection
                 }
+                presentation="compact"
               />
             ))}
           </div>
@@ -310,6 +322,7 @@ export function PopularGames({
                   onToggleActiveCollection={
                     isSmartView ? undefined : onToggleActiveCollection
                   }
+                  presentation="compact"
                 />
               </CarouselItem>
             ))}

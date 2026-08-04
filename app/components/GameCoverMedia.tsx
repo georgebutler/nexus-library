@@ -46,6 +46,7 @@ function CoverFallback({
       <Image
         alt={`${game.name} cover art`}
         fill
+        loading={priority ? "eager" : "lazy"}
         priority={priority}
         sizes={
           variant === "card"

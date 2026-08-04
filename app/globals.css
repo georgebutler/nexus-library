@@ -67,6 +67,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html.isSpatialLibrary,
+html.isSpatialLibrary body {
+  background: transparent;
+  --xr-background-material: transparent;
+}
+
 button,
 input {
   font: inherit;
@@ -571,39 +577,26 @@ a {
 
 .game-cover-media {
   position: relative;
+  display: block;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   aspect-ratio: var(--game-cover-aspect-ratio, 0.75);
+  border-radius: inherit;
 }
 
-.game-cover-media__fallback,
-.game-cover-media__reality {
+.game-cover-media img {
   position: absolute;
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.game-cover-media__fallback {
-  z-index: 0;
-}
-
-.game-cover-media[data-cover-mode="spatial"] .game-cover-media__fallback {
-  visibility: hidden;
-}
-
-.game-cover-media__reality {
-  z-index: 1;
-}
-
-.game-cover-media__fallback img {
   object-fit: cover;
   transition: transform 400ms ease;
 }
 
-.game-case:hover .game-cover-media__fallback img,
-.game-case:focus-within .game-cover-media__fallback img {
+.game-case:hover .game-cover-media img,
+.game-case:focus-within .game-cover-media img {
   transform: scale(1.04);
 }
 
@@ -681,6 +674,19 @@ a {
   min-height: 124px;
   padding: 12px 12px 13px;
   border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
+}
+
+.game-case__metadata-row {
+  min-width: 0;
+}
+
+.game-case__browser-controls {
+  display: contents;
+}
+
+.game-case__spatial-rating,
+.game-case__spatial-action {
+  display: none;
 }
 
 .game-case__eyebrow {
@@ -808,37 +814,6 @@ a {
   color: var(--muted-foreground);
   font-size: 0.8rem;
   line-height: 1.55;
-}
-
-.library-loading {
-  display: flex;
-  min-height: 260px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.library-loading span {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--primary);
-  animation: loading-pulse 900ms infinite alternate;
-}
-
-.library-loading span:nth-child(2) {
-  animation-delay: 150ms;
-}
-
-.library-loading span:nth-child(3) {
-  animation-delay: 300ms;
-}
-
-@keyframes loading-pulse {
-  to {
-    opacity: 0.25;
-    transform: translateY(6px);
-  }
 }
 
 .details-page {
@@ -1302,6 +1277,167 @@ a {
   -webkit-backdrop-filter: blur(18px);
 }
 
+html.isSpatialLibrary {
+  --foreground: #ffffff;
+  --card-foreground: #ffffff;
+  --popover-foreground: #ffffff;
+  --secondary-foreground: #ffffff;
+  --muted-foreground: #d3d9e3;
+  --accent-foreground: #ffffff;
+  --text: #ffffff;
+  --border: rgba(255, 255, 255, 0.2);
+  --border-bright: rgba(255, 255, 255, 0.38);
+}
+
+html.isSpatialLibrary .nexus-shell {
+  color: var(--foreground);
+}
+
+html.isSpatialLibrary .library-layout {
+  align-items: start;
+}
+
+html.isSpatialLibrary .collection-sidebar,
+html.isSpatialLibrary .library-content {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 2.5);
+  background: rgba(8, 11, 18, 0.18);
+  color: var(--foreground);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.isSpatialLibrary .collection-sidebar {
+  top: 20px;
+}
+
+html.isSpatialLibrary .library-content {
+  padding: 18px;
+}
+
+html.isSpatialLibrary .search-console {
+  top: 20px;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(6, 9, 15, 0.72);
+}
+
+html.isSpatialLibrary .search-field {
+  background: rgba(3, 6, 11, 0.72);
+}
+
+html.isSpatialLibrary .search-field input,
+html.isSpatialLibrary .search-field input::placeholder {
+  color: var(--foreground);
+}
+
+html.isSpatialLibrary .search-field input::placeholder {
+  opacity: 0.68;
+}
+
+html.isSpatialLibrary .collection-sidebar__heading,
+html.isSpatialLibrary .collection-row__select,
+html.isSpatialLibrary .search-console__status,
+html.isSpatialLibrary .game-case__eyebrow,
+html.isSpatialLibrary .platform-icons,
+html.isSpatialLibrary .project-footer {
+  color: var(--muted-foreground);
+}
+
+html.isSpatialLibrary .collection-row.is-active .collection-row__select,
+html.isSpatialLibrary .game-case h3,
+html.isSpatialLibrary .project-footer a {
+  color: var(--foreground);
+}
+
+html.isSpatialLibrary .collection-row.is-active {
+  border-color: rgba(158, 255, 143, 0.42);
+  background: rgba(158, 255, 143, 0.14);
+}
+
+html.isSpatialLibrary .game-case {
+  overflow: visible;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(8, 11, 18, 0.82);
+}
+
+html.isSpatialLibrary .game-case:hover,
+html.isSpatialLibrary .game-case:focus-within {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: none;
+  transform: none;
+}
+
+html.isSpatialLibrary .game-case__art {
+  overflow: visible;
+  background: rgba(5, 8, 13, 0.54);
+}
+
+html.isSpatialLibrary .game-cover-media[data-cover-mode="spatial"] {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: calc(var(--radius) - 1px)
+    calc(var(--radius) - 1px) 0 0;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.3);
+}
+
+html.isSpatialLibrary .game-case:hover .game-cover-media img,
+html.isSpatialLibrary .game-case:focus-within .game-cover-media img {
+  transform: none;
+}
+
+html.isSpatialLibrary .game-case__scrim,
+html.isSpatialLibrary .game-case__browser-controls {
+  display: none;
+}
+
+html.isSpatialLibrary .game-case__metadata-row {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: 34px;
+}
+
+html.isSpatialLibrary .game-case__eyebrow {
+  min-width: 0;
+  margin: 0;
+}
+
+html.isSpatialLibrary .game-case__spatial-rating {
+  display: block;
+  flex: 0 0 auto;
+}
+
+html.isSpatialLibrary .game-case__spatial-action {
+  position: absolute;
+  z-index: 3;
+  top: 8px;
+  right: 8px;
+  display: block;
+}
+
+html.isSpatialLibrary .game-case__spatial-rating .game-case__rating,
+html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
+  position: static;
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+html.isSpatialLibrary .game-case__spatial-rating .game-case__rating {
+  height: 21px;
+  padding: 3px 6px;
+  background: rgba(8, 11, 18, 0.74);
+}
+
+html.isSpatialLibrary .game-case__spatial-action .game-case__collection-toggle {
+  width: 28px;
+  height: 28px;
+  box-shadow: none;
+}
+
 .game-case {
   gap: 0;
   padding: 0;
@@ -1534,9 +1670,6 @@ a {
 }
 
 .library-loading {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
   min-height: auto;
 }
 
@@ -1721,7 +1854,7 @@ a {
   background: var(--muted);
 }
 
-.details-cover .game-cover-media__fallback img {
+.details-cover .game-cover-media img {
   object-fit: contain;
 }
 

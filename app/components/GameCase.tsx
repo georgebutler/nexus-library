@@ -47,6 +47,40 @@ export function GameCase({
     event.stopPropagation();
     onToggleActiveCollection?.(game);
   };
+  const collectionToggle = hasActiveCollectionAction ? (
+    <Button
+      aria-label={
+        isInActiveCollection
+          ? `Remove ${game.name} from ${activeCollectionName}`
+          : `Add ${game.name} to ${activeCollectionName}`
+      }
+      className={
+        isInActiveCollection
+          ? "game-case__collection-toggle is-remove"
+          : "game-case__collection-toggle is-add"
+      }
+      onClick={handleCollectionToggle}
+      size="icon"
+      type="button"
+      variant={isInActiveCollection ? "secondary" : "default"}
+    >
+      {isInActiveCollection ? (
+        <Minus aria-hidden="true" />
+      ) : (
+        <Plus aria-hidden="true" />
+      )}
+    </Button>
+  ) : null;
+  const rating = game.rating !== null ? (
+    <Badge className="game-case__rating" variant="secondary">
+      <Star
+        aria-hidden="true"
+        data-icon="inline-start"
+        fill="currentColor"
+      />
+      {game.rating.toFixed(1)}
+    </Badge>
+  ) : null;
 
   return (
     <Card
@@ -69,46 +103,22 @@ export function GameCase({
           variant="card"
         />
         <div className="game-case__scrim" />
-        {hasActiveCollectionAction ? (
-          <Button
-            aria-label={
-              isInActiveCollection
-                ? `Remove ${game.name} from ${activeCollectionName}`
-                : `Add ${game.name} to ${activeCollectionName}`
-            }
-            className={
-              isInActiveCollection
-                ? "game-case__collection-toggle is-remove"
-                : "game-case__collection-toggle is-add"
-            }
-            onClick={handleCollectionToggle}
-            size="icon"
-            type="button"
-            variant={isInActiveCollection ? "secondary" : "default"}
-          >
-            {isInActiveCollection ? (
-              <Minus aria-hidden="true" />
-            ) : (
-              <Plus aria-hidden="true" />
-            )}
-          </Button>
-        ) : null}
-        {game.rating !== null ? (
-          <Badge className="game-case__rating" variant="secondary">
-            <Star
-              aria-hidden="true"
-              data-icon="inline-start"
-              fill="currentColor"
-            />
-            {game.rating.toFixed(1)}
-          </Badge>
-        ) : null}
+        <div className="game-case__browser-controls">
+          {collectionToggle}
+          {rating}
+        </div>
       </div>
 
       <CardContent className="game-case__body">
-        <p className="game-case__eyebrow">
-          {game.genres[0]?.name ?? "Game"} · {releaseYear}
-        </p>
+        <div className="game-case__metadata-row">
+          <p className="game-case__eyebrow">
+            {game.genres[0]?.name ?? "Game"} · {releaseYear}
+          </p>
+          <div className="game-case__spatial-rating">{rating}</div>
+        </div>
+        <div className="game-case__spatial-action">
+          {collectionToggle}
+        </div>
         <h3>{game.name}</h3>
         <div className="game-case__platform-slot">
           <PlatformIcons

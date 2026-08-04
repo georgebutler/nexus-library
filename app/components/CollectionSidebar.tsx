@@ -45,6 +45,7 @@ type CollectionSidebarProps = {
   onRenameCollection: (collectionId: string, name: string) => void;
   onSelectCollection: (collectionId: string) => void;
   managementMode?: "full" | "create-only";
+  isSpatial?: boolean;
 };
 
 export function CollectionSidebar({
@@ -56,6 +57,7 @@ export function CollectionSidebar({
   onRenameCollection,
   onSelectCollection,
   managementMode = "full",
+  isSpatial = false,
 }: CollectionSidebarProps) {
   const [isCreating, setIsCreating] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
@@ -119,6 +121,12 @@ export function CollectionSidebar({
     <aside
       aria-label="Game collections"
       className="collection-sidebar glass-panel"
+      style={
+        isSpatial
+          ? { "--xr-background-material": "regular" }
+          : undefined
+      }
+      {...(isSpatial ? { "enable-xr": true } : {})}
     >
       <div className="collection-sidebar__heading">
         <span>Collections</span>

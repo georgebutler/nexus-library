@@ -14,6 +14,7 @@ import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { SearchConsole } from "@/app/components/SearchConsole";
 import { SiteHeader } from "@/app/components/SiteHeader";
+import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useCatalogFeeds } from "@/app/hooks/useCatalogFeeds";
 import { useLibrary } from "@/app/hooks/useLibrary";
 import {
@@ -38,6 +39,8 @@ export function LibraryExperience({
   initialLocation,
 }: LibraryExperienceProps) {
   const router = useRouter();
+  const { mode } = useSpatialRuntime();
+  const isSpatial = mode === "spatial";
   const {
     collections,
     defaultCollectionId,
@@ -64,6 +67,16 @@ export function LibraryExperience({
     discoverGames,
     isDiscoverLoading,
   } = useCatalogFeeds(query);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.classList.toggle("isSpatialLibrary", isSpatial);
+
+    return () => {
+      root.classList.remove("isSpatialLibrary");
+    };
+  }, [isSpatial]);
 
   useEffect(() => {
     if (!isLoaded || hasRestoredCollection.current) {
@@ -158,7 +171,15 @@ export function LibraryExperience({
   );
 
   return (
-    <main className="nexus-shell">
+    <main
+      className="nexus-shell"
+      style={
+        isSpatial
+          ? { "--xr-background-material": "transparent" }
+          : undefined
+      }
+      {...(isSpatial ? { "enable-xr": true } : {})}
+    >
       <SiteHeader />
 
       <div className="library-layout">
@@ -170,9 +191,18 @@ export function LibraryExperience({
           onDeleteCollection={deleteCollection}
           onRenameCollection={renameCollection}
           onSelectCollection={handleSelectCollection}
+          isSpatial={isSpatial}
         />
 
-        <section className="library-content">
+        <section
+          className="library-content"
+          style={
+            isSpatial
+              ? { "--xr-background-material": "regular" }
+              : undefined
+          }
+          {...(isSpatial ? { "enable-xr": true } : {})}
+        >
           <SearchConsole
             isSearching={isSearching}
             onQueryChange={handleQueryChange}
@@ -197,7 +227,10 @@ export function LibraryExperience({
             </div>
 
             {!isLoaded ? (
-              <div aria-label="Loading library" className="library-loading">
+              <div
+                aria-label="Loading library"
+                className="library-grid library-loading"
+              >
                 <Skeleton />
                 <Skeleton />
                 <Skeleton />

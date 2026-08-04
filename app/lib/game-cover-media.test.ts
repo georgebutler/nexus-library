@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  GAME_CASE_USDZ_SRC,
   GAME_COVER_ASPECT_RATIO,
+  SPATIAL_GAME_COVER_BACK,
   getGameCoverFallback,
-  getGameCoverResourceIds,
   getGameCoverSizing,
-  isSpatialGameCoverReady,
-  shouldRenderSpatialGameCover,
+  shouldElevateGameCover,
 } from "@/app/lib/game-cover-media";
 
 describe("game cover media", () => {
@@ -30,31 +28,17 @@ describe("game cover media", () => {
     });
   });
 
-  it("uses stable game and variant scoped resource ids", () => {
-    expect(getGameCoverResourceIds(72, "card")).toEqual({
-      asset: "game-cover-72-card-asset",
-      entity: "game-cover-72-card-entity",
-      frontMaterial: "game-cover-72-card-front-material",
-      shellMaterial: "game-cover-72-card-shell-material",
-      texture: "game-cover-72-card-texture",
-    });
-    expect(getGameCoverResourceIds(72, "detail").texture).toBe(
-      "game-cover-72-detail-texture",
-    );
-  });
-
-  it("keeps both variants at 3:4 with a larger detail model", () => {
+  it("keeps both variants at 3:4 and 100px spatial depth", () => {
     const card = getGameCoverSizing("card");
     const detail = getGameCoverSizing("detail");
 
-    expect(GAME_CASE_USDZ_SRC).toBe("/usdz/game-case.usdz");
     expect(card.aspectRatio).toBe(GAME_COVER_ASPECT_RATIO);
     expect(detail.aspectRatio).toBe(GAME_COVER_ASPECT_RATIO);
-    expect(detail.scale).toBeGreaterThan(card.scale);
-    expect(detail.depth).toBeGreaterThan(card.depth);
+    expect(card.back).toBe(SPATIAL_GAME_COVER_BACK);
+    expect(detail.back).toBe(SPATIAL_GAME_COVER_BACK);
   });
 
-  it("renders the spatial case only when artwork and resources are valid", () => {
+  it("elevates image artwork only in spatial mode", () => {
     const imageFallback = getGameCoverFallback({
       background_image: "https://images.example/cover.jpg",
       name: "Portal 2",
@@ -64,24 +48,8 @@ describe("game cover media", () => {
       name: "Portal 2",
     });
 
-    expect(
-      shouldRenderSpatialGameCover("spatial", imageFallback, false),
-    ).toBe(true);
-    expect(
-      shouldRenderSpatialGameCover("browser", imageFallback, false),
-    ).toBe(false);
-    expect(
-      shouldRenderSpatialGameCover("spatial", imageFallback, true),
-    ).toBe(false);
-    expect(
-      shouldRenderSpatialGameCover("spatial", initialsFallback, false),
-    ).toBe(false);
-  });
-
-  it("keeps the fallback until the model and texture are both loaded", () => {
-    expect(isSpatialGameCoverReady(false, false)).toBe(false);
-    expect(isSpatialGameCoverReady(true, false)).toBe(false);
-    expect(isSpatialGameCoverReady(false, true)).toBe(false);
-    expect(isSpatialGameCoverReady(true, true)).toBe(true);
+    expect(shouldElevateGameCover("spatial", imageFallback)).toBe(true);
+    expect(shouldElevateGameCover("browser", imageFallback)).toBe(false);
+    expect(shouldElevateGameCover("spatial", initialsFallback)).toBe(false);
   });
 });

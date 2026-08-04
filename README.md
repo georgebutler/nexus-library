@@ -31,7 +31,7 @@
 - **Platform identification** — scan accessible brand and fallback icons across current, legacy, and spatial platforms.
 - **Screenshot lightbox** — open full-bleed screenshots with arrow controls, keyboard navigation, and a position counter.
 - **Installable PWA** — add Nexus Library to a desktop or mobile home screen with a dedicated offline fallback.
-- **USDZ game cases** — WebSpatial mode keeps the browser layout while rendering each available cover as a fixed, straight-on 3D case.
+- **Spatial cover art** — WebSpatial mode keeps the browser layout while lifting available game artwork 100px in front of the library panels.
 
 ## How It Works
 
@@ -116,7 +116,7 @@ Launch WebSpatial Builder in another:
 pnpm spatial
 ```
 
-The browser and spatial experiences share the same route and component tree. In spatial mode, collection, search, Discover, and detail layouts stay unchanged; only game-cover regions switch from optimized images to fixed USDZ cases textured with the current IGDB artwork. Cases support taps for existing card navigation and do not register drag, rotate, or resize behavior.
+The browser and spatial experiences share the same route and component tree. In spatial mode, the library uses a transparent outer workspace with separate regular-material sidebar and content panels. Optimized IGDB cover images sit 100px in front of those panels and retain tap navigation without drag, rotate, resize, or model behavior. Game detail pages keep their existing shell and elevate only the cover artwork.
 
 ## PWA Behavior
 

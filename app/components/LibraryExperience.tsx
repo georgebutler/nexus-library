@@ -14,17 +14,8 @@ import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { SearchConsole } from "@/app/components/SearchConsole";
 import { SiteHeader } from "@/app/components/SiteHeader";
-import { SpatialGameShelf } from "@/app/components/SpatialGameShelf";
-import { SpatialErrorBoundary } from "@/app/components/SpatialErrorBoundary";
-import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useCatalogFeeds } from "@/app/hooks/useCatalogFeeds";
 import { useLibrary } from "@/app/hooks/useLibrary";
-import {
-  clampPage,
-  getGalleryFeedKey,
-  getPageAfterFeedChange,
-  selectGalleryFeed,
-} from "@/app/lib/library-gallery";
 import {
   buildGameUrl,
   buildLibraryUrl,
@@ -48,11 +39,6 @@ export function LibraryExperience({
 }: LibraryExperienceProps) {
   const router = useRouter();
   const {
-    mode,
-    error: runtimeError,
-    fallbackToBrowser,
-  } = useSpatialRuntime();
-  const {
     collections,
     defaultCollectionId,
     activeCollection,
@@ -70,14 +56,12 @@ export function LibraryExperience({
   const [isCollectionRestored, setIsCollectionRestored] = useState(false);
   const requestedCollectionId = useRef(initialLocation.collectionId);
   const hasRestoredCollection = useRef(false);
-  const hasAppliedInitialFeed = useRef(false);
   const {
     hasSearchQuery,
     searchGames,
     searchStatus,
     isSearching,
     discoverGames,
-    discoverError,
     isDiscoverLoading,
   } = useCatalogFeeds(query);
 
@@ -106,46 +90,6 @@ export function LibraryExperience({
     selectCollection,
   ]);
 
-  const galleryFeed = selectGalleryFeed({
-    hasSearchQuery,
-    searchResults: searchGames,
-    collectionGames: activeCollectionGames,
-    collectionName: activeCollection.name,
-    discoverGames,
-  });
-  const isGalleryLoading =
-    !isLoaded ||
-    !isCollectionRestored ||
-    (galleryFeed.kind === "search" && isSearching) ||
-    (galleryFeed.kind === "discover" && isDiscoverLoading);
-  const feedKey = getGalleryFeedKey(
-    galleryFeed.kind,
-    activeCollection.id,
-    query,
-  );
-  const previousFeedKey = useRef(feedKey);
-  const currentPage = isGalleryLoading
-    ? page
-    : !hasAppliedInitialFeed.current
-      ? clampPage(page, galleryFeed.games.length)
-    : getPageAfterFeedChange(
-        previousFeedKey.current,
-        feedKey,
-        page,
-        galleryFeed.games.length,
-      );
-
-  useEffect(() => {
-    if (!isGalleryLoading) {
-      hasAppliedInitialFeed.current = true;
-      previousFeedKey.current = feedKey;
-    }
-
-    if (!isGalleryLoading && currentPage !== page) {
-      setPage(currentPage);
-    }
-  }, [currentPage, feedKey, isGalleryLoading, page]);
-
   useEffect(() => {
     if (!isLoaded || !isCollectionRestored) {
       return;
@@ -154,7 +98,7 @@ export function LibraryExperience({
     const nextUrl = buildLibraryUrl({
       collectionId: activeCollection.id,
       query,
-      page: currentPage,
+      page,
     });
     const currentUrl = `${window.location.pathname}${window.location.search}`;
 
@@ -163,9 +107,9 @@ export function LibraryExperience({
     }
   }, [
     activeCollection.id,
-    currentPage,
     isCollectionRestored,
     isLoaded,
+    page,
     query,
     router,
   ]);
@@ -175,11 +119,11 @@ export function LibraryExperience({
       const returnTo = buildLibraryUrl({
         collectionId: activeCollection.id,
         query,
-        page: currentPage,
+        page,
       });
       router.push(buildGameUrl(game.id, returnTo));
     },
-    [activeCollection.id, currentPage, query, router],
+    [activeCollection.id, page, query, router],
   );
 
   const handleQueryChange = useCallback((nextQuery: string) => {
@@ -213,16 +157,7 @@ export function LibraryExperience({
     [activeCollection.id, toggleGameMembership],
   );
 
-  const searchConsole = (
-    <SearchConsole
-      isSearching={isSearching}
-      onQueryChange={handleQueryChange}
-      query={query}
-      status={searchStatus}
-    />
-  );
-
-  const browserExperience = (
+  return (
     <main className="nexus-shell">
       <SiteHeader />
 
@@ -332,84 +267,4 @@ export function LibraryExperience({
       </div>
     </main>
   );
-
-  if (mode === "spatial" && !runtimeError) {
-    const emptyTitle =
-      galleryFeed.kind === "search"
-        ? "Search results"
-        : galleryFeed.kind === "discover"
-          ? "Discover unavailable"
-          : "No games in this collection";
-    const emptyDescription =
-      galleryFeed.kind === "search"
-        ? searchStatus || "No matching games found."
-        : galleryFeed.kind === "discover"
-          ? discoverError || "Discover games could not be loaded."
-          : "Search for a game by title to add one.";
-
-    return (
-      <SpatialErrorBoundary
-        fallback={browserExperience}
-        onError={fallbackToBrowser}
-      >
-        <main
-          className="nexus-shell spatial-workspace"
-          enable-xr
-          style={{
-            "--xr-background-material": "transparent",
-            "--xr-back": "0px",
-          }}
-        >
-          <SiteHeader />
-
-          <div className="spatial-workspace__layout">
-            <CollectionSidebar
-              activeCollectionId={activeCollection.id}
-              collections={collections}
-              defaultCollectionId={defaultCollectionId}
-              managementMode="create-only"
-              onCreateCollection={createCollection}
-              onDeleteCollection={deleteCollection}
-              onRenameCollection={renameCollection}
-              onSelectCollection={handleSelectCollection}
-            />
-
-            <section className="spatial-workspace__content">
-              {searchConsole}
-
-              <section
-                aria-label={galleryFeed.heading}
-                className="spatial-gallery"
-              >
-                <div className="spatial-gallery__heading glass-panel">
-                  <span className="section-kicker">
-                    {galleryFeed.kind === "collection"
-                      ? "Collection"
-                      : "Catalog"}
-                  </span>
-                  <h1>{galleryFeed.heading}</h1>
-                </div>
-
-                <SpatialGameShelf
-                  activeCollectionName={activeCollection.name}
-                  emptyDescription={emptyDescription}
-                  emptyTitle={emptyTitle}
-                  games={galleryFeed.games}
-                  isInActiveCollection={isInActiveCollection}
-                  isLoaded={!isGalleryLoading}
-                  onOpen={openGame}
-                  onPageChange={setPage}
-                  onToggleActiveCollection={toggleActiveCollection}
-                  page={currentPage}
-                  placementKey={`${feedKey}:page:${currentPage}`}
-                />
-              </section>
-            </section>
-          </div>
-        </main>
-      </SpatialErrorBoundary>
-    );
-  }
-
-  return browserExperience;
 }

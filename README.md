@@ -31,7 +31,7 @@
 - **Platform identification** — scan accessible brand and fallback icons across current, legacy, and spatial platforms.
 - **Screenshot lightbox** — open full-bleed screenshots with arrow controls, keyboard navigation, and a position counter.
 - **Installable PWA** — add Nexus Library to a desktop or mobile home screen with a dedicated offline fallback.
-- **PICO spatial workspace** — browse a paged curved-cover gallery with spatialized collection, search, and detail panels.
+- **USDZ game cases** — WebSpatial mode keeps the browser layout while rendering each available cover as a fixed, straight-on 3D case.
 
 ## How It Works
 
@@ -116,7 +116,7 @@ Launch WebSpatial Builder in another:
 pnpm spatial
 ```
 
-The browser and spatial experiences share one route tree. In spatial mode, the library uses transparent pass-through materials, explicit spatialized panels, and same-scene detail navigation so Back restores the selected collection, search query, and gallery page.
+The browser and spatial experiences share the same route and component tree. In spatial mode, collection, search, Discover, and detail layouts stay unchanged; only game-cover regions switch from optimized images to fixed USDZ cases textured with the current IGDB artwork. Cases support taps for existing card navigation and do not register drag, rotate, or resize behavior.
 
 ## PWA Behavior
 

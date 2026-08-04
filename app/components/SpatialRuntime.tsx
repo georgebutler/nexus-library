@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  useCallback,
   useEffect,
   useState,
   type ReactNode,
@@ -23,14 +22,6 @@ export function SpatialRuntimeProvider({
   const [runtimeState, setRuntimeState] = useState<SpatialRuntimeState>(
     INITIAL_SPATIAL_RUNTIME_STATE,
   );
-  const fallbackToBrowser = useCallback((error: Error) => {
-    setRuntimeState({
-      mode: "browser",
-      runtime: "browser",
-      error: error.message || "WebSpatial rendering failed.",
-      isInitialized: true,
-    });
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -64,9 +55,7 @@ export function SpatialRuntimeProvider({
   }, [runtimeState]);
 
   return (
-    <SpatialRuntimeContext.Provider
-      value={{ ...runtimeState, fallbackToBrowser }}
-    >
+    <SpatialRuntimeContext.Provider value={runtimeState}>
       {children}
     </SpatialRuntimeContext.Provider>
   );

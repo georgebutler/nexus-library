@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  derivePlatformFamilies,
   getUniquePlatformFamilies,
+  resolvePlatformFamilies,
 } from "@/app/lib/platforms";
 import type { Game } from "@/app/types/game";
 
@@ -47,7 +47,7 @@ function normalizeGame(value: unknown): Game | null {
         (platform): platform is string => typeof platform === "string",
       )
     : [];
-  const platformFamilies = Array.isArray(game.platformFamilies)
+  const storedPlatformFamilies = Array.isArray(game.platformFamilies)
     ? getUniquePlatformFamilies(
         game.platformFamilies.flatMap((family) => {
           if (
@@ -69,7 +69,11 @@ function normalizeGame(value: unknown): Game | null {
             : [];
         }),
       )
-    : derivePlatformFamilies(platforms);
+    : [];
+  const platformFamilies = resolvePlatformFamilies(
+    platforms,
+    storedPlatformFamilies,
+  );
 
   return {
     id: game.id,

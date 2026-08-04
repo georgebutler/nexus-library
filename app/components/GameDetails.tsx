@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   ArrowLeft,
   CalendarDays,
@@ -13,8 +12,9 @@ import {
   Trophy,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import { CollectionPicker } from "@/app/components/CollectionPicker";
+import { GameCoverMedia } from "@/app/components/GameCoverMedia";
 import { NexusMark } from "@/app/components/NexusMark";
 import { PlatformIcons } from "@/app/components/PlatformIcons";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
@@ -165,11 +165,6 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
     );
   }
 
-  const coverImage = game.background_image;
-  const coverAspectRatio = game.coverAspectRatio ?? 3 / 4;
-  const coverStyle = {
-    "--cover-aspect-ratio": coverAspectRatio,
-  } as CSSProperties;
   const screenshots = game.short_screenshots ?? [];
   const developers = game.developers ?? [];
   const publishers = game.publishers ?? [];
@@ -180,36 +175,18 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
 
       <div className="details-shell">
         <div className="details-panel">
-          <Card
-            className="details-cover-card glass-panel"
-            style={{
-              ...coverStyle,
-              "--xr-background-material": "translucent",
-            }}
-            {...(mode === "spatial" ? { "enable-xr": true } : {})}
-          >
+          <Card className="details-cover-card glass-panel">
             <div className="details-cover">
-              {coverImage ? (
-                <Image
-                  alt={`${game.name} cover art`}
-                  fill
-                  priority
-                  sizes="(max-width: 720px) 100vw, 40vw"
-                  src={coverImage}
-                />
-              ) : (
-                <div className="game-case__placeholder">
-                  {game.name.slice(0, 2).toUpperCase()}
-                </div>
-              )}
+              <GameCoverMedia
+                game={game}
+                mode={mode}
+                priority
+                variant="detail"
+              />
             </div>
           </Card>
 
-          <Card
-            className="details-summary-card glass-panel"
-            style={{ "--xr-background-material": "translucent" }}
-            {...(mode === "spatial" ? { "enable-xr": true } : {})}
-          >
+          <Card className="details-summary-card glass-panel">
             <CardContent className="details-copy">
               <div className="details-genres">
                 {(game.genres ?? []).map((genre) => (
@@ -261,9 +238,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
         </div>
 
         <section className="details-information">
-          <Card
-            {...(mode === "spatial" ? { "enable-xr": true } : {})}
-          >
+          <Card>
             <CardHeader>
               <CardTitle>About</CardTitle>
             </CardHeader>
@@ -275,9 +250,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
             </CardContent>
           </Card>
 
-          <Card
-            {...(mode === "spatial" ? { "enable-xr": true } : {})}
-          >
+          <Card>
             <CardHeader>
               <CardTitle>Information</CardTitle>
             </CardHeader>

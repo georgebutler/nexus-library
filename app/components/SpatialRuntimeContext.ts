@@ -6,11 +6,8 @@ import {
   type SpatialRuntimeState,
 } from "@/app/lib/spatial-runtime";
 
-export type SpatialRuntimeContextValue = SpatialRuntimeState & {
-  fallbackToBrowser: (error: Error) => void;
-};
+export type SpatialRuntimeContextValue = SpatialRuntimeState;
 
 export const SpatialRuntimeContext = createContext<SpatialRuntimeContextValue>({
   ...INITIAL_SPATIAL_RUNTIME_STATE,
-  fallbackToBrowser: () => undefined,
 });

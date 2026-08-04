@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { derivePlatformFamilies } from "@/app/lib/platforms";
+import {
+  derivePlatformFamilies,
+  resolvePlatformFamilies,
+} from "@/app/lib/platforms";
 
 describe("derivePlatformFamilies", () => {
   it.each([
-    ["PC (Microsoft Windows)", "pc", "PC"],
+    ["PC (Microsoft Windows)", "pc", "Windows"],
     ["PlayStation 5", "playstation", "PlayStation"],
     ["Xbox Series X|S", "xbox", "Xbox"],
     ["Nintendo Switch", "nintendo-switch", "Nintendo Switch"],
@@ -47,5 +50,32 @@ describe("derivePlatformFamilies", () => {
         "Dreamcast",
       ]).map((platform) => platform.slug),
     ).toEqual(["playstation", "xbox", "sega"]);
+  });
+
+  it("replaces a broad stored Nintendo family with concrete consoles", () => {
+    expect(
+      resolvePlatformFamilies(
+        ["Nintendo Switch", "Nintendo 64"],
+        [{ id: 5, name: "Nintendo", slug: "nintendo" }],
+      ),
+    ).toEqual([
+      expect.objectContaining({
+        name: "Nintendo Switch",
+        slug: "nintendo-switch",
+      }),
+      expect.objectContaining({
+        name: "Nintendo 64",
+        slug: "nintendo-64",
+      }),
+    ]);
+  });
+
+  it("keeps stored families when concrete platform names are unavailable", () => {
+    expect(
+      resolvePlatformFamilies(
+        [],
+        [{ id: 3, name: "Xbox", slug: "xbox" }],
+      ),
+    ).toEqual([{ id: 3, name: "Xbox", slug: "xbox" }]);
   });
 });

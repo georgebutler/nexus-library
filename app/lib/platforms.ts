@@ -1,7 +1,7 @@
 import type { GamePlatformFamily } from "@/app/types/game";
 
 const PLATFORM_FAMILIES = {
-  pc: { id: 1, name: "PC", slug: "pc" },
+  pc: { id: 1, name: "Windows", slug: "pc" },
   playstation: { id: 2, name: "PlayStation", slug: "playstation" },
   xbox: { id: 3, name: "Xbox", slug: "xbox" },
   ios: { id: 4, name: "iOS", slug: "ios" },
@@ -193,4 +193,15 @@ export function derivePlatformFamilies(
       return family ? [family] : [];
     }),
   );
+}
+
+export function resolvePlatformFamilies(
+  platformNames: string[],
+  storedFamilies: GamePlatformFamily[],
+): GamePlatformFamily[] {
+  const derivedFamilies = derivePlatformFamilies(platformNames);
+
+  return derivedFamilies.length > 0
+    ? derivedFamilies
+    : getUniquePlatformFamilies(storedFamilies);
 }

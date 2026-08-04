@@ -1,13 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { Minus, Plus, Star } from "lucide-react";
 import type {
   CSSProperties,
   MouseEvent,
   ReactNode,
 } from "react";
+import { GameCoverMedia } from "@/app/components/GameCoverMedia";
 import { PlatformIcons } from "@/app/components/PlatformIcons";
+import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import type { Game } from "@/app/types/game";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ export function GameCase({
   style,
   priority = false,
 }: GameCaseProps) {
+  const { mode } = useSpatialRuntime();
   const releaseYear = game.released
     ? new Date(`${game.released}T00:00:00`).getFullYear()
     : "TBA";
@@ -59,19 +61,13 @@ export function GameCase({
         type="button"
       />
       <div className="game-case__art">
-        {game.background_image ? (
-          <Image
-            alt={`${game.name} cover art`}
-            fill
-            priority={priority}
-            sizes="(max-width: 720px) 44vw, 180px"
-            src={game.background_image}
-          />
-        ) : (
-          <div className="game-case__placeholder">
-            <span>{game.name.slice(0, 2).toUpperCase()}</span>
-          </div>
-        )}
+        <GameCoverMedia
+          game={game}
+          mode={mode}
+          onTap={() => onOpen(game)}
+          priority={priority}
+          variant="card"
+        />
         <div className="game-case__scrim" />
         {hasActiveCollectionAction ? (
           <Button

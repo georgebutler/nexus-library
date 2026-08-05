@@ -3139,6 +3139,11 @@ html:not(.isSpatialLibrary) .library-header {
 }
 
 html:not(.isSpatialLibrary)
+  .library-content[data-slot="sidebar-inset"] {
+  padding-left: 24px;
+}
+
+html:not(.isSpatialLibrary)
   .library-header
   [data-slot="sidebar-trigger"] {
   display: none;
@@ -3492,6 +3497,11 @@ html:not(.isSpatialLibrary) .game-case--compact .game-case__rating {
 @media (max-width: 979px) {
   html:not(.isSpatialLibrary) .nexus-shell[data-slot="sidebar-wrapper"] {
     padding-top: 12px;
+  }
+
+  html:not(.isSpatialLibrary)
+    .library-content[data-slot="sidebar-inset"] {
+    padding-left: 0;
   }
 
   html:not(.isSpatialLibrary) .library-header {

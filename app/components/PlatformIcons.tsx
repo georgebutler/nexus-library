@@ -22,7 +22,10 @@ import {
   siSteam,
   type SimpleIcon,
 } from "simple-icons/icons";
-import { getUniquePlatformFamilies } from "@/app/lib/platforms";
+import {
+  getUniquePlatformFamilies,
+  sortPlatformFamiliesForDisplay,
+} from "@/app/lib/platforms";
 import type { GamePlatformFamily } from "@/app/types/game";
 import { cn } from "@/lib/utils";
 import {
@@ -121,7 +124,9 @@ export function PlatformIcons({
   maxItems,
   className,
 }: PlatformIconsProps) {
-  const uniquePlatforms = getUniquePlatformFamilies(platforms);
+  const uniquePlatforms = sortPlatformFamiliesForDisplay(
+    getUniquePlatformFamilies(platforms),
+  );
   const visiblePlatforms =
     maxItems === undefined
       ? uniquePlatforms

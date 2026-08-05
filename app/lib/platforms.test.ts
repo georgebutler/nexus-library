@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   derivePlatformFamilies,
   resolvePlatformFamilies,
+  sortPlatformFamiliesForDisplay,
 } from "@/app/lib/platforms";
 
 describe("derivePlatformFamilies", () => {
@@ -77,5 +78,77 @@ describe("derivePlatformFamilies", () => {
         [{ id: 3, name: "Xbox", slug: "xbox" }],
       ),
     ).toEqual([{ id: 3, name: "Xbox", slug: "xbox" }]);
+  });
+});
+
+describe("sortPlatformFamiliesForDisplay", () => {
+  it("uses the canonical gaming-priority order", () => {
+    const platforms = [
+      { id: 1, name: "Linux", slug: "linux" },
+      { id: 2, name: "Xbox", slug: "xbox" },
+      { id: 3, name: "Nintendo Switch", slug: "nintendo-switch" },
+      { id: 4, name: "Windows", slug: "pc" },
+      { id: 5, name: "iOS", slug: "ios" },
+      { id: 6, name: "PlayStation", slug: "playstation" },
+      { id: 7, name: "Apple Macintosh", slug: "mac" },
+      {
+        id: 8,
+        name: "Nintendo Switch 2",
+        slug: "nintendo-switch-2",
+      },
+      { id: 9, name: "Android", slug: "android" },
+      { id: 10, name: "Google Stadia", slug: "stadia" },
+    ];
+
+    expect(
+      sortPlatformFamiliesForDisplay(platforms).map(
+        (platform) => platform.slug,
+      ),
+    ).toEqual([
+      "pc",
+      "playstation",
+      "xbox",
+      "nintendo-switch-2",
+      "nintendo-switch",
+      "mac",
+      "ios",
+      "android",
+      "linux",
+      "stadia",
+    ]);
+  });
+
+  it("orders other Nintendo families alphabetically before Mac", () => {
+    expect(
+      sortPlatformFamiliesForDisplay([
+        { id: 1, name: "Apple Macintosh", slug: "mac" },
+        { id: 2, name: "Wii U", slug: "wiiu" },
+        { id: 3, name: "Nintendo 64", slug: "nintendo-64" },
+        { id: 4, name: "Game Boy Advance", slug: "game-boy-advance" },
+      ]).map((platform) => platform.name),
+    ).toEqual([
+      "Game Boy Advance",
+      "Nintendo 64",
+      "Wii U",
+      "Apple Macintosh",
+    ]);
+  });
+
+  it("sorts unknown platforms by name and slug without mutating input", () => {
+    const platforms = [
+      { id: 1, name: "Zephyr", slug: "zephyr" },
+      { id: 2, name: "Alpha", slug: "alpha-z" },
+      { id: 3, name: "Alpha", slug: "alpha-a" },
+    ];
+    const sourceSnapshot = [...platforms];
+    const sorted = sortPlatformFamiliesForDisplay(platforms);
+
+    expect(sorted.map((platform) => platform.slug)).toEqual([
+      "alpha-a",
+      "alpha-z",
+      "zephyr",
+    ]);
+    expect(platforms).toEqual(sourceSnapshot);
+    expect(sorted).not.toBe(platforms);
   });
 });

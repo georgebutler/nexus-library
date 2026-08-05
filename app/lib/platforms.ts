@@ -40,6 +40,26 @@ const PLATFORM_FAMILIES = {
 const LEGACY_NINTENDO_PATTERN =
   /\b(gamecube|game boy|wii|nes|snes|n64|famicom|virtual boy)\b/i;
 const SEGA_PATTERN = /\b(sega|dreamcast|game gear|genesis|saturn)\b/i;
+const NINTENDO_DISPLAY_PATTERN =
+  /\b(nintendo|gamecube|game boy|wii|nes|snes|n64|famicom|virtual boy)\b/i;
+
+const PLATFORM_DISPLAY_PRIORITY = new Map<string, number>([
+  ["pc", 0],
+  ["playstation", 1],
+  ["xbox", 2],
+  ["nintendo-switch-2", 3],
+  ["nintendo-switch", 4],
+  ["mac", 6],
+  ["ios", 7],
+  ["android", 8],
+  ["linux", 9],
+  ["meta", 10],
+  ["oculus", 11],
+  ["steam", 12],
+  ["stadia", 13],
+  ["web", 14],
+  ["amazon", 15],
+]);
 
 function toPlatformSlug(name: string) {
   return name
@@ -181,6 +201,39 @@ export function getUniquePlatformFamilies(
 
     seenSlugs.add(slug);
     return true;
+  });
+}
+
+function getPlatformDisplayPriority(platform: GamePlatformFamily) {
+  const slug = platform.slug.trim().toLocaleLowerCase();
+  const priority = PLATFORM_DISPLAY_PRIORITY.get(slug);
+
+  if (priority !== undefined) {
+    return priority;
+  }
+
+  return NINTENDO_DISPLAY_PATTERN.test(`${platform.name} ${slug}`)
+    ? 5
+    : 16;
+}
+
+export function sortPlatformFamiliesForDisplay(
+  families: GamePlatformFamily[],
+): GamePlatformFamily[] {
+  return [...families].sort((left, right) => {
+    const priorityDifference =
+      getPlatformDisplayPriority(left) -
+      getPlatformDisplayPriority(right);
+
+    if (priorityDifference !== 0) {
+      return priorityDifference;
+    }
+
+    const nameDifference = left.name.localeCompare(right.name);
+
+    return nameDifference !== 0
+      ? nameDifference
+      : left.slug.localeCompare(right.slug);
   });
 }
 

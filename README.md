@@ -20,7 +20,13 @@
   <a href="https://nexus-library-six.vercel.app">Open the live demo →</a>
 </p>
 
-![Nexus Library editorial desktop interface showing fixed collection navigation, a five-game Favorites grid, and a compact Discover rail with saved artwork subtly dimmed](docs/images/nexus-library.webp)
+### Library
+
+![Nexus Library editorial desktop interface showing a five-game Favorites grid, consistently ordered platform icons, and a compact Discover rail with saved artwork in black and white](docs/images/nexus-library.webp)
+
+### Game Details
+
+![Elden Ring details page showing the cover, genres, ratings, description, collection control, and game information](docs/images/nexus-library-details.webp)
 
 ## Features
 
@@ -102,6 +108,9 @@ Both variables are server-only. Do not prefix them with `NEXT_PUBLIC_` or commit
 | `pnpm lint` | Run Oxlint across the application and Next.js config. |
 | `pnpm typecheck` | Run TypeScript without emitting files. |
 | `pnpm test` | Run the Vitest suite once. |
+| `pnpm screenshots:readme` | Rebuild and capture both README screenshots. |
+| `pnpm screenshots:readme:library` | Rebuild and capture only the library README screenshot. |
+| `pnpm screenshots:readme:details` | Rebuild and capture only the game-details README screenshot. |
 | `pnpm spatial` | Launch WebSpatial Builder against `http://localhost:3000`. |
 
 ## WebSpatial Preview

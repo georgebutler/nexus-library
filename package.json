@@ -22,6 +22,9 @@
     "lint": "oxlint app next.config.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "screenshots:readme": "node scripts/capture-readme-screenshots.mjs --view=all",
+    "screenshots:readme:library": "node scripts/capture-readme-screenshots.mjs --view=library",
+    "screenshots:readme:details": "node scripts/capture-readme-screenshots.mjs --view=details",
     "spatial": "webspatial-builder run --base=http://localhost:3000"
   },
   "dependencies": {

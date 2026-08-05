@@ -2751,7 +2751,27 @@ html.isSpatialDetails .screenshot {
 }
 
 .game-filter__buttons {
+  align-items: center;
   margin-left: auto;
+}
+
+.game-filter__trigger,
+.game-filter__clear {
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.game-filter__trigger > svg,
+.game-filter__clear > svg {
+  display: block;
+}
+
+.game-filter__trigger > span:not([data-slot="badge"]) {
+  display: inline-flex;
+  height: 16px;
+  align-items: center;
+  line-height: 1;
 }
 
 .game-filter__trigger {
@@ -2759,9 +2779,12 @@ html.isSpatialDetails .screenshot {
 }
 
 .game-filter__buttons [data-slot="badge"] {
+  display: inline-flex;
   min-width: 20px;
+  align-items: center;
   padding-inline: 6px;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .game-filter-popover {
@@ -3439,11 +3462,47 @@ html:not(.isSpatialLibrary) .popular-games__heading h2 {
 }
 
 html:not(.isSpatialLibrary) .popular-games__filters {
-  margin-right: 76px;
+  margin-right: 0;
+}
+
+html:not(.isSpatialLibrary)
+  .popular-games__filters
+  .game-filter__buttons {
+  margin-left: auto;
 }
 
 html:not(.isSpatialLibrary) .popular-games__carousel {
   overflow: hidden;
+}
+
+html:not(.isSpatialLibrary) .popular-games__previous,
+html:not(.isSpatialLibrary) .popular-games__next {
+  top: 50%;
+  bottom: auto;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  border-color: var(--border-bright);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  transform: translateY(-50%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+html:not(.isSpatialLibrary) .popular-games__previous {
+  right: auto;
+  left: 12px;
+}
+
+html:not(.isSpatialLibrary) .popular-games__next {
+  right: 12px;
+  left: auto;
+}
+
+html:not(.isSpatialLibrary) .popular-games__previous:hover:not(:disabled),
+html:not(.isSpatialLibrary) .popular-games__next:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--muted) 92%, transparent);
 }
 
 html:not(.isSpatialLibrary) .popular-games__slide {
@@ -3482,7 +3541,7 @@ html:not(.isSpatialLibrary)
   .game-case--compact.is-in-active-collection
   .game-cover-media
   img {
-  filter: brightness(0.76) saturate(0.82);
+  filter: grayscale(1) brightness(0.78) contrast(1.04);
 }
 
 html:not(.isSpatialLibrary)
@@ -3493,7 +3552,7 @@ html:not(.isSpatialLibrary)
   .game-case--compact.is-in-active-collection:focus-within
   .game-cover-media
   img {
-  filter: brightness(0.84) saturate(0.9);
+  filter: grayscale(1) brightness(0.88) contrast(1.06);
 }
 
 @media (max-width: 1439px) {

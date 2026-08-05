@@ -20,7 +20,7 @@
   <a href="https://nexus-library-six.vercel.app">Open the live demo →</a>
 </p>
 
-![Nexus Library editorial desktop interface showing fixed collection navigation, aligned search and filter controls, a five-card Windows-filtered library grid, and a compact Discover rail](docs/images/nexus-library.webp)
+![Nexus Library editorial desktop interface showing fixed collection navigation, a five-game Favorites grid, and a compact Discover rail with saved artwork subtly dimmed](docs/images/nexus-library.webp)
 
 ## Features
 

@@ -92,6 +92,11 @@ export function GameCase({
       className={cn(
         "game-case group",
         !isSpatial && `game-case--${presentation}`,
+        !isSpatial &&
+          presentation === "compact" &&
+          hasActiveCollectionAction &&
+          isInActiveCollection &&
+          "is-in-active-collection",
       )}
       size="sm"
       style={

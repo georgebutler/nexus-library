@@ -635,8 +635,31 @@ a {
   padding-top: 24px;
 }
 
-.library-view__heading {
+.library-view__heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 17px;
+}
+
+.library-view__heading {
+  min-width: 0;
+}
+
+.game-sort-control {
+  flex: 0 0 auto;
+}
+
+.game-sort-control__trigger {
+  min-width: 176px;
+}
+
+.nexus-sidebar-shortcut {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.65rem;
 }
 
 .library-grid {
@@ -1394,6 +1417,17 @@ a {
 
   .library-view {
     padding-top: 20px;
+  }
+
+  .library-view__heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .game-sort-control,
+  .game-sort-control__trigger {
+    width: 100%;
   }
 
   .library-grid {

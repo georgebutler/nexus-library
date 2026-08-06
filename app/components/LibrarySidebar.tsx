@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
   Pencil,
   Puzzle,
+  Search,
   Shield,
   Sparkles,
   Swords,
@@ -60,6 +61,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
@@ -84,6 +86,7 @@ type LibrarySidebarProps = {
   isSpatial: boolean;
   onCreateCollection: (name: string) => string;
   onDeleteCollection: (collectionId: string) => void;
+  onOpenQuickOpen: () => void;
   onRenameCollection: (collectionId: string, name: string) => void;
   onSelectCollection: (collectionId: string) => void;
   onSelectGenre: (genreSlug: string) => void;
@@ -129,6 +132,7 @@ export function LibrarySidebar({
   isSpatial,
   onCreateCollection,
   onDeleteCollection,
+  onOpenQuickOpen,
   onRenameCollection,
   onSelectCollection,
   onSelectGenre,
@@ -438,6 +442,28 @@ export function LibrarySidebar({
           </>
         ) : null}
       </SidebarContent>
+
+      {isSpatial ? null : (
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {
+                  closeMobileSidebar();
+                  onOpenQuickOpen();
+                }}
+                tooltip="Quick Open"
+              >
+                <Search aria-hidden="true" />
+                <span>Quick Open</span>
+                <kbd className="nexus-sidebar-shortcut group-data-[collapsible=icon]:hidden">
+                  ⌘K
+                </kbd>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      )}
 
       <AlertDialog
         onOpenChange={(open) => {

@@ -3,12 +3,17 @@ import {
   normalizeGameFilters,
   type GameFilters,
 } from "@/app/lib/game-filters";
+import {
+  normalizeGameSort,
+  type GameSort,
+} from "@/app/lib/game-sort";
 
 export type LibraryLocationState = {
   collectionId: string;
   genreSlug: string | null;
   query: string;
   page: number;
+  sort: GameSort;
   collectionFilters: GameFilters;
   searchFilters: GameFilters;
   discoverFilters: GameFilters;
@@ -47,6 +52,7 @@ export function parseLibraryLocation(
     genreSlug: normalizeGenreSlug(searchParams.get("genre")),
     query: searchParams.get("q") ?? "",
     page: parsePage(searchParams.get("page")),
+    sort: normalizeGameSort(searchParams.get("sort")),
     collectionFilters: parseFilters(
       searchParams,
       FILTER_PARAMETER_KEYS.collection,
@@ -89,6 +95,7 @@ export function buildLibraryUrl({
   genreSlug,
   query,
   page,
+  sort,
   collectionFilters = EMPTY_GAME_FILTERS,
   searchFilters = EMPTY_GAME_FILTERS,
   discoverFilters = EMPTY_GAME_FILTERS,
@@ -107,6 +114,12 @@ export function buildLibraryUrl({
 
   if (query) {
     searchParams.set("q", query);
+  }
+
+  const normalizedSort = normalizeGameSort(sort);
+
+  if (normalizedSort !== "default") {
+    searchParams.set("sort", normalizedSort);
   }
 
   searchParams.set("page", String(Math.max(1, Math.floor(page))));

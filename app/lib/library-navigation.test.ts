@@ -13,6 +13,7 @@ describe("library navigation", () => {
       genreSlug: "adventure",
       query: "portal 2",
       page: 3,
+      sort: "rating",
       collectionFilters: {
         genres: ["adventure"],
         platforms: ["pc"],
@@ -29,7 +30,7 @@ describe("library navigation", () => {
     const url = new URL(libraryUrl, "https://example.com");
 
     expect(libraryUrl).toBe(
-      "/?collection=favorites&genre=adventure&q=portal+2&page=3&cg=adventure&cp=pc&sg=puzzle&sp=playstation&dg=role-playing-rpg&dp=xbox",
+      "/?collection=favorites&genre=adventure&q=portal+2&sort=rating&page=3&cg=adventure&cp=pc&sg=puzzle&sp=playstation&dg=role-playing-rpg&dp=xbox",
     );
     expect(
       parseLibraryLocation(url.searchParams, "my-games"),
@@ -38,6 +39,7 @@ describe("library navigation", () => {
       genreSlug: "adventure",
       query: "portal 2",
       page: 3,
+      sort: "rating",
       collectionFilters: {
         genres: ["adventure"],
         platforms: ["pc"],
@@ -52,7 +54,7 @@ describe("library navigation", () => {
       },
     });
     expect(buildGameUrl(72, libraryUrl)).toBe(
-      "/game/72?returnTo=%2F%3Fcollection%3Dfavorites%26genre%3Dadventure%26q%3Dportal%2B2%26page%3D3%26cg%3Dadventure%26cp%3Dpc%26sg%3Dpuzzle%26sp%3Dplaystation%26dg%3Drole-playing-rpg%26dp%3Dxbox",
+      "/game/72?returnTo=%2F%3Fcollection%3Dfavorites%26genre%3Dadventure%26q%3Dportal%2B2%26sort%3Drating%26page%3D3%26cg%3Dadventure%26cp%3Dpc%26sg%3Dpuzzle%26sp%3Dplaystation%26dg%3Drole-playing-rpg%26dp%3Dxbox",
     );
   });
 
@@ -67,6 +69,7 @@ describe("library navigation", () => {
       genreSlug: null,
       query: "",
       page: 1,
+      sort: "default",
       collectionFilters: {
         genres: [],
         platforms: [],
@@ -121,6 +124,36 @@ describe("library navigation", () => {
         "my-games",
       ).genreSlug,
     ).toBeNull();
+  });
+
+  it("omits default sort and normalizes invalid sort values", () => {
+    const defaultUrl = buildLibraryUrl({
+      collectionId: "my-games",
+      genreSlug: null,
+      query: "",
+      page: 1,
+      sort: "default",
+      collectionFilters: {
+        genres: [],
+        platforms: [],
+      },
+      searchFilters: {
+        genres: [],
+        platforms: [],
+      },
+      discoverFilters: {
+        genres: [],
+        platforms: [],
+      },
+    });
+
+    expect(defaultUrl).toBe("/?collection=my-games&page=1");
+    expect(
+      parseLibraryLocation(
+        new URLSearchParams("collection=my-games&sort=popular"),
+        "my-games",
+      ).sort,
+    ).toBe("default");
   });
 });
 

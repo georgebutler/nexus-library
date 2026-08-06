@@ -27,6 +27,7 @@ import {
   sortPlatformFamiliesForDisplay,
 } from "@/app/lib/platforms";
 import type { GamePlatformFamily } from "@/app/types/game";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -97,10 +98,11 @@ function PlatformIcon({ platform }: { platform: GamePlatformFamily }) {
     <Tooltip>
       <TooltipTrigger
         render={
-          <button
+          <Button
             aria-label={platform.name}
             className="platform-icons__trigger"
-            type="button"
+            size="icon-xs"
+            variant="ghost"
           />
         }
       >
@@ -150,12 +152,13 @@ export function PlatformIcons({
         <Tooltip>
           <TooltipTrigger
             render={
-              <button
+              <Button
                 aria-label={`${hiddenPlatforms.length} more platforms: ${hiddenPlatforms
                   .map((platform) => platform.name)
                   .join(", ")}`}
                 className="platform-icons__more"
-                type="button"
+                size="icon-xs"
+                variant="ghost"
               />
             }
           >

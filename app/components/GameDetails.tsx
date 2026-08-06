@@ -29,6 +29,14 @@ import type {
   GameApiResponse,
 } from "@/app/types/game";
 import { Badge } from "@/components/ui/badge";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -120,13 +128,37 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
   const handleBackToLibrary = () => {
     router.push(returnTo);
   };
+  const breadcrumbTitle = isLoading
+    ? "Game Details"
+    : error || !game
+      ? "Game Unavailable"
+      : game.name;
   const header = (
     <SiteHeader
       action={
-        <Button onClick={handleBackToLibrary} variant="ghost">
+        <Button
+          aria-label="Back to library"
+          onClick={handleBackToLibrary}
+          variant="ghost"
+        >
           <ArrowLeft aria-hidden="true" data-icon="inline-start" />
-          Back to library
+          <span className="details-back-label">Back to library</span>
         </Button>
+      }
+      center={
+        <Breadcrumb className="details-breadcrumb">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={returnTo}>Library</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem className="details-breadcrumb__current">
+              <BreadcrumbPage className="truncate" title={breadcrumbTitle}>
+                {breadcrumbTitle}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       }
     />
   );

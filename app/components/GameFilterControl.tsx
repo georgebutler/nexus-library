@@ -232,8 +232,9 @@ export function GameFilterChips({
           variant="secondary"
         >
           <span>{option.name}</span>
-          <button
+          <Button
             aria-label={`Remove ${option.name} ${option.type.toLocaleLowerCase()} filter`}
+            className="game-filter-chip__remove"
             onClick={() => {
               if (option.type === "Genre") {
                 onToggleGenre(option.slug);
@@ -241,10 +242,11 @@ export function GameFilterChips({
                 onTogglePlatform(option.slug);
               }
             }}
-            type="button"
+            size="icon-xs"
+            variant="ghost"
           >
             <X aria-hidden="true" />
-          </button>
+          </Button>
         </Badge>
       ))}
     </div>

@@ -83,7 +83,6 @@ type LibrarySidebarProps = {
   defaultCollectionId: string;
   getCollectionUrl: (collectionId: string) => string;
   getGenreUrl: (genreSlug: string) => string;
-  isSpatial: boolean;
   onCreateCollection: (name: string) => string;
   onDeleteCollection: (collectionId: string) => void;
   onOpenQuickOpen: () => void;
@@ -129,7 +128,6 @@ export function LibrarySidebar({
   defaultCollectionId,
   getCollectionUrl,
   getGenreUrl,
-  isSpatial,
   onCreateCollection,
   onDeleteCollection,
   onOpenQuickOpen,
@@ -203,7 +201,7 @@ export function LibrarySidebar({
     <Sidebar
       aria-label="Game collections"
       className="nexus-library-sidebar"
-      collapsible={isSpatial ? "none" : "icon"}
+      collapsible="icon"
     >
       <SidebarHeader>
         <Item
@@ -443,27 +441,25 @@ export function LibrarySidebar({
         ) : null}
       </SidebarContent>
 
-      {isSpatial ? null : (
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={() => {
-                  closeMobileSidebar();
-                  onOpenQuickOpen();
-                }}
-                tooltip="Quick Open"
-              >
-                <Search aria-hidden="true" />
-                <span>Quick Open</span>
-                <kbd className="nexus-sidebar-shortcut group-data-[collapsible=icon]:hidden">
-                  ⌘K
-                </kbd>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      )}
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => {
+                closeMobileSidebar();
+                onOpenQuickOpen();
+              }}
+              tooltip="Quick Open"
+            >
+              <Search aria-hidden="true" />
+              <span>Quick Open</span>
+              <kbd className="nexus-sidebar-shortcut group-data-[collapsible=icon]:hidden">
+                ⌘K
+              </kbd>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
 
       <AlertDialog
         onOpenChange={(open) => {

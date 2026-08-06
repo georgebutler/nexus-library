@@ -12,7 +12,12 @@ import {
   Trophy,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { CollectionPicker } from "@/app/components/CollectionPicker";
 import { GameCoverMedia } from "@/app/components/GameCoverMedia";
 import { NexusMark } from "@/app/components/NexusMark";
@@ -20,9 +25,9 @@ import { PlatformIcons } from "@/app/components/PlatformIcons";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
 import { ScreenshotLightbox } from "@/app/components/ScreenshotLightbox";
 import { SiteHeader } from "@/app/components/SiteHeader";
-import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useLibrary } from "@/app/hooks/useLibrary";
 import { formatLongDate } from "@/app/lib/date";
+import { SPATIAL_GAME_COVER_BACK } from "@/app/lib/game-cover-media";
 import type {
   ApiErrorResponse,
   Game,
@@ -59,10 +64,39 @@ type GameDetailsProps = {
   returnTo: string;
 };
 
+function DetailsCoverSurface({
+  children,
+}: {
+  children?: ReactNode;
+}) {
+  return (
+    <div
+      className="details-cover-surface"
+      enable-xr
+      style={
+        {
+          "--xr-background-material": "transparent",
+        } as CSSProperties
+      }
+    >
+      <div
+        className="details-cover"
+        enable-xr
+        style={
+          {
+            "--xr-background-material": "transparent",
+            "--xr-back": `${SPATIAL_GAME_COVER_BACK}px`,
+          } as CSSProperties
+        }
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
   const router = useRouter();
-  const { mode } = useSpatialRuntime();
-  const isSpatial = mode === "spatial";
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,16 +107,6 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
     toggleGameMembership,
     getGameCollectionIds,
   } = useLibrary();
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    root.classList.toggle("isSpatialDetails", isSpatial);
-
-    return () => {
-      root.classList.remove("isSpatialDetails");
-    };
-  }, [isSpatial]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -163,67 +187,11 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
     />
   );
 
-  if (isLoading) {
+  if (!isLoading && (error || !game)) {
     return (
-      <main
-        className="details-page"
-        style={
-          isSpatial
-            ? { "--xr-background-material": "transparent" }
-            : undefined
-        }
-        {...(isSpatial ? { "enable-xr": true } : {})}
-      >
+      <main className="details-page">
         {header}
-        <div
-          className="details-shell"
-          style={
-            isSpatial
-              ? { "--xr-background-material": "transparent" }
-              : undefined
-          }
-          {...(isSpatial ? { "enable-xr": true } : {})}
-        >
-          <div className="details-panel details-panel--loading">
-            <Card className="details-cover-card">
-              <Skeleton className="details-cover" />
-            </Card>
-            <Card className="details-summary-card">
-              <div className="details-copy">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-10 w-3/4" />
-                <Skeleton className="h-5 w-1/2" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-9 w-36" />
-              </div>
-            </Card>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (error || !game) {
-    return (
-      <main
-        className="details-page"
-        style={
-          isSpatial
-            ? { "--xr-background-material": "transparent" }
-            : undefined
-        }
-        {...(isSpatial ? { "enable-xr": true } : {})}
-      >
-        {header}
-        <div
-          className="details-shell details-state"
-          style={
-            isSpatial
-              ? { "--xr-background-material": "transparent" }
-              : undefined
-          }
-          {...(isSpatial ? { "enable-xr": true } : {})}
-        >
+        <div className="details-shell details-state">
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
@@ -240,172 +208,182 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
     );
   }
 
-  const screenshots = game.short_screenshots ?? [];
-  const developers = game.developers ?? [];
-  const publishers = game.publishers ?? [];
+  const screenshots = game?.short_screenshots ?? [];
+  const developers = game?.developers ?? [];
+  const publishers = game?.publishers ?? [];
 
   return (
-    <main
-      className="details-page"
-      style={
-        isSpatial
-          ? { "--xr-background-material": "transparent" }
-          : undefined
-      }
-      {...(isSpatial ? { "enable-xr": true } : {})}
-    >
+    <main className="details-page">
       {header}
 
-      <div
-        className="details-shell"
-        style={
-          isSpatial
-            ? { "--xr-background-material": "transparent" }
-            : undefined
-        }
-        {...(isSpatial ? { "enable-xr": true } : {})}
-      >
-        <div className="details-panel">
+      <div className="details-shell">
+        <div
+          className={
+            isLoading
+              ? "details-panel details-panel--loading"
+              : "details-panel"
+          }
+        >
           <Card
-            className="details-cover-card glass-panel"
-            style={
-              isSpatial
-                ? {
-                    "--xr-background-material": "transparent",
-                    "--xr-back": "50px",
-                  }
-                : undefined
+            className={
+              isLoading
+                ? "details-cover-card details-cover-card--loading"
+                : "details-cover-card glass-panel"
             }
-            {...(isSpatial ? { "enable-xr": true } : {})}
           >
-            <div className="details-cover">
-              <GameCoverMedia
-                game={game}
-                priority
-                variant="detail"
-              />
-            </div>
+            <DetailsCoverSurface>
+              {game ? (
+                <GameCoverMedia
+                  game={game}
+                  priority
+                  variant="detail"
+                />
+              ) : null}
+            </DetailsCoverSurface>
+            {isLoading ? (
+              <Skeleton className="details-cover-loading" />
+            ) : null}
           </Card>
 
-          <Card className="details-summary-card glass-panel">
-            <CardContent className="details-copy">
-              <div className="details-genres">
-                {(game.genres ?? []).map((genre) => (
-                  <Badge key={genre.id} variant="secondary">
-                    {genre.name}
-                  </Badge>
-                ))}
-              </div>
-              <h1>{game.name}</h1>
+          {game ? (
+            <Card className="details-summary-card glass-panel">
+              <CardContent className="details-copy">
+                <div className="details-genres">
+                  {(game.genres ?? []).map((genre) => (
+                    <Badge key={genre.id} variant="secondary">
+                      {genre.name}
+                    </Badge>
+                  ))}
+                </div>
+                <h1>{game.name}</h1>
 
-              <div className="details-metrics">
-                {game.rating !== null ? (
+                <div className="details-metrics">
+                  {game.rating !== null ? (
+                    <Badge variant="outline">
+                      <Star
+                        aria-hidden="true"
+                        data-icon="inline-start"
+                        fill="currentColor"
+                      />
+                      {game.rating.toFixed(1)} rating
+                    </Badge>
+                  ) : null}
                   <Badge variant="outline">
-                    <Star
+                    <CalendarDays
                       aria-hidden="true"
                       data-icon="inline-start"
-                      fill="currentColor"
                     />
-                    {game.rating.toFixed(1)} rating
+                    {formatLongDate(game.released)}
                   </Badge>
+                  {game.criticScore !== null ? (
+                    <Badge variant="outline">
+                      <Trophy
+                        aria-hidden="true"
+                        data-icon="inline-start"
+                      />
+                      {Math.round(game.criticScore)} Critic score
+                    </Badge>
+                  ) : null}
+                </div>
+
+                {game.description ? (
+                  <p className="details-summary">{game.description}</p>
                 ) : null}
-                <Badge variant="outline">
-                  <CalendarDays aria-hidden="true" data-icon="inline-start" />
-                  {formatLongDate(game.released)}
-                </Badge>
-                {game.criticScore !== null ? (
-                  <Badge variant="outline">
-                    <Trophy aria-hidden="true" data-icon="inline-start" />
-                    {Math.round(game.criticScore)} Critic score
-                  </Badge>
-                ) : null}
+
+                <CollectionPicker
+                  collectionIds={getGameCollectionIds(game.id)}
+                  collections={collections}
+                  disabled={!isLoaded}
+                  game={game}
+                  onCreateCollection={createCollection}
+                  onToggleMembership={toggleGameMembership}
+                  size="large"
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="details-summary-card">
+              <div className="details-copy">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-9 w-36" />
               </div>
-
-              {game.description ? (
-                <p className="details-summary">{game.description}</p>
-              ) : null}
-
-              <CollectionPicker
-                collectionIds={getGameCollectionIds(game.id)}
-                collections={collections}
-                disabled={!isLoaded}
-                game={game}
-                onCreateCollection={createCollection}
-                onToggleMembership={toggleGameMembership}
-                size="large"
-              />
-            </CardContent>
-          </Card>
+            </Card>
+          )}
         </div>
 
-        <section className="details-information">
-          <Card>
-            <CardHeader>
-              <CardTitle>About</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>
-                {game.description ??
-                  "No description is currently available for this game."}
-              </p>
-            </CardContent>
-          </Card>
+        {game ? (
+          <section className="details-information">
+            <Card>
+              <CardHeader>
+                <CardTitle>About</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  {game.description ??
+                    "No description is currently available for this game."}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Information</CardTitle>
-            </CardHeader>
-            <CardContent className="game-information">
-              <div>
-                <Monitor aria-hidden="true" />
-                <span>Platforms</span>
-                {(game.platformFamilies?.length ?? 0) > 0 ? (
-                  <PlatformIcons
-                    className="platform-icons--details"
-                    platforms={game.platformFamilies ?? []}
-                  />
-                ) : (
-                  <strong>Not available</strong>
-                )}
-              </div>
-              <Separator />
-              <div>
-                <Code2 aria-hidden="true" />
-                <span>Developers</span>
-                <strong>
-                  {developers.length > 0
-                    ? developers.join(", ")
-                    : "Not available"}
-                </strong>
-              </div>
-              <Separator />
-              <div>
-                <Building2 aria-hidden="true" />
-                <span>Publishers</span>
-                <strong>
-                  {publishers.length > 0
-                    ? publishers.join(", ")
-                    : "Not available"}
-                </strong>
-              </div>
-              {game.website ? (
-                <>
-                  <Separator />
-                  <div>
-                    <Globe2 aria-hidden="true" />
-                    <span>Website</span>
-                    <a href={game.website} rel="noreferrer" target="_blank">
-                      Visit official site
-                      <ExternalLink aria-hidden="true" />
-                    </a>
-                  </div>
-                </>
-              ) : null}
-            </CardContent>
-          </Card>
-        </section>
+            <Card>
+              <CardHeader>
+                <CardTitle>Information</CardTitle>
+              </CardHeader>
+              <CardContent className="game-information">
+                <div>
+                  <Monitor aria-hidden="true" />
+                  <span>Platforms</span>
+                  {(game.platformFamilies?.length ?? 0) > 0 ? (
+                    <PlatformIcons
+                      className="platform-icons--details"
+                      platforms={game.platformFamilies ?? []}
+                    />
+                  ) : (
+                    <strong>Not available</strong>
+                  )}
+                </div>
+                <Separator />
+                <div>
+                  <Code2 aria-hidden="true" />
+                  <span>Developers</span>
+                  <strong>
+                    {developers.length > 0
+                      ? developers.join(", ")
+                      : "Not available"}
+                  </strong>
+                </div>
+                <Separator />
+                <div>
+                  <Building2 aria-hidden="true" />
+                  <span>Publishers</span>
+                  <strong>
+                    {publishers.length > 0
+                      ? publishers.join(", ")
+                      : "Not available"}
+                  </strong>
+                </div>
+                {game.website ? (
+                  <>
+                    <Separator />
+                    <div>
+                      <Globe2 aria-hidden="true" />
+                      <span>Website</span>
+                      <a href={game.website} rel="noreferrer" target="_blank">
+                        Visit official site
+                        <ExternalLink aria-hidden="true" />
+                      </a>
+                    </div>
+                  </>
+                ) : null}
+              </CardContent>
+            </Card>
+          </section>
+        ) : null}
 
-        {screenshots.length > 0 ? (
+        {game && screenshots.length > 0 ? (
           <section className="screenshot-section">
             <div className="screenshot-section__heading">
               <h2>Screenshots</h2>
@@ -417,7 +395,7 @@ export function GameDetails({ gameId, returnTo }: GameDetailsProps) {
           </section>
         ) : null}
 
-        <ProjectFooter />
+        {game ? <ProjectFooter /> : null}
       </div>
     </main>
   );

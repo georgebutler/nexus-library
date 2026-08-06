@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GAME_COVER_ASPECT_RATIO,
-  SPATIAL_GAME_CARD_BACK,
+  SPATIAL_GAME_COVER_BACK,
   getGameCoverFallback,
   getGameCoverSizing,
 } from "@/app/lib/game-cover-media";
@@ -27,12 +27,12 @@ describe("game cover media", () => {
     });
   });
 
-  it("keeps both variants at 3:4 with a shared 50px card depth", () => {
+  it("keeps both variants at 3:4 with a shared 50px cover depth", () => {
     const card = getGameCoverSizing("card");
     const detail = getGameCoverSizing("detail");
 
     expect(card.aspectRatio).toBe(GAME_COVER_ASPECT_RATIO);
     expect(detail.aspectRatio).toBe(GAME_COVER_ASPECT_RATIO);
-    expect(SPATIAL_GAME_CARD_BACK).toBe(50);
+    expect(SPATIAL_GAME_COVER_BACK).toBe(50);
   });
 });

@@ -8,8 +8,7 @@ import type {
 } from "react";
 import { GameCoverMedia } from "@/app/components/GameCoverMedia";
 import { PlatformIcons } from "@/app/components/PlatformIcons";
-import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
-import { SPATIAL_GAME_CARD_BACK } from "@/app/lib/game-cover-media";
+import { SPATIAL_GAME_COVER_BACK } from "@/app/lib/game-cover-media";
 import type { Game } from "@/app/types/game";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,8 +38,6 @@ export function GameCase({
   priority = false,
   presentation = "library",
 }: GameCaseProps) {
-  const { mode } = useSpatialRuntime();
-  const isSpatial = mode === "spatial";
   const releaseYear = game.released
     ? new Date(`${game.released}T00:00:00`).getFullYear()
     : "TBA";
@@ -91,24 +88,20 @@ export function GameCase({
     <Card
       className={cn(
         "game-case group",
-        !isSpatial && `game-case--${presentation}`,
-        !isSpatial &&
-          presentation === "compact" &&
+        `game-case--${presentation}`,
+        presentation === "compact" &&
           hasActiveCollectionAction &&
           isInActiveCollection &&
           "is-in-active-collection",
       )}
+      enable-xr
       size="sm"
       style={
-        isSpatial
-          ? {
-              ...style,
-              "--xr-background-material": "transparent",
-              "--xr-back": `${SPATIAL_GAME_CARD_BACK}px`,
-            }
-          : style
+        {
+          ...style,
+          "--xr-background-material": "transparent",
+        } as CSSProperties
       }
-      {...(isSpatial ? { "enable-xr": true } : {})}
     >
       <button
         aria-label={`Open ${game.name}`}
@@ -116,7 +109,23 @@ export function GameCase({
         onClick={() => onOpen(game)}
         type="button"
       />
-      <div className="game-case__art">
+      <div
+        className="game-case__art"
+        enable-xr
+        style={
+          {
+            "--xr-background-material": "transparent",
+            "--xr-back": `${SPATIAL_GAME_COVER_BACK}px`,
+          } as CSSProperties
+        }
+      >
+        <button
+          aria-hidden="true"
+          className="game-case__art-open"
+          onClick={() => onOpen(game)}
+          tabIndex={-1}
+          type="button"
+        />
         <GameCoverMedia
           game={game}
           priority={priority}
@@ -126,7 +135,7 @@ export function GameCase({
         <div className="game-case__browser-controls">
           {collectionToggle}
           {rating}
-          {!isSpatial && action ? (
+          {action ? (
             <div className="game-case__collection-action">{action}</div>
           ) : null}
         </div>
@@ -143,7 +152,6 @@ export function GameCase({
             platforms={game.platformFamilies ?? []}
           />
         </div>
-        {isSpatial ? action : null}
       </CardContent>
     </Card>
   );

@@ -16,7 +16,6 @@ import { LibrarySidebar } from "@/app/components/LibrarySidebar";
 import { LibraryToolbar } from "@/app/components/LibraryToolbar";
 import { PopularGames } from "@/app/components/PopularGames";
 import { ProjectFooter } from "@/app/components/ProjectFooter";
-import { useSpatialRuntime } from "@/app/components/useSpatialRuntime";
 import { useCatalogFeeds } from "@/app/hooks/useCatalogFeeds";
 import { useLibrary } from "@/app/hooks/useLibrary";
 import {
@@ -67,8 +66,6 @@ export function LibraryExperience({
   initialLocation,
 }: LibraryExperienceProps) {
   const router = useRouter();
-  const { mode } = useSpatialRuntime();
-  const isSpatial = mode === "spatial";
   const isMobile = useIsMobile();
   const {
     collections,
@@ -148,16 +145,6 @@ export function LibraryExperience({
     () => filterGames(searchGames, searchFilters),
     [searchFilters, searchGames],
   );
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    root.classList.toggle("isSpatialLibrary", isSpatial);
-
-    return () => {
-      root.classList.remove("isSpatialLibrary");
-    };
-  }, [isSpatial]);
 
   useEffect(() => {
     if (!isLoaded || hasRestoredCollection.current) {
@@ -405,8 +392,8 @@ export function LibraryExperience({
     ? visibleSearchGames
     : visibleCollectionGames;
   const visibleGames = useMemo(
-    () => sortGames(unsortedVisibleGames, isSpatial ? "default" : sort),
-    [isSpatial, sort, unsortedVisibleGames],
+    () => sortGames(unsortedVisibleGames, sort),
+    [sort, unsortedVisibleGames],
   );
   const unfilteredVisibleGames = hasSearchQuery
     ? searchGames
@@ -506,24 +493,17 @@ export function LibraryExperience({
       defaultOpen
       disablePersistence
       disableShortcut
-      forceDesktop={isSpatial}
       open
       style={
         {
           "--sidebar-width": "240px",
           "--sidebar-width-icon": "48px",
-          ...(isSpatial
-            ? { "--xr-background-material": "transparent" }
-            : {}),
         } as React.CSSProperties
       }
-      {...(isSpatial ? { "enable-xr": true } : {})}
     >
-      {isSpatial ? null : (
-        <a className="skip-link" href="#library-main">
-          Skip to game library
-        </a>
-      )}
+      <a className="skip-link" href="#library-main">
+        Skip to game library
+      </a>
 
       <LibrarySidebar
         activeCollectionId={activeCollection.id}
@@ -532,7 +512,6 @@ export function LibraryExperience({
         defaultCollectionId={defaultCollectionId}
         getCollectionUrl={getCollectionUrl}
         getGenreUrl={getGenreUrl}
-        isSpatial={isSpatial}
         onCreateCollection={createCollection}
         onDeleteCollection={deleteCollection}
         onOpenQuickOpen={() => setIsQuickOpenOpen(true)}
@@ -544,7 +523,7 @@ export function LibraryExperience({
 
       <SidebarInset className="library-content">
         <header className="site-header library-header">
-          {!isSpatial && isMobile ? (
+          {isMobile ? (
             <SidebarTrigger className="library-header__mobile-trigger" />
           ) : null}
           <LibraryToolbar
@@ -563,52 +542,25 @@ export function LibraryExperience({
         <section
           className="library-content__scroll"
           id="library-main"
-          style={
-            isSpatial
-              ? { "--xr-background-material": "transparent" }
-              : undefined
-          }
           tabIndex={-1}
-          {...(isSpatial ? { "enable-xr": true } : {})}
         >
           <div className="library-content__inner">
             <div className="library-view">
               <div className="library-view__heading-row">
                 <div className="library-view__heading">
-                  {isSpatial ? (
-                    hasSearchQuery ? (
-                      <>
-                        <span className="section-kicker">Catalog</span>
-                        <h1>{viewHeading}</h1>
-                      </>
-                    ) : (
-                      <h1 className="collection-title">
-                        <span className="section-kicker">
-                          {isSmartView ? "Smart collection" : "Collection"}
-                        </span>
-                        <span aria-hidden="true"> - </span>
-                        {viewHeading}
-                      </h1>
-                    )
-                  ) : (
-                    <>
-                      <span className="section-kicker">
-                        {hasSearchQuery
-                          ? "Catalog"
-                          : isSmartView
-                            ? "Smart collection"
-                            : "Your library"}
-                      </span>
-                      <h1 className="collection-title">{viewHeading}</h1>
-                    </>
-                  )}
+                  <span className="section-kicker">
+                    {hasSearchQuery
+                      ? "Catalog"
+                      : isSmartView
+                        ? "Smart collection"
+                        : "Your library"}
+                  </span>
+                  <h1 className="collection-title">{viewHeading}</h1>
                 </div>
-                {isSpatial ? null : (
-                  <GameSortControl
-                    onChange={handleSortChange}
-                    value={sort}
-                  />
-                )}
+                <GameSortControl
+                  onChange={handleSortChange}
+                  value={sort}
+                />
               </div>
 
               {!isLoaded ? (
@@ -716,19 +668,17 @@ export function LibraryExperience({
         </section>
       </SidebarInset>
 
-      {isSpatial ? null : (
-        <LibraryCommandPalette
-          collections={collections}
-          games={allSavedGames}
-          onOpenChange={setIsQuickOpenOpen}
-          onOpenGame={openGame}
-          onSearchCatalog={handleCatalogSearch}
-          onSelectCollection={handleSelectCollection}
-          onSelectGenre={handleSelectGenre}
-          open={isQuickOpenOpen}
-          smartGenres={smartGenres}
-        />
-      )}
+      <LibraryCommandPalette
+        collections={collections}
+        games={allSavedGames}
+        onOpenChange={setIsQuickOpenOpen}
+        onOpenGame={openGame}
+        onSearchCatalog={handleCatalogSearch}
+        onSelectCollection={handleSelectCollection}
+        onSelectGenre={handleSelectGenre}
+        open={isQuickOpenOpen}
+        smartGenres={smartGenres}
+      />
     </SidebarProvider>
   );
 }

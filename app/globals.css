@@ -67,16 +67,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-html.isSpatialLibrary,
-html.isSpatialLibrary body,
-html.isSpatialDetails,
-html.isSpatialDetails body {
-  height: 100%;
-  overflow: hidden;
-  background: transparent;
-  --xr-background-material: transparent;
-}
-
 button,
 input {
   font: inherit;
@@ -738,6 +728,16 @@ a {
   overflow: hidden;
   border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
   background: #151925;
+}
+
+.game-case__art-open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .game-cover-media {
@@ -1641,441 +1641,6 @@ a {
   -webkit-backdrop-filter: blur(18px);
 }
 
-html.isSpatialLibrary,
-html.isSpatialDetails {
-  --spatial-panel: #121722;
-  --spatial-text: #f7f8fb;
-  --spatial-muted: #9da6b8;
-  --spatial-border: rgba(255, 255, 255, 0.12);
-  --spatial-subtle: #202633;
-  --spatial-accent: #9eff8f;
-  --spatial-accent-soft: color-mix(
-    in srgb,
-    var(--spatial-accent) 10%,
-    var(--spatial-panel)
-  );
-}
-
-html.isSpatialLibrary .nexus-shell,
-html.isSpatialDetails .details-page {
-  height: 100vh;
-  min-height: 0;
-  overflow: hidden;
-}
-
-html.isSpatialLibrary .nexus-shell > .site-header,
-html.isSpatialDetails .site-header {
-  flex: 0 0 auto;
-  color: #ffffff;
-}
-
-html.isSpatialLibrary .nexus-brand__mark,
-html.isSpatialDetails .nexus-brand__mark {
-  color: #9eff8f;
-}
-
-html.isSpatialLibrary .library-layout {
-  min-height: 0;
-  grid-template-columns: 232px minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  align-items: stretch;
-}
-
-html.isSpatialLibrary .collection-sidebar,
-html.isSpatialLibrary .library-content,
-html.isSpatialDetails .details-shell {
-  --background: var(--spatial-panel);
-  --foreground: var(--spatial-text);
-  --card: var(--spatial-panel);
-  --card-foreground: var(--spatial-text);
-  --popover: var(--spatial-panel);
-  --popover-foreground: var(--spatial-text);
-  --primary: var(--spatial-accent);
-  --primary-foreground: #061006;
-  --secondary: var(--spatial-subtle);
-  --secondary-foreground: var(--spatial-text);
-  --muted: var(--spatial-subtle);
-  --muted-foreground: var(--spatial-muted);
-  --accent: var(--spatial-accent-soft);
-  --accent-foreground: var(--spatial-text);
-  --border: var(--spatial-border);
-  --input: var(--spatial-border);
-  --ring: var(--spatial-accent);
-  border: 1px solid var(--spatial-border);
-  border-radius: calc(var(--radius) * 2.5);
-  background: var(--spatial-panel);
-  color: var(--spatial-text);
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-html.isSpatialLibrary .collection-sidebar {
-  position: relative;
-  top: auto;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  align-self: stretch;
-  overflow: hidden;
-}
-
-html.isSpatialLibrary .collection-sidebar__heading {
-  flex: 0 0 auto;
-  padding: 2px 2px 8px 8px;
-}
-
-html.isSpatialLibrary .collection-sidebar__heading > span {
-  display: inline;
-}
-
-html.isSpatialLibrary .collection-sidebar__list {
-  display: grid;
-  min-height: 0;
-  flex: 1;
-  align-content: start;
-  overflow-y: auto;
-  scrollbar-color: #465064 transparent;
-}
-
-html.isSpatialLibrary .collection-row {
-  width: 100%;
-}
-
-html.isSpatialLibrary .library-content {
-  display: flex;
-  min-height: 0;
-  flex-direction: column;
-  overflow-y: auto;
-  padding: 0;
-  overscroll-behavior: contain;
-  scrollbar-color: #465064 transparent;
-}
-
-html.isSpatialLibrary .library-content__inner {
-  display: flex;
-  min-height: 100%;
-  flex: 1;
-  flex-direction: column;
-  padding: 18px;
-}
-
-html.isSpatialLibrary .library-content .library-view,
-html.isSpatialLibrary .library-content .popular-games,
-html.isSpatialLibrary .library-content .project-footer {
-  grid-column: auto;
-  grid-row: auto;
-}
-
-html.isSpatialLibrary .search-console {
-  top: 0;
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-}
-
-html.isSpatialLibrary .site-header {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-}
-
-html.isSpatialLibrary .site-header__center {
-  --background: var(--spatial-panel);
-  --foreground: var(--spatial-text);
-  --muted-foreground: var(--spatial-muted);
-  --border: var(--spatial-border);
-}
-
-html.isSpatialLibrary .site-header .search-console {
-  border: 0;
-  background: transparent;
-}
-
-html.isSpatialLibrary .search-field {
-  border-color: var(--spatial-border);
-  background: var(--spatial-subtle);
-}
-
-html.isSpatialLibrary .search-field input {
-  color: var(--spatial-text);
-}
-
-html.isSpatialLibrary .search-field input::placeholder {
-  color: var(--spatial-muted);
-  opacity: 1;
-}
-
-html.isSpatialLibrary .section-kicker,
-html.isSpatialLibrary .popular-games__heading h2,
-html.isSpatialLibrary .collection-row.is-active .collection-row__select svg {
-  color: var(--spatial-accent);
-}
-
-html.isSpatialLibrary .collection-sidebar__heading,
-html.isSpatialLibrary .collection-row__select,
-html.isSpatialLibrary .search-console__status,
-html.isSpatialLibrary .library-grid-state,
-html.isSpatialLibrary .project-footer {
-  color: var(--spatial-muted);
-}
-
-html.isSpatialLibrary .collection-row.is-active {
-  border-color: color-mix(
-    in srgb,
-    var(--spatial-accent) 35%,
-    transparent
-  );
-  background: var(--spatial-accent-soft);
-}
-
-html.isSpatialLibrary .collection-row.is-active .collection-row__select,
-html.isSpatialLibrary .project-footer a {
-  color: var(--spatial-text);
-}
-
-html.isSpatialLibrary .collection-sidebar__heading button:hover,
-html.isSpatialLibrary .collection-sidebar__heading button:focus-visible,
-html.isSpatialLibrary .collection-row__menu-button:hover,
-html.isSpatialLibrary .collection-row__menu-button:focus-visible {
-  background: var(--spatial-subtle);
-  color: var(--spatial-text);
-}
-
-html.isSpatialLibrary .collection-row__edit input,
-html.isSpatialLibrary .collection-sidebar__create input {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-  color: var(--spatial-text);
-}
-
-html.isSpatialLibrary .game-case {
-  overflow: hidden;
-  border-color: rgba(255, 255, 255, 0.45);
-  border-radius: calc(var(--radius) * 1.4);
-  background: var(--card);
-  color: #ffffff;
-  box-shadow: 0 16px 32px rgba(31, 36, 44, 0.18);
-}
-
-html.isSpatialLibrary .game-case:hover,
-html.isSpatialLibrary .game-case:focus-within {
-  border-color: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 18px 34px rgba(31, 36, 44, 0.22);
-  transform: none;
-}
-
-html.isSpatialLibrary .game-case__art {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  border-radius: calc(var(--radius) - 1px)
-    calc(var(--radius) - 1px) 0 0;
-}
-
-html.isSpatialLibrary .game-cover-media {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: var(--game-cover-aspect-ratio, 0.75);
-  border-radius: inherit;
-}
-
-html.isSpatialLibrary .game-case:hover .game-cover-media img,
-html.isSpatialLibrary .game-case:focus-within .game-cover-media img {
-  transform: none;
-}
-
-html.isSpatialLibrary .game-case__scrim {
-  inset: auto 0 0;
-  display: block;
-  height: 50%;
-  background: linear-gradient(transparent, rgba(7, 9, 14, 0.9));
-}
-
-html.isSpatialLibrary .game-case__browser-controls {
-  display: contents;
-}
-
-html.isSpatialLibrary .game-case__body {
-  position: relative;
-  min-height: 86px;
-  padding: 12px;
-  border-radius: 0 0 calc(var(--radius) - 1px)
-    calc(var(--radius) - 1px);
-  color: #ffffff;
-  pointer-events: auto;
-}
-
-html.isSpatialLibrary .game-case__eyebrow {
-  margin: 0 0 5px;
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-}
-
-html.isSpatialLibrary .game-case h3 {
-  height: 2.275rem;
-  margin: 0;
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-html.isSpatialLibrary .game-case__platform-slot {
-  height: 24px;
-  margin-top: 7px;
-}
-
-html.isSpatialLibrary .platform-icons {
-  color: var(--muted-foreground);
-  pointer-events: auto;
-}
-
-html.isSpatialLibrary .platform-icons__trigger:hover,
-html.isSpatialLibrary .platform-icons__trigger:focus-visible,
-html.isSpatialLibrary .platform-icons__more:hover,
-html.isSpatialLibrary .platform-icons__more:focus-visible {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-}
-
-html.isSpatialLibrary .game-case__body > .collection-picker {
-  margin-top: 8px;
-  pointer-events: auto;
-}
-
-html.isSpatialLibrary .collection-picker__trigger {
-  height: 28px;
-  min-height: 28px;
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(5, 8, 13, 0.62);
-  color: #ffffff;
-  font-size: 0.7rem;
-}
-
-html.isSpatialLibrary .collection-picker__trigger:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(5, 8, 13, 0.8);
-  color: #ffffff;
-}
-
-html.isSpatialLibrary .library-grid-state {
-  border-color: var(--spatial-border);
-  background: color-mix(
-    in srgb,
-    var(--spatial-subtle) 72%,
-    transparent
-  );
-}
-
-html.isSpatialLibrary .popular-games__spatial-grid {
-  display: grid;
-  grid-template-columns: repeat(
-    var(--spatial-discover-columns),
-    minmax(0, 1fr)
-  );
-  gap: 14px;
-}
-
-html.isSpatialLibrary .popular-games__spatial-pagination {
-  display: flex;
-  width: fit-content;
-  align-items: center;
-  gap: 9px;
-  margin: 14px 0 0 auto;
-}
-
-html.isSpatialLibrary .popular-games__spatial-pagination span {
-  min-width: 44px;
-  color: var(--spatial-muted);
-  font-size: 0.75rem;
-  text-align: center;
-}
-
-html.isSpatialLibrary .popular-games__spatial-pagination button {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-  color: var(--spatial-text);
-}
-
-html.isSpatialLibrary .popular-games__spatial-pagination button:hover:not(:disabled) {
-  background: var(--spatial-subtle);
-}
-
-html.isSpatialLibrary [data-slot="popover-content"],
-html.isSpatialLibrary [data-slot="dropdown-menu-content"],
-html.isSpatialDetails [data-slot="popover-content"],
-html.isSpatialDetails [data-slot="dropdown-menu-content"] {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-  color: var(--spatial-text);
-}
-
-html.isSpatialDetails .details-page {
-  color: #ffffff;
-}
-
-html.isSpatialDetails .details-shell {
-  height: calc(100vh - 92px);
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-color: #465064 transparent;
-}
-
-html.isSpatialDetails .details-panel,
-html.isSpatialDetails .details-information,
-html.isSpatialDetails .screenshot-section,
-html.isSpatialDetails .project-footer {
-  color: var(--spatial-text);
-}
-
-html.isSpatialDetails .details-cover-card {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: #151925;
-  box-shadow: 0 18px 36px rgba(31, 36, 44, 0.2);
-}
-
-html.isSpatialDetails .details-summary-card,
-html.isSpatialDetails .details-information [data-slot="card"] {
-  border-color: var(--spatial-border);
-  background: color-mix(
-    in srgb,
-    var(--spatial-subtle) 72%,
-    var(--spatial-panel)
-  );
-  color: var(--spatial-text);
-}
-
-html.isSpatialDetails .details-summary,
-html.isSpatialDetails .details-information [data-slot="card-content"] > p,
-html.isSpatialDetails .game-information span,
-html.isSpatialDetails .game-information svg,
-html.isSpatialDetails .project-footer {
-  color: var(--spatial-muted);
-}
-
-html.isSpatialDetails .game-information strong,
-html.isSpatialDetails .game-information .platform-icons {
-  color: var(--spatial-text);
-}
-
-html.isSpatialDetails .details-copy [data-slot="badge"] {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-  color: var(--spatial-text);
-}
-
-html.isSpatialDetails .details-copy .collection-picker__trigger {
-  border-color: var(--spatial-accent);
-  background: var(--spatial-accent);
-  color: #061006;
-}
-
-html.isSpatialDetails .screenshot {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-}
-
 .game-case {
   gap: 0;
   padding: 0;
@@ -2503,6 +2068,25 @@ html.isSpatialDetails .screenshot {
 
 .details-cover-card {
   aspect-ratio: 3 / 4;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.details-cover-card--loading {
+  position: relative;
+}
+
+.details-cover-surface {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: calc(var(--radius-lg) - 1px);
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+}
+
+.details-cover-loading {
+  position: absolute;
+  inset: 0;
 }
 
 .details-summary-card .details-copy {
@@ -2512,7 +2096,7 @@ html.isSpatialDetails .screenshot {
 .details-cover {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 3 / 4;
   min-height: 0;
   overflow: hidden;
   border-radius: calc(var(--radius-lg) - 1px);
@@ -3137,49 +2721,8 @@ html.isSpatialDetails .screenshot {
   }
 }
 
-html.isSpatialLibrary .nexus-shell[data-slot="sidebar-wrapper"] {
-  height: 100vh;
-  min-height: 0;
-}
-
-html.isSpatialLibrary .nexus-shell [data-slot="sidebar-container"] {
-  position: relative;
-  top: auto;
-  height: 100%;
-}
-
-html.isSpatialLibrary .nexus-shell [data-slot="sidebar-inner"] {
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-}
-
-html.isSpatialLibrary .library-content[data-slot="sidebar-inset"] {
-  min-height: 0;
-  overflow: hidden;
-}
-
-html.isSpatialLibrary .library-header {
-  margin-left: 24px;
-  border-color: var(--spatial-border);
-  background: var(--spatial-panel);
-}
-
-html.isSpatialLibrary .library-content__scroll {
-  min-height: 0;
-  flex: 1;
-  margin-left: 24px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-color: #465064 transparent;
-}
-
-html.isSpatialLibrary .library-content__inner {
-  min-height: 100%;
-  padding: 18px;
-}
-
-/* Editorial browser library */
-html:not(.isSpatialLibrary) body:has(.nexus-shell) {
+/* Editorial library */
+body:has(.nexus-shell) {
   background:
     radial-gradient(
       circle at 58% -8%,
@@ -3189,7 +2732,7 @@ html:not(.isSpatialLibrary) body:has(.nexus-shell) {
     var(--background);
 }
 
-html:not(.isSpatialLibrary) .skip-link {
+.skip-link {
   position: fixed;
   z-index: 100;
   top: 12px;
@@ -3204,46 +2747,36 @@ html:not(.isSpatialLibrary) .skip-link {
   transition: transform 140ms ease;
 }
 
-html:not(.isSpatialLibrary) .skip-link:focus-visible {
+.skip-link:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--primary) 38%, white);
   outline-offset: 3px;
   transform: translate(-50%, 0);
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-shell
-  [data-slot="sidebar-container"] {
+.nexus-shell [data-slot="sidebar-container"] {
   height: calc(100vh - 40px);
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-shell
-  [data-slot="sidebar-inner"] {
+.nexus-shell [data-slot="sidebar-inner"] {
   border-width: 0 1px 0 0;
   border-radius: 0;
   background: transparent;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-header"] {
+.nexus-library-sidebar [data-slot="sidebar-header"] {
   padding: 8px 14px 22px 8px;
 }
 
-html:not(.isSpatialLibrary) .nexus-sidebar-brand {
+.nexus-sidebar-brand {
   min-height: 44px;
   padding-inline: 8px;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-group"] {
+.nexus-library-sidebar [data-slot="sidebar-group"] {
   padding: 8px 16px 12px 8px;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-group-label"] {
+.nexus-library-sidebar [data-slot="sidebar-group-label"] {
   height: 28px;
   padding-inline: 8px;
   color: color-mix(
@@ -3257,22 +2790,16 @@ html:not(.isSpatialLibrary)
   text-transform: uppercase;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-group-action"] {
+.nexus-library-sidebar [data-slot="sidebar-group-action"] {
   top: 12px;
   right: 20px;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu"] {
+.nexus-library-sidebar [data-slot="sidebar-menu"] {
   gap: 3px;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu-button"] {
+.nexus-library-sidebar [data-slot="sidebar-menu-button"] {
   height: 36px;
   padding-inline: 9px;
   color: color-mix(
@@ -3282,12 +2809,8 @@ html:not(.isSpatialLibrary)
   );
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu-button"]:hover,
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu-button"]:focus-visible {
+.nexus-library-sidebar [data-slot="sidebar-menu-button"]:hover,
+.nexus-library-sidebar [data-slot="sidebar-menu-button"]:focus-visible {
   background: color-mix(
     in srgb,
     var(--sidebar-accent) 66%,
@@ -3296,17 +2819,13 @@ html:not(.isSpatialLibrary)
   color: var(--sidebar-foreground);
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu-button"][data-active] {
+.nexus-library-sidebar [data-slot="sidebar-menu-button"][data-active] {
   background: color-mix(in srgb, var(--primary) 10%, transparent);
   color: var(--sidebar-foreground);
   box-shadow: inset 2px 0 0 var(--primary);
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-menu-badge"] {
+.nexus-library-sidebar [data-slot="sidebar-menu-badge"] {
   right: 8px;
   color: color-mix(
     in srgb,
@@ -3316,28 +2835,25 @@ html:not(.isSpatialLibrary)
   font-size: 0.68rem;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
+.nexus-library-sidebar
   [data-slot="sidebar-menu-button"].nexus-sidebar-genre-link {
   padding-right: 42px;
 }
 
-html:not(.isSpatialLibrary) .nexus-sidebar-genre-link > span {
+.nexus-sidebar-genre-link > span {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-html:not(.isSpatialLibrary)
-  .nexus-library-sidebar
-  [data-slot="sidebar-separator"] {
+.nexus-library-sidebar [data-slot="sidebar-separator"] {
   margin-block: 8px;
   margin-inline: 16px;
   opacity: 0.72;
 }
 
-html:not(.isSpatialLibrary) .library-header {
+.library-header {
   z-index: 40;
   top: 0;
   display: grid;
@@ -3356,18 +2872,15 @@ html:not(.isSpatialLibrary) .library-header {
   -webkit-backdrop-filter: blur(20px) saturate(120%);
 }
 
-html:not(.isSpatialLibrary)
-  .library-content[data-slot="sidebar-inset"] {
+.library-content[data-slot="sidebar-inset"] {
   padding-left: 24px;
 }
 
-html:not(.isSpatialLibrary)
-  .library-header
-  [data-slot="sidebar-trigger"] {
+.library-header [data-slot="sidebar-trigger"] {
   display: none;
 }
 
-html:not(.isSpatialLibrary) .library-toolbar {
+.library-toolbar {
   grid-column: 1;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
@@ -3377,62 +2890,57 @@ html:not(.isSpatialLibrary) .library-toolbar {
   row-gap: 8px;
 }
 
-html:not(.isSpatialLibrary) .search-console {
+.search-console {
   grid-area: search;
   max-width: 720px;
   border: 0;
   background: transparent;
 }
 
-html:not(.isSpatialLibrary) .search-field {
+.search-field {
   height: 40px;
   border-color: var(--border);
   background: color-mix(in srgb, var(--card) 72%, transparent);
 }
 
-html:not(.isSpatialLibrary) .search-field:focus-within {
+.search-field:focus-within {
   border-color: color-mix(in srgb, var(--ring) 52%, var(--border));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 14%, transparent);
 }
 
-html:not(.isSpatialLibrary) .search-console__status {
+.search-console__status {
   padding: 6px 4px 0;
   font-size: 0.72rem;
 }
 
-html:not(.isSpatialLibrary) .library-toolbar__filter-chips {
+.library-toolbar__filter-chips {
   grid-area: chips;
 }
 
-html:not(.isSpatialLibrary)
-  .game-filter__buttons[data-density="compact"]
+.game-filter__buttons[data-density="compact"]
   .game-filter__trigger,
-html:not(.isSpatialLibrary)
-  .game-filter__buttons[data-density="compact"]
+.game-filter__buttons[data-density="compact"]
   .game-filter__clear {
   height: 36px;
 }
 
-html:not(.isSpatialLibrary)
-  .game-filter__buttons[data-density="compact"]
+.game-filter__buttons[data-density="compact"]
   .game-filter__clear {
   width: 36px;
   min-width: 36px;
 }
 
-html:not(.isSpatialLibrary) .game-filter__chips {
+.game-filter__chips {
   gap: 7px;
   padding-top: 1px;
 }
 
-html:not(.isSpatialLibrary) .game-filter-chip {
+.game-filter-chip {
   height: 26px;
   background: color-mix(in srgb, var(--secondary) 82%, transparent);
 }
 
-html:not(.isSpatialLibrary)
-  .game-filter-chip
-  .game-filter-chip__remove:focus-visible {
+.game-filter-chip .game-filter-chip__remove:focus-visible {
   background: color-mix(in srgb, var(--foreground) 13%, transparent);
   box-shadow:
     0 0 0 2px var(--background),
@@ -3440,32 +2948,32 @@ html:not(.isSpatialLibrary)
   outline: 0;
 }
 
-html:not(.isSpatialLibrary) .library-content__scroll {
+.library-content__scroll {
   margin-left: 0;
   scroll-margin-top: 88px;
 }
 
-html:not(.isSpatialLibrary) .library-content__scroll:focus {
+.library-content__scroll:focus {
   outline: 0;
 }
 
-html:not(.isSpatialLibrary) .library-content__inner {
+.library-content__inner {
   padding-bottom: 4px;
 }
 
-html:not(.isSpatialLibrary) .library-view {
+.library-view {
   padding-top: 40px;
 }
 
-html:not(.isSpatialLibrary) .library-view__heading {
+.library-view__heading {
   display: flex;
   flex-direction: column;
   gap: 7px;
   margin-bottom: 24px;
 }
 
-html:not(.isSpatialLibrary) .library-view__heading .section-kicker,
-html:not(.isSpatialLibrary) .popular-games__title .section-kicker {
+.library-view__heading .section-kicker,
+.popular-games__title .section-kicker {
   color: var(--muted-foreground);
   font-size: 0.69rem;
   font-weight: 650;
@@ -3473,7 +2981,7 @@ html:not(.isSpatialLibrary) .popular-games__title .section-kicker {
   text-transform: uppercase;
 }
 
-html:not(.isSpatialLibrary) .library-view__heading h1 {
+.library-view__heading h1 {
   max-width: 760px;
   margin: 0;
   color: var(--foreground);
@@ -3484,67 +2992,61 @@ html:not(.isSpatialLibrary) .library-view__heading h1 {
   text-wrap: balance;
 }
 
-html:not(.isSpatialLibrary) .library-grid {
+.library-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px;
 }
 
-html:not(.isSpatialLibrary) .game-case {
+.game-case {
   border-color: color-mix(in srgb, var(--border) 88%, transparent);
   background: color-mix(in srgb, var(--card) 94%, transparent);
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.14);
 }
 
-html:not(.isSpatialLibrary) .game-case:hover,
-html:not(.isSpatialLibrary) .game-case:focus-within {
+.game-case:hover,
+.game-case:focus-within {
   border-color: color-mix(in srgb, var(--border-bright) 78%, transparent);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
   transform: translateY(-2px);
 }
 
-html:not(.isSpatialLibrary) .game-case:focus-within {
+.game-case:focus-within {
   outline-width: 2px;
   outline-offset: 3px;
 }
 
-html:not(.isSpatialLibrary) .game-cover-media img {
+.game-cover-media img {
   transition: transform 240ms ease;
 }
 
-html:not(.isSpatialLibrary)
-  .game-case:hover
-  .game-cover-media
-  img,
-html:not(.isSpatialLibrary)
-  .game-case:focus-within
-  .game-cover-media
-  img {
+.game-case:hover .game-cover-media img,
+.game-case:focus-within .game-cover-media img {
   transform: scale(1.018);
 }
 
-html:not(.isSpatialLibrary) .game-case__body {
+.game-case__body {
   min-height: 104px;
   padding: 14px 14px 13px;
 }
 
-html:not(.isSpatialLibrary) .game-case__eyebrow {
+.game-case__eyebrow {
   margin-bottom: 6px;
   font-size: 0.76rem;
 }
 
-html:not(.isSpatialLibrary) .game-case h3 {
+.game-case h3 {
   height: 2.45rem;
   font-size: 0.96rem;
   font-weight: 620;
   line-height: 1.28;
 }
 
-html:not(.isSpatialLibrary) .game-case__platform-slot {
+.game-case__platform-slot {
   height: 26px;
   margin-top: 8px;
 }
 
-html:not(.isSpatialLibrary) .game-case__collection-action {
+.game-case__collection-action {
   position: absolute;
   z-index: 3;
   right: 8px;
@@ -3558,26 +3060,18 @@ html:not(.isSpatialLibrary) .game-case__collection-action {
     transform 140ms ease;
 }
 
-html:not(.isSpatialLibrary)
-  .game-case:hover
-  .game-case__collection-action,
-html:not(.isSpatialLibrary)
-  .game-case:focus-within
-  .game-case__collection-action {
+.game-case:hover .game-case__collection-action,
+.game-case:focus-within .game-case__collection-action {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
 }
 
-html:not(.isSpatialLibrary)
-  .game-case__collection-action
-  .collection-picker {
+.game-case__collection-action .collection-picker {
   margin-top: 0;
 }
 
-html:not(.isSpatialLibrary)
-  .game-case__collection-action
-  .collection-picker__trigger {
+.game-case__collection-action .collection-picker__trigger {
   min-height: 34px;
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(8, 11, 18, 0.9);
@@ -3587,57 +3081,53 @@ html:not(.isSpatialLibrary)
   -webkit-backdrop-filter: blur(14px);
 }
 
-html:not(.isSpatialLibrary)
-  .game-case__collection-action
-  .collection-picker__trigger:hover {
+.game-case__collection-action .collection-picker__trigger:hover {
   border-color: rgba(255, 255, 255, 0.3);
   background: rgba(18, 23, 34, 0.96);
   color: var(--foreground);
 }
 
-html:not(.isSpatialLibrary) .popular-games {
+.popular-games {
   margin-top: 56px;
 }
 
-html:not(.isSpatialLibrary) .popular-games__separator {
+.popular-games__separator {
   margin-bottom: 28px;
   opacity: 0.8;
 }
 
-html:not(.isSpatialLibrary) .popular-games__heading {
+.popular-games__heading {
   align-items: flex-end;
   margin-bottom: 20px;
 }
 
-html:not(.isSpatialLibrary) .popular-games__title {
+.popular-games__title {
   display: flex;
   min-width: 0;
   flex-direction: column;
   gap: 6px;
 }
 
-html:not(.isSpatialLibrary) .popular-games__heading h2 {
+.popular-games__heading h2 {
   color: var(--foreground);
   font-size: clamp(1.4rem, 2vw, 1.75rem);
   letter-spacing: -0.035em;
 }
 
-html:not(.isSpatialLibrary) .popular-games__filters {
+.popular-games__filters {
   margin-right: 0;
 }
 
-html:not(.isSpatialLibrary)
-  .popular-games__filters
-  .game-filter__buttons {
+.popular-games__filters .game-filter__buttons {
   margin-left: auto;
 }
 
-html:not(.isSpatialLibrary) .popular-games__carousel {
+.popular-games__carousel {
   overflow: hidden;
 }
 
-html:not(.isSpatialLibrary) .popular-games__previous,
-html:not(.isSpatialLibrary) .popular-games__next {
+.popular-games__previous,
+.popular-games__next {
   top: 50%;
   bottom: auto;
   width: 36px;
@@ -3651,98 +3141,88 @@ html:not(.isSpatialLibrary) .popular-games__next {
   -webkit-backdrop-filter: blur(14px);
 }
 
-html:not(.isSpatialLibrary) .popular-games__previous {
+.popular-games__previous {
   right: auto;
   left: 12px;
 }
 
-html:not(.isSpatialLibrary) .popular-games__next {
+.popular-games__next {
   right: 12px;
   left: auto;
 }
 
-html:not(.isSpatialLibrary) .popular-games__previous:hover:not(:disabled),
-html:not(.isSpatialLibrary) .popular-games__next:hover:not(:disabled) {
+.popular-games__previous:hover:not(:disabled),
+.popular-games__next:hover:not(:disabled) {
   background: color-mix(in srgb, var(--muted) 92%, transparent);
 }
 
-html:not(.isSpatialLibrary) .popular-games__slide {
+.popular-games__slide {
   flex-basis: clamp(154px, 16.75%, 192px);
 }
 
-html:not(.isSpatialLibrary) .game-case--compact .game-case__body {
+.game-case--compact .game-case__body {
   min-height: 88px;
   padding: 11px 12px 10px;
 }
 
-html:not(.isSpatialLibrary) .game-case--compact h3 {
+.game-case--compact h3 {
   height: 2.2rem;
   font-size: 0.86rem;
   line-height: 1.25;
 }
 
-html:not(.isSpatialLibrary) .game-case--compact .game-case__eyebrow {
+.game-case--compact .game-case__eyebrow {
   margin-bottom: 4px;
   font-size: 0.7rem;
 }
 
-html:not(.isSpatialLibrary)
-  .game-case--compact
-  .game-case__platform-slot {
+.game-case--compact .game-case__platform-slot {
   height: 22px;
   margin-top: 5px;
 }
 
-html:not(.isSpatialLibrary) .game-case--compact .game-case__rating {
+.game-case--compact .game-case__rating {
   height: 21px;
   font-size: 0.66rem;
 }
 
-html:not(.isSpatialLibrary)
-  .game-case--compact.is-in-active-collection
-  .game-cover-media
-  img {
+.game-case--compact.is-in-active-collection .game-cover-media img {
   filter: grayscale(1) brightness(0.78) contrast(1.04);
 }
 
-html:not(.isSpatialLibrary)
-  .game-case--compact.is-in-active-collection:hover
-  .game-cover-media
-  img,
-html:not(.isSpatialLibrary)
-  .game-case--compact.is-in-active-collection:focus-within
+.game-case--compact.is-in-active-collection:hover .game-cover-media img,
+.game-case--compact.is-in-active-collection:focus-within
   .game-cover-media
   img {
   filter: grayscale(1) brightness(0.88) contrast(1.06);
 }
 
 @media (max-width: 1439px) {
-  html:not(.isSpatialLibrary) .library-grid {
+  .library-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 1179px) {
-  html:not(.isSpatialLibrary) .library-grid {
+  .library-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  html:not(.isSpatialLibrary) .popular-games__slide {
+  .popular-games__slide {
     flex-basis: clamp(156px, 22%, 190px);
   }
 }
 
 @media (max-width: 979px) {
-  html:not(.isSpatialLibrary) .nexus-shell[data-slot="sidebar-wrapper"] {
+  .nexus-shell[data-slot="sidebar-wrapper"] {
     padding-top: 12px;
   }
 
-  html:not(.isSpatialLibrary)
-    .library-content[data-slot="sidebar-inset"] {
+  .library-content[data-slot="sidebar-inset"] {
     padding-left: 0;
   }
 
-  html:not(.isSpatialLibrary) .library-header {
+  .library-header {
     top: 0;
     width: 100%;
     grid-template-columns: 40px minmax(0, 1fr);
@@ -3754,16 +3234,14 @@ html:not(.isSpatialLibrary)
     box-shadow: 0 1px 0 var(--border);
   }
 
-  html:not(.isSpatialLibrary)
-    .library-header
-    [data-slot="sidebar-trigger"] {
+  .library-header [data-slot="sidebar-trigger"] {
     display: inline-flex;
     grid-column: 1;
     align-self: start;
     margin-top: 6px;
   }
 
-  html:not(.isSpatialLibrary) .library-toolbar {
+  .library-toolbar {
     grid-column: 2;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -3772,17 +3250,17 @@ html:not(.isSpatialLibrary)
     row-gap: 8px;
   }
 
-  html:not(.isSpatialLibrary) .library-content__scroll {
+  .library-content__scroll {
     margin-left: 0;
   }
 
-  html:not(.isSpatialLibrary) .library-view {
+  .library-view {
     padding-top: 34px;
   }
 }
 
 @media (max-width: 719px) {
-  html:not(.isSpatialLibrary) .library-toolbar {
+  .library-toolbar {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "search"
@@ -3806,40 +3284,40 @@ html:not(.isSpatialLibrary)
     padding-inline: 6px;
   }
 
-  html:not(.isSpatialLibrary) .library-grid {
+  .library-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
   }
 
-  html:not(.isSpatialLibrary) .library-view__heading h1 {
+  .library-view__heading h1 {
     font-size: clamp(1.8rem, 8vw, 2.25rem);
   }
 
-  html:not(.isSpatialLibrary) .popular-games__heading {
+  .popular-games__heading {
     align-items: stretch;
   }
 
-  html:not(.isSpatialLibrary) .popular-games__filters {
+  .popular-games__filters {
     margin-right: 0;
   }
 
-  html:not(.isSpatialLibrary) .popular-games__slide {
+  .popular-games__slide {
     flex-basis: calc((100% - 14px) / 2);
   }
 }
 
 @media (max-width: 419px) {
-  html:not(.isSpatialLibrary) .library-grid {
+  .library-grid {
     grid-template-columns: 1fr;
   }
 
-  html:not(.isSpatialLibrary) .popular-games__slide {
+  .popular-games__slide {
     flex-basis: 82%;
   }
 }
 
 @media (hover: none) {
-  html:not(.isSpatialLibrary) .game-case__collection-action {
+  .game-case__collection-action {
     opacity: 1;
     pointer-events: auto;
     transform: none;
@@ -3847,9 +3325,9 @@ html:not(.isSpatialLibrary)
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not(.isSpatialLibrary) .game-case,
-  html:not(.isSpatialLibrary) .game-cover-media img,
-  html:not(.isSpatialLibrary) .game-case__collection-action {
+  .game-case,
+  .game-cover-media img,
+  .game-case__collection-action {
     transform: none !important;
   }
 }

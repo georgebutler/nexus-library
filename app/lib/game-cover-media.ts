@@ -1,7 +1,7 @@
 import type { Game } from "@/app/types/game";
 
 export const GAME_COVER_ASPECT_RATIO = 3 / 4;
-export const SPATIAL_GAME_CARD_BACK = 50;
+export const SPATIAL_GAME_COVER_BACK = 50;
 
 export type GameCoverVariant = "card" | "detail";
 

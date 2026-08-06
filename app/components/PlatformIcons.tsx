@@ -18,7 +18,6 @@ import {
   siMeta,
   siOculus,
   siSega,
-  siStadia,
   siSteam,
   type SimpleIcon,
 } from "simple-icons/icons";
@@ -63,7 +62,6 @@ const SIMPLE_PLATFORM_ICONS: Record<string, SimpleIcon> = {
   meta: siMeta,
   oculus: siOculus,
   sega: siSega,
-  stadia: siStadia,
   steam: siSteam,
 };
 

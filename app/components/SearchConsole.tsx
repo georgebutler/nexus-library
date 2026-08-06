@@ -1,15 +1,18 @@
 "use client";
 
 import { Search, X } from "lucide-react";
+import type { ReactNode } from "react";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 
 type SearchConsoleProps = {
+  trailingControl?: ReactNode;
   query: string;
   status: string;
   isSearching: boolean;
@@ -17,6 +20,7 @@ type SearchConsoleProps = {
 };
 
 export function SearchConsole({
+  trailingControl,
   query,
   status,
   isSearching,
@@ -46,15 +50,24 @@ export function SearchConsole({
           type="text"
           value={query}
         />
-        {query ? (
+        {query || trailingControl ? (
           <InputGroupAddon align="inline-end">
-            <InputGroupButton
-              aria-label="Clear search"
-              onClick={() => onQueryChange("")}
-              size="icon-xs"
-            >
-              <X aria-hidden="true" />
-            </InputGroupButton>
+            {query ? (
+              <InputGroupButton
+                aria-label="Clear search"
+                onClick={() => onQueryChange("")}
+                size="icon-xs"
+              >
+                <X aria-hidden="true" />
+              </InputGroupButton>
+            ) : null}
+            {trailingControl ? (
+              <Separator
+                className="search-field__separator"
+                orientation="vertical"
+              />
+            ) : null}
+            {trailingControl}
           </InputGroupAddon>
         ) : null}
       </InputGroup>

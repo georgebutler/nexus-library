@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   derivePlatformFamilies,
+  getUniquePlatformFamilies,
   resolvePlatformFamilies,
   sortPlatformFamiliesForDisplay,
 } from "@/app/lib/platforms";
@@ -19,7 +20,6 @@ describe("derivePlatformFamilies", () => {
     ["Amiga CD32", "commodore-amiga", "Commodore / Amiga"],
     ["Meta Quest 3", "meta", "Meta Quest"],
     ["Oculus Rift", "oculus", "Oculus"],
-    ["Google Stadia", "stadia", "Google Stadia"],
     ["SteamVR", "steam", "SteamVR"],
     ["BlackBerry OS", "blackberry", "BlackBerry OS"],
     ["Amazon Fire TV", "amazon", "Amazon Fire TV"],
@@ -37,6 +37,14 @@ describe("derivePlatformFamilies", () => {
         name: "ColecoVision",
         slug: "colecovision",
       },
+    ]);
+  });
+
+  it("excludes Google Stadia from frontend platform families", () => {
+    expect(
+      derivePlatformFamilies(["Google Stadia", "PC (Microsoft Windows)"]),
+    ).toEqual([
+      expect.objectContaining({ slug: "pc", name: "Windows" }),
     ]);
   });
 
@@ -79,6 +87,31 @@ describe("derivePlatformFamilies", () => {
       ),
     ).toEqual([{ id: 3, name: "Xbox", slug: "xbox" }]);
   });
+
+  it("removes Stadia from stored platform families", () => {
+    expect(
+      resolvePlatformFamilies(
+        [],
+        [
+          { id: 19, name: "Google Stadia", slug: "stadia" },
+          { id: 3, name: "Xbox", slug: "xbox" },
+        ],
+      ),
+    ).toEqual([{ id: 3, name: "Xbox", slug: "xbox" }]);
+  });
+});
+
+describe("getUniquePlatformFamilies", () => {
+  it("filters Stadia while preserving other unique families", () => {
+    expect(
+      getUniquePlatformFamilies([
+        { id: 19, name: "Google Stadia", slug: "stadia" },
+        { id: 20, name: "Stadia", slug: "google-stadia" },
+        { id: 3, name: "Xbox", slug: "xbox" },
+        { id: 4, name: "Xbox", slug: "xbox" },
+      ]),
+    ).toEqual([{ id: 3, name: "Xbox", slug: "xbox" }]);
+  });
 });
 
 describe("sortPlatformFamiliesForDisplay", () => {
@@ -97,7 +130,6 @@ describe("sortPlatformFamiliesForDisplay", () => {
         slug: "nintendo-switch-2",
       },
       { id: 9, name: "Android", slug: "android" },
-      { id: 10, name: "Google Stadia", slug: "stadia" },
     ];
 
     expect(
@@ -114,7 +146,6 @@ describe("sortPlatformFamiliesForDisplay", () => {
       "ios",
       "android",
       "linux",
-      "stadia",
     ]);
   });
 

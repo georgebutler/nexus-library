@@ -31,7 +31,6 @@ const PLATFORM_FAMILIES = {
   web: { id: 14, name: "Web", slug: "web" },
   meta: { id: 17, name: "Meta Quest", slug: "meta" },
   oculus: { id: 18, name: "Oculus", slug: "oculus" },
-  stadia: { id: 19, name: "Google Stadia", slug: "stadia" },
   steam: { id: 20, name: "SteamVR", slug: "steam" },
   blackberry: { id: 21, name: "BlackBerry OS", slug: "blackberry" },
   amazon: { id: 22, name: "Amazon Fire TV", slug: "amazon" },
@@ -56,7 +55,6 @@ const PLATFORM_DISPLAY_PRIORITY = new Map<string, number>([
   ["meta", 10],
   ["oculus", 11],
   ["steam", 12],
-  ["stadia", 13],
   ["web", 14],
   ["amazon", 15],
 ]);
@@ -67,6 +65,18 @@ function toPlatformSlug(name: string) {
     .toLocaleLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+}
+
+function isUnsupportedPlatformFamily(family: GamePlatformFamily) {
+  const name = family.name.trim().toLocaleLowerCase();
+  const slug = family.slug.trim().toLocaleLowerCase();
+
+  return (
+    slug === "stadia" ||
+    slug === "google-stadia" ||
+    name === "stadia" ||
+    name === "google stadia"
+  );
 }
 
 function getPlatformFamily(platformName: string): GamePlatformFamily | null {
@@ -125,7 +135,7 @@ function getPlatformFamily(platformName: string): GamePlatformFamily | null {
   }
 
   if (/\bgoogle stadia\b|\bstadia\b/i.test(name)) {
-    return PLATFORM_FAMILIES.stadia;
+    return null;
   }
 
   if (/\bsteamvr\b|\bsteam vr\b/i.test(name)) {
@@ -195,7 +205,11 @@ export function getUniquePlatformFamilies(
   return families.filter((family) => {
     const slug = family.slug.trim().toLocaleLowerCase();
 
-    if (!slug || seenSlugs.has(slug)) {
+    if (
+      !slug ||
+      isUnsupportedPlatformFamily(family) ||
+      seenSlugs.has(slug)
+    ) {
       return false;
     }
 

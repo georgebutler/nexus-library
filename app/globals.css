@@ -2767,9 +2767,9 @@ html.isSpatialDetails .screenshot {
   display: grid;
   min-width: 0;
   flex: 1;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -2815,6 +2815,33 @@ html.isSpatialDetails .screenshot {
   padding-inline: 6px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+}
+
+.search-field .game-filter__trigger--integrated {
+  display: inline-flex;
+  width: auto;
+  min-width: 0;
+  height: 28px;
+  gap: 5px;
+  padding: 0 8px;
+  border-radius: calc(var(--radius) - 3px);
+  color: var(--foreground);
+}
+
+.game-filter__trigger--integrated [data-slot="badge"] {
+  display: inline-flex;
+  min-width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.search-field__separator {
+  height: 20px;
+  align-self: center;
 }
 
 .game-filter-popover {
@@ -3197,12 +3224,11 @@ html:not(.isSpatialLibrary)
 
 html:not(.isSpatialLibrary) .library-toolbar {
   grid-column: 1;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "search buttons"
-    "chips chips";
+    "search"
+    "chips";
   align-items: center;
-  column-gap: 18px;
   row-gap: 8px;
 }
 
@@ -3229,43 +3255,8 @@ html:not(.isSpatialLibrary) .search-console__status {
   font-size: 0.72rem;
 }
 
-html:not(.isSpatialLibrary) .library-toolbar__filter-buttons {
-  grid-area: buttons;
-  justify-self: end;
-  margin-left: auto;
-}
-
 html:not(.isSpatialLibrary) .library-toolbar__filter-chips {
   grid-area: chips;
-}
-
-html:not(.isSpatialLibrary)
-  .library-toolbar
-  .game-filter__buttons {
-  align-items: center;
-}
-
-html:not(.isSpatialLibrary)
-  .library-toolbar
-  .game-filter__trigger,
-html:not(.isSpatialLibrary)
-  .library-toolbar
-  .game-filter__clear {
-  height: 40px;
-}
-
-html:not(.isSpatialLibrary)
-  .library-toolbar
-  .game-filter__clear {
-  width: 40px;
-  min-width: 40px;
-}
-
-html:not(.isSpatialLibrary)
-  .library-toolbar
-  .game-filter__trigger {
-  min-width: 104px;
-  background: color-mix(in srgb, var(--card) 72%, transparent);
 }
 
 html:not(.isSpatialLibrary)
@@ -3629,10 +3620,10 @@ html:not(.isSpatialLibrary)
 
   html:not(.isSpatialLibrary) .library-toolbar {
     grid-column: 2;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "search buttons"
-      "chips chips";
+      "search"
+      "chips";
     row-gap: 8px;
   }
 
@@ -3650,13 +3641,24 @@ html:not(.isSpatialLibrary)
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "search"
-      "buttons"
       "chips";
   }
 
-  html:not(.isSpatialLibrary) .library-toolbar__filter-buttons {
-    justify-self: start;
-    margin-left: 0;
+  .game-filter__trigger.game-filter__trigger--integrated
+    .game-filter__trigger-label {
+    display: none;
+  }
+
+  .search-field .game-filter__trigger--integrated {
+    width: 28px;
+    padding: 0;
+  }
+
+  .search-field
+    .game-filter__trigger--integrated:has([data-slot="badge"]) {
+    width: auto;
+    min-width: 40px;
+    padding-inline: 6px;
   }
 
   html:not(.isSpatialLibrary) .library-grid {

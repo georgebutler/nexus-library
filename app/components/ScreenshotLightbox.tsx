@@ -11,11 +11,54 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 type ScreenshotLightboxProps = {
   gameName: string;
   screenshots: GameScreenshot[];
 };
+
+type ScreenshotMediaProps = {
+  alt: string;
+  priority?: boolean;
+  sizes: string;
+  src: string;
+};
+
+function ScreenshotMedia({
+  alt,
+  priority = false,
+  sizes,
+  src,
+}: ScreenshotMediaProps) {
+  const [status, setStatus] = useState<"loading" | "ready">("loading");
+
+  return (
+    <div
+      className={cn(
+        "screenshot-media",
+        status === "ready" && "is-ready",
+      )}
+    >
+      {status === "loading" ? (
+        <Skeleton
+          aria-hidden="true"
+          className="screenshot-media__loading"
+        />
+      ) : null}
+      <Image
+        alt={alt}
+        fill
+        onError={() => setStatus("ready")}
+        onLoad={() => setStatus("ready")}
+        priority={priority}
+        sizes={sizes}
+        src={src}
+      />
+    </div>
+  );
+}
 
 export function ScreenshotLightbox({
   gameName,
@@ -69,9 +112,8 @@ export function ScreenshotLightbox({
             onClick={() => setActiveIndex(index)}
             type="button"
           >
-            <Image
+            <ScreenshotMedia
               alt={`${gameName} screenshot ${index + 1}`}
-              fill
               sizes="(max-width: 720px) 100vw, (max-width: 980px) 50vw, 33vw"
               src={screenshot.image}
             />
@@ -101,11 +143,11 @@ export function ScreenshotLightbox({
 
           {activeScreenshot ? (
             <div className="screenshot-lightbox__image">
-              <Image
+              <ScreenshotMedia
                 alt={`${gameName} screenshot ${
                   activeIndex === null ? 1 : activeIndex + 1
                 } enlarged`}
-                fill
+                key={`${activeScreenshot.id}-${activeIndex}`}
                 priority
                 sizes="95vw"
                 src={activeScreenshot.image}
